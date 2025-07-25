@@ -10,11 +10,11 @@
 	<title>{{general_settings.app_name}} - {{general_settings.company_name}}
 	</title>
 	<!-- Apple Touch Icon -->
-	<link rel="apple-touch-icon" sizes="180x180" href="{% static 'app-assets/img/apple-touch-icon.png' %}">
+	<link rel="apple-touch-icon" sizes="180x180" href="{% get_media_prefix %}{{ general_settings.favicon }}">
 
 	<!-- Favicon -->
 	<link rel="icon" href="{% get_media_prefix %}{{ general_settings.favicon }}" type="image/x-icon">
-	<link rel="shortcut icon" href="{% static 'app-assets/img/favicon.png' %}" type="image/x-icon">
+	<link rel="shortcut icon" href="{% get_media_prefix %}{{ general_settings.favicon }}" type="image/x-icon">
 
 	<!-- Theme Script js -->
 	<script src="{% static 'app-assets/js/theme-script.js' %}" type="text/javascript"></script>
