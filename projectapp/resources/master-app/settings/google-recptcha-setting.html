@@ -1,0 +1,74 @@
+{% include 'inc/header.html' %}
+{% load static %}
+{% include 'inc/topbar.html' %}
+{% include 'inc/sidebar.html' %}
+<!-- Page Content -->
+<div class="content">
+    {% include 'master-app/settings/partials/setting-options.html' %}
+    <div class="row">
+        {% include 'master-app/settings/partials/google-setting-options.html' %}
+        <div class="col-xl-9">
+            <div class="card">
+                <div class="card-body">
+                    <div class="border-bottom mb-3 pb-3">
+                        <h4>Google ReCaptcha Settings</h4>
+                    </div>
+                    {% if general_settings.recptcha_configuration != 'Completed' %}
+                    <div class="alert alert-danger alert-dismissible fade show custom-alert-icon shadow-sm d-flex align-items-centers"
+                        role="alert"> <i class="fa fa-exclamation-circle flex-shrink-0 me-2"></i> <b>Configure your
+                            Google ReCaptcha settings to enable service.</b></div>
+                    {% endif %}
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="border-bottom mb-3">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row align-items-center mb-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label mb-md-0">ReCaptcha Service<span
+                                                    class="text-danger">*</span></label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <select class="select" name="recptcha_configuration" required>
+                                                <option value="Completed" {% if general_settings.recptcha_configuration == 'Completed' %} selected {% endif %}> Enable</option> <option value="Pending" {% if general_settings.recptcha_configuration == 'Pending' %} selected {% endif %}> Disable</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row align-items-center mb-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label mb-md-0">Site Key<span
+                                                    class="text-danger">*</span></label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control"
+                                                value="{{general_settings.google_recptcha_sitekey}}" name="google_recptcha_sitekey" required />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row align-items-center mb-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label mb-md-0">Secret Key<span
+                                                    class="text-danger">*</span></label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control"
+                                                value="{{general_settings.google_recptcha_secretkey}}" name="google_recptcha_secretkey" required />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-end">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Page Content -->
+{% include 'inc/footer.html' %}

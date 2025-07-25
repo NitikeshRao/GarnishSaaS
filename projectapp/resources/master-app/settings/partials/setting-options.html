@@ -1,0 +1,14 @@
+<ul class="nav nav-tabs nav-tabs-solid bg-transparent border-bottom mb-3">
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'general-settings' or request.resolver_match.url_name == 'social-pages-settings' or request.resolver_match.url_name == 'maintenance-settings' %} active {% endif %}" href="{% url 'general-settings' %}"><i class="ti ti-settings me-2"></i>General Settings</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'system-settings' %} active {% endif %}" href="{% url 'system-settings' %}"><i class="ti ti-server-cog me-2"></i>System Settings</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'google-settings' %} active {% endif %}" href="{% url 'google-settings' %}"><i class="ti ti-settings-cog me-2"></i>Google Settings</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#"><i class="ti ti-settings-2 me-2"></i>Other Settings</a>
+    </li>
+</ul>

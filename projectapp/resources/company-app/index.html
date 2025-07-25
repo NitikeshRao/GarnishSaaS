@@ -1,0 +1,17 @@
+{% include 'inc/header.html' %}
+{% load static %}
+{% include 'inc/topbar.html' %}
+{% include 'inc/sidebar.html' %}
+<!-- Page Content -->
+<div class="content">
+    {% include 'company-app/partials/total-counts.html' %}
+    {% if viewtype == "grid" %}
+        {% include 'company-app/partials/grid-view.html' %}
+    {% elif viewtype == "list" %}
+        {% include 'company-app/partials/list-view.html' %}
+    {% endif %}
+    
+</div>
+{% include 'company-app/partials/add-company.html' %}
+<!-- /Page Content -->
+{% include 'inc/footer.html' %}

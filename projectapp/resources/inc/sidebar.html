@@ -1,0 +1,205 @@
+{% load static %}
+<!-- Sidebar -->
+
+<div class="sidebar" id="sidebar">
+    <!-- Logo -->
+    <div class="sidebar-logo">
+        <a href="{% url 'dashboard' %}" class="logo logo-normal">
+            <img src="{% get_media_prefix %}{{ general_settings.white_logo }}"
+                alt="{{ general_settings.company_name }}">
+        </a>
+        <a href="{% url 'dashboard' %}" class="logo-small">
+            <img src="{% get_media_prefix %}{{ general_settings.mini_logo }}" alt="{{ general_settings.company_name }}">
+        </a>
+        <a href="{% url 'dashboard' %}" class="dark-logo">
+            <img src="{% get_media_prefix %}{{ general_settings.dark_logo }}" alt="{{ general_settings.company_name }}">
+        </a>
+    </div>
+    <!-- /Logo -->
+    <div class="modern-profile p-3 pb-0">
+        <div class="text-center rounded bg-light p-3 mb-4 user-profile">
+            <div class="avatar avatar-lg online mb-3">
+                <img src="{% static 'app-assets/img/profiles/avatar-02.jpg' %}" alt="Img"
+                    class="img-fluid rounded-circle">
+            </div>
+            <h6 class="fs-12 fw-normal mb-1">{{request.user}}</h6>
+            <p class="fs-10">System Admin</p>
+        </div>
+        <div class="sidebar-nav mb-3">
+            <ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded nav-justified bg-transparent" role="tablist">
+                <li class="nav-item"><a class="nav-link active border-0" href="#">Menu</a></li>
+                <li class="nav-item"><a class="nav-link border-0" href="chat.html">Chats</a></li>
+                <li class="nav-item"><a class="nav-link border-0" href="email.html">Inbox</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="sidebar-header p-3 pb-0 pt-2">
+        <div class="text-center rounded bg-light p-2 mb-4 sidebar-profile d-flex align-items-center">
+            <div class="avatar avatar-md onlin">
+                <img src="{% static 'app-assets/img/profiles/avatar-02.jpg' %}" alt="Img"
+                    class="img-fluid rounded-circle">
+            </div>
+            <div class="text-start sidebar-profile-info ms-2">
+                <h6 class="fs-12 fw-normal mb-1">{{request.user}}</h6>
+                <p class="fs-10">System Admin</p>
+            </div>
+        </div>
+        <div class="input-group input-group-flat d-inline-flex mb-4">
+            <span class="input-icon-addon">
+                <i class="ti ti-search"></i>
+            </span>
+            <input type="text" class="form-control" placeholder="Search in HRMS">
+            <span class="input-group-text">
+                <kbd>CTRL + / </kbd>
+            </span>
+        </div>
+        <div class="d-flex align-items-center justify-content-between menu-item mb-3">
+            <div class="me-3">
+                <a href="calendar.html" class="btn btn-menubar">
+                    <i class="ti ti-layout-grid-remove"></i>
+                </a>
+            </div>
+            <div class="me-3">
+                <a href="chat.html" class="btn btn-menubar position-relative">
+                    <i class="ti ti-brand-hipchat"></i>
+                    <span
+                        class="badge bg-info rounded-pill d-flex align-items-center justify-content-center header-badge">5</span>
+                </a>
+            </div>
+            <div class="me-3 notification-item">
+                <a href="activity.html" class="btn btn-menubar position-relative me-1">
+                    <i class="ti ti-bell"></i>
+                    <span class="notification-status-dot"></span>
+                </a>
+            </div>
+            <div class="me-0">
+                <a href="email.html" class="btn btn-menubar">
+                    <i class="ti ti-message"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar-inner slimscroll">
+        <div id="sidebar-menu" class="sidebar-menu" style="margin-top: 12%;">
+            <ul>
+                <li class="menu-title"><span>MAIN MENU</span></li>
+                <li>
+                    <ul>
+                        <li>
+                            <a href="{% url 'dashboard' %}"
+                                class="{% if request.resolver_match.url_name == 'dashboard' %} active {% endif %} ">
+                                <i class="ti ti-smart-home"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="menu-title"><span>Modules</span></li>
+                <li>
+                    <ul>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"
+                                class="{% if request.resolver_match.url_name == 'companies' or request.resolver_match.url_name == 'garnish-employee-calculator'%} active subdrop {% endif %}">
+                                <i class="ti ti-layout-grid-add"></i><span>Management Modules</span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <ul>
+                                <li><a href="{% url 'companies' 'list' %}"
+                                        class="{% if request.resolver_match.url_name == 'companies' %} active {% endif %}">Companies
+                                        / Firms</a></li>
+                                <li class="submenu submenu-two">
+                                    <a href="javascript:void(0);"
+                                        class="{% if request.resolver_match.url_name == 'garnish-employee-calculator' %} active subdrop {% endif %}">Garnish Processing<span class="menu-arrow inside-submenu"></span></a>
+                                    <ul>
+                                        <li><a href="{% url 'garnish-employee-calculator' %}"
+                                                class="{% if request.resolver_match.url_name == 'garnish-employee-calculator' %} active {% endif %}">Employee Calculator</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu-title"><span>Configurations</span></li>
+                <li>
+                    <ul>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"
+                                class="{% if request.resolver_match.url_name == 'general-settings' or request.resolver_match.url_name == 'social-pages-settings' or request.resolver_match.url_name == 'maintenance-settings' or request.resolver_match.url_name == 'system-settings' or request.resolver_match.url_name == 'google-settings'%} active subdrop {% endif %}">
+                                <i class="ti ti-settings"></i><span>Settings</span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <ul>
+                                <li class="submenu submenu-two">
+                                    <a href="javascript:void(0);"
+                                        class="{% if request.resolver_match.url_name == 'general-settings' or request.resolver_match.url_name == 'social-pages-settings' or request.resolver_match.url_name == 'maintenance-settings' %} active subdrop {% endif %}">General
+                                        Settings<span class="menu-arrow inside-submenu"></span></a>
+                                    <ul>
+                                        <li><a href="{% url 'general-settings' %}"
+                                                class="{% if request.resolver_match.url_name == 'general-settings' %} active {% endif %}">Base
+                                                Settings</a></li>
+                                        <li><a href="{% url 'social-pages-settings' %}"
+                                                class="{% if request.resolver_match.url_name == 'social-pages-settings' %} active {% endif %}">Social
+                                                Pages Setting</a></li>
+                                        <li><a href="{% url 'maintenance-settings' %}"
+                                                class="{% if request.resolver_match.url_name == 'maintenance-settings' %} active {% endif %}">Maintenance
+                                                Setting</a></li>
+                                    </ul>
+                                </li>
+                                <li class="submenu submenu-two">
+                                    <a href="javascript:void(0);"
+                                        class="{% if request.resolver_match.url_name == 'system-settings' %} active subdrop {% endif %} ">System
+                                        Settings<span class="menu-arrow inside-submenu"></span></a>
+                                    <ul>
+                                        <li><a href="{% url 'system-settings' %}"
+                                                class="{% if request.resolver_match.url_name == 'system-settings' %} active {% endif %}">Email
+                                                Setting</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="submenu submenu-two">
+                                    <a href="javascript:void(0);"
+                                        class="{% if request.resolver_match.url_name == 'google-settings' %} active subdrop {% endif %} ">Google
+                                        Settings<span class="menu-arrow inside-submenu"></span></a>
+                                    <ul>
+                                        <li><a href="{% url 'google-settings' %}"
+                                                class="{% if request.resolver_match.url_name == 'google-settings' %} active {% endif %}">ReCaptcha
+                                                Setting</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu-title"><span>Account</span></li>
+                <li>
+                    <ul>
+                        <li class="submenu">
+                            <a href="javascript:void(0);">
+                                <i class="ti ti-user-star"></i><span>User Management</span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <ul>
+                                <li><a href="users.html">Users</a></li>
+                                <li><a href="roles-permissions.html">Roles & Permissions</a></li>
+                            </ul>
+                        </li>
+                        <li class="{% if request.resolver_match.url_name == 'change-password' %} active {% endif %}">
+                            <a href="{% url 'change-password' %}">
+                                <i class="ti ti-key"></i><span>Change Password</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'secure-logout' %}">
+                                <i class="ti ti-login"></i><span>Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- /Sidebar -->
+<div class="page-wrapper">

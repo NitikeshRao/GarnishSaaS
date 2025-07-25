@@ -1,0 +1,187 @@
+{% include 'inc/header.html' %}
+{% load static %}
+{% include 'inc/topbar.html' %}
+{% include 'inc/sidebar.html' %}
+<!-- Page Content -->
+<div class="content">
+    {% include 'master-app/settings/partials/setting-options.html' %}
+    <div class="row">
+        {% include 'master-app/settings/partials/system-setting-options.html' %}
+        <div class="col-xl-9">
+            <div class="card">
+                <div class="card-body">
+                    <div class="border-bottom mb-3 pb-3">
+                        <h4>Email Settings</h4>
+                    </div>
+                    {% if general_settings.mail_configuration != 'Completed' %}
+                    <div class="alert alert-danger alert-dismissible fade show custom-alert-icon shadow-sm d-flex align-items-centers"
+                        role="alert"> <i class="fa fa-exclamation-circle flex-shrink-0 me-2"></i> <b>Configure your
+                            email (SMTP) settings to enable email services.</b></div>
+                    {% endif %}
+                    <div class="accordion" id="accordionExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    <img src="{% static 'app-assets/img/settings/smtp.svg' %}"
+                                        alt="Email Configurations" style="width: 28px;"> &nbsp;<h5>Setup Email
+                                        (SMTP)
+                                        Configurations
+                                    </h5>
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <form method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="border-bottom mb-3">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="row align-items-center mb-3">
+                                                        <div class="col-md-3">
+                                                            <label class="form-label mb-md-0">Mail
+                                                                Service<span class="text-danger">*</span></label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <select class="select" name="mail_configuration" required>
+                                                                <option value="Completed" {% if general_settings.mail_configuration == 'Completed' %} selected {% endif %}> Enable</option> <option value="Pending" {% if general_settings.mail_configuration == 'Pending' %} selected {% endif %}> Disable</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="row align-items-center mb-3">
+                                                        <div class="col-md-3">
+                                                            <label class="form-label mb-md-0">Mail Driver<span
+                                                                    class="text-danger">*</span></label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <select class="select" name="MAIL_DRIVER" required>
+                                                                <option value="{{general_settings.MAIL_DRIVER}}">
+                                                                    SMTP</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="row align-items-center mb-3">
+                                                        <div class="col-md-3">
+                                                            <label class="form-label mb-md-0">Mail Host<span
+                                                                    class="text-danger">*</span></label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <input type="text" class="form-control"
+                                                                value="{{general_settings.MAIL_HOST}}" name="MAIL_HOST"
+                                                                required />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="row align-items-center mb-3">
+                                                        <div class="col-md-3">
+                                                            <label class="form-label mb-md-0">Mail Port<span
+                                                                    class="text-danger">*</span></label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <input type="text" class="form-control"
+                                                                value="{{general_settings.MAIL_PORT}}" name="MAIL_PORT"
+                                                                required />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="row align-items-center mb-3">
+                                                        <div class="col-md-3">
+                                                            <label class="form-label mb-md-0">Mail
+                                                                Encryption<span class="text-danger">*</span></label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <select class="select" name="MAIL_ENCRYPTION" required>
+                                                                <option value="True" {% if general_settings.MAIL_ENCRYPTION == 'True' %} selected {% endif %}> True</option> <option value="False" {% if general_settings.MAIL_ENCRYPTION == 'False' %} selected {% endif %}> False</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="row align-items-center mb-3">
+                                                        <div class="col-md-3">
+                                                            <label class="form-label mb-md-0">Mail Username<span
+                                                                    class="text-danger">*</span></label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <input type="text" class="form-control"
+                                                                value="{{general_settings.MAIL_USERNAME}}"
+                                                                name="MAIL_USERNAME" required />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="row align-items-center mb-3">
+                                                        <div class="col-md-3">
+                                                            <label class="form-label mb-md-0">Mail From
+                                                                Address<span class="text-danger">*</span></label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <input type="text" class="form-control"
+                                                                value="{{general_settings.MAIL_FROM_ADDRESS}}"
+                                                                name="MAIL_FROM_ADDRESS" required />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="row align-items-center mb-3">
+                                                        <div class="col-md-3">
+                                                            <label class="form-label mb-md-0">Mail Password<span
+                                                                    class="text-danger">*</span></label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <input type="password" class="form-control"
+                                                                value="{{general_settings.MAIL_PASSWORD}}"
+                                                                name="MAIL_PASSWORD" required />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="border-bottom mb-3">
+                                            <h6 class="mb-3">Receiving Email</h6>
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3">
+                                                    <div class="alert alert-info alert-dismissible fade show custom-alert-icon shadow-sm d-flex align-items-centers"
+                                                        role="alert"> <i
+                                                            class="fa fa-info-circle flex-shrink-0 me-2"></i>
+                                                        <b>Provide the email address to receive notifications
+                                                            related to
+                                                            this system.</b>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="row align-items-center mb-3">
+                                                        <div class="col-md-2">
+                                                            <label class="form-label mb-md-0">Email Id</label>
+                                                        </div>
+                                                        <div class="col-md-10">
+                                                            <input type="text" class="form-control"
+                                                                value="{{general_settings.RECEIVING_MAIL}}"
+                                                                name="RECEIVING_MAIL">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-end">
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Page Content -->
+{% include 'inc/footer.html' %}

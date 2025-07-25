@@ -1,0 +1,65 @@
+{% include 'inc/header.html' %}
+{% load static %}
+{% include 'inc/topbar.html' %}
+{% include 'inc/sidebar.html' %}
+<!-- Page Content -->
+<div class="content">
+    {% include 'master-app/settings/partials/setting-options.html' %}
+    <div class="row">
+        {% include 'master-app/settings/partials/general-setting-options.html' %}
+        <div class="col-xl-9">
+            <div class="card">
+                <div class="card-body">
+                    <div class="border-bottom mb-3 pb-3">
+                        <h4>Maintenance Mode</h4>
+                    </div>
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="border-bottom mb-3">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-3">
+                                            <label class="form-label mb-md-3">Maintenance Message</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="mb-3">
+                                                <input type="text" class="form-control"
+                                                    value="{{general_settings.maintenance_message}}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row align-items-center mb-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label mb-md-0">Mode</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div>
+                                                <select class="select" name="maintenance_mode" required>
+                                                    <option value="0" {% if general_settings.maintenance_mode  == '0' %}
+                                                        selected {% endif %}>
+                                                        Off</option>
+                                                    <option value="1" {% if general_settings.maintenance_mode == '1' %}
+                                                        selected {% endif %}>
+                                                        On</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-end">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Page Content -->
+{% include 'inc/footer.html' %}

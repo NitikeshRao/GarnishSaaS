@@ -1,0 +1,88 @@
+{% load static %}
+{% if request.resolver_match.url_name != 'secure-login' %}
+{% include 'inc/copyright.html' %}
+{% endif %}
+</div>
+</div>
+<!-- /Main Wrapper -->
+<script src="{% static 'app-assets/js/jquery-3.7.1.min.js' %}" type="text/javascript"></script>
+
+<!-- Bootstrap Core JS -->
+<script src="{% static 'app-assets/js/bootstrap.bundle.min.js' %}" type="text/javascript"></script>
+
+<!-- Feather Icon JS -->
+<script src="{% static 'app-assets/js/feather.min.js' %}" type="text/javascript"></script>
+
+<!-- Slimscroll JS -->
+<script src="{% static 'app-assets/js/jquery.slimscroll.min.js' %}" type="text/javascript"></script>
+
+<!-- Select2 JS -->
+<script src="{% static 'app-assets/plugins/select2/js/select2.min.js' %}" type="text/javascript"></script>
+
+<!-- Color Picker JS -->
+<script src="{% static 'app-assets/plugins/@simonwep/pickr/pickr.es5.min.js' %}" type="text/javascript"></script>
+
+<!-- Datatable JS -->
+<script src="{% static 'app-assets/js/jquery.dataTables.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'app-assets/js/dataTables.bootstrap5.min.js' %}" type="text/javascript"></script>	
+
+<!-- Daterangepikcer JS -->
+<script src="{% static 'app-assets/js/moment.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'app-assets/plugins/daterangepicker/daterangepicker.js' %}" type="text/javascript"></script>
+<script src="{% static 'app-assets/js/bootstrap-datetimepicker.min.js' %}" type="text/javascript"></script>
+
+<!-- Sticky Sidebar JS -->
+<script src="{% static 'app-assets/plugins/theia-sticky-sidebar/ResizeSensor.js' %}" type="text/javascript"></script>
+<script src="{% static 'app-assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js' %}"
+  type="text/javascript"></script>
+
+<!-- Bootstrap Tagsinput JS -->
+<script src="{% static 'app-assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js' %}"
+  type="text/javascript"></script>
+
+<!-- Chart JS -->
+<script src="{% static 'app-assets/plugins/apexchart/apexcharts.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'app-assets/plugins/apexchart/chart-data.js' %}" type="text/javascript"></script>
+
+{% if request.resolver_match.url_name == 'dashboard' %}
+<!-- Chart JS -->
+<script src="{% static 'app-assets/plugins/chartjs/chart.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'app-assets/plugins/chartjs/chart-data.js' %}" type="text/javascript"></script>
+{% endif %}
+<!-- Custom JS -->
+<script src="{% static 'app-assets/js/theme-colorpicker.js' %}" type="text/javascript"></script>
+<script src="{% static 'app-assets/js/script.js' %}" type="text/javascript"></script>
+
+<!--notification js -->
+<script src="{% static 'app-assets/plugins/notifications/js/lobibox.min.js' %}"></script>
+<script src="{% static 'app-assets/plugins/notifications/js/notifications.min.js' %}"></script>
+<script>
+  {% if messages %}
+  {% for message in messages %}
+  Lobibox.notify('{{message.tags}}', {
+    pauseDelayOnHover: true,
+    size: 'mini',
+    rounded: true,
+    delayIndicator: false,
+    continueDelayOnInactiveTab: false,
+    position: 'top right',
+        {% if message.tags == 'info' %}
+  icon: 'fa fa-info-circle',
+    {% endif %}
+  {% if message.tags == 'warning' %}
+  icon: 'fa fa-exclamation-circle',
+    {% endif %}
+  {% if message.tags == 'error' %}
+  icon: 'fa fa-exclamation-circle',
+    {% endif %}
+  {% if message.tags == 'success' %}
+  icon: 'fa fa-check-circle',
+    {% endif %}
+  msg: '{{message}}'
+      });
+  {% endfor %}
+  {% endif %}
+</script>
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+<div class="col-xl-3 theiaStickySidebar">
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex flex-column list-group settings-list">
+                <a href="{% url 'system-settings' %}"
+                    class="d-inline-flex align-items-center rounded {% if request.resolver_match.url_name == 'system-settings' %} active {% endif %} py-2 px-3">{% if request.resolver_match.url_name == 'system-settings' %} <i
+                        class="ti ti-arrow-badge-right me-2"></i> {% endif %} Email Settings</a>
+            </div>
+        </div>
+    </div>
+</div>
