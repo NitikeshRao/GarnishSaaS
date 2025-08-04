@@ -1,0 +1,165 @@
+{% include 'inc/header.html' %}
+{% load static %}
+{% include 'inc/topbar.html' %}
+{% include 'inc/sidebar.html' %}
+<!-- Page Content -->
+ <style>
+    .form-control-sm.hover {
+        border-color: #000;
+    }
+ </style>
+<div class="content">
+    <div class="card">
+        <div class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
+            <h5>Child Support - Rule List</h5>
+            <form method="GET" action="">
+                <div class="d-flex my-xl-auto right-content align-items-center flex-wrap row-gap-3">
+                    <div class="d-flex my-xl-auto right-content align-items-center flex-wrap "
+                        style="margin-left: 10px;">
+                        <div class="me-2">
+                            <div class="dropdown">
+                                <input type="text" class="form-control form-control-sm" name="firm_name" required />
+                            </div>
+                        </div>
+                        <a href="#" style="margin-left: 10px;"class="btn btn-sm btn-secondary"><i class="ti ti-search me-2"></i>Search</a>
+                        <a href="#" style="margin-left: 10px;" data-bs-toggle="modal" data-bs-target="#add_child_support_rule"
+                            class="btn btn-sm btn-primary d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i>Add
+                            New
+                            Rule</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th class="no-sort">#</th>
+                            <th>State</th>
+                            <th>Maximum Withholding</th>
+                            <th>Priority Level</th>
+                            <th>Additional Rules</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>California</td>
+                            <td>$5000</td>
+                            <td>High</td>
+                            <td>Applies to tech firms</td>
+                            <td><a href="#" class="me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit"><i
+                                        class="ti ti-edit text-dark"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Texas</td>
+                            <td>$4800</td>
+                            <td>Medium</td>
+                            <td>Agriculture industry focused</td>
+                            <td><a href="#" class="me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit"><i
+                                        class="ti ti-edit text-dark"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Florida</td>
+                            <td>$4500</td>
+                            <td>Low</td>
+                            <td>Requires local approval</td>
+                            <td><a href="#" class="me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit"><i
+                                        class="ti ti-edit text-dark"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>New York</td>
+                            <td>$5100</td>
+                            <td>High</td>
+                            <td>Finance sector specific</td>
+                            <td><a href="#" class="me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit"><i
+                                        class="ti ti-edit text-dark"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Illinois</td>
+                            <td>$4300</td>
+                            <td>Medium</td>
+                            <td>Urban area compliance required</td>
+                            <td><a href="#" class="me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit"><i
+                                        class="ti ti-edit text-dark"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Arizona</td>
+                            <td>$3900</td>
+                            <td>Low</td>
+                            <td>Applies only during summer</td>
+                            <td><a href="#" class="me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit"><i
+                                        class="ti ti-edit text-dark"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Ohio</td>
+                            <td>$4700</td>
+                            <td>Medium</td>
+                            <td>Includes small businesses</td>
+                            <td><a href="#" class="me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit"><i
+                                        class="ti ti-edit text-dark"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Georgia</td>
+                            <td>$5200</td>
+                            <td>High</td>
+                            <td>Applies to exports above $10K</td>
+                            <td><a href="#" class="me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit"><i
+                                        class="ti ti-edit text-dark"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Michigan</td>
+                            <td>$4600</td>
+                            <td>Low</td>
+                            <td>Seasonal employee restrictions</td>
+                            <td><a href="#" class="me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit"><i
+                                        class="ti ti-edit text-dark"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>Washington</td>
+                            <td>$5000</td>
+                            <td>Medium</td>
+                            <td>Environmentally regulated</td>
+                            <td><a href="#" class="me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit"><i
+                                        class="ti ti-edit text-dark"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>Nevada</td>
+                            <td>$4950</td>
+                            <td>Low</td>
+                            <td>Tourism business compliance</td>
+                            <td><a href="#" class="me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit"><i
+                                        class="ti ti-edit text-dark"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>Colorado</td>
+                            <td>$5100</td>
+                            <td>High</td>
+                            <td>Subject to federal matching rules</td>
+                            <td><a href="#" class="me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit"><i
+                                        class="ti ti-edit text-dark"></i></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% include 'partials/pagination.html' %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% include 'garnish-process-app/garnish-rules/child-support/partials/add-child-support-rule.html' %}
+<!-- /Page Content -->
+{% include 'inc/footer.html' %}

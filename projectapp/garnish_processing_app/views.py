@@ -28,8 +28,26 @@ import os
 def index(request):    
     if request.user.is_authenticated:
         if request.method == 'POST':
-            return HttpResponse('hello')
+            return HttpResponse('i am post method of garnishment-calculator')
         else:
             return render(request,'garnish-process-app/index.html')
+    else:
+        return HttpResponseRedirect(reverse('secure-login'))
+    
+def batchProcess(request):    
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            return HttpResponse('i am post method of batch-processing')
+        else:
+            return render(request,'garnish-process-app/batch-process/index.html')
+    else:
+        return HttpResponseRedirect(reverse('secure-login'))
+    
+def childSupportRules(request):    
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            return HttpResponse('i am post method of child-support-rules')
+        else:
+            return render(request,'garnish-process-app/garnish-rules/child-support/index.html')
     else:
         return HttpResponseRedirect(reverse('secure-login'))

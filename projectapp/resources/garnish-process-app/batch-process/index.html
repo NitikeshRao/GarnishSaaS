@@ -1,0 +1,93 @@
+{% include 'inc/header.html' %}
+{% load static %}
+{% include 'inc/topbar.html' %}
+{% include 'inc/sidebar.html' %}
+<!-- Page Content -->
+<div class="content">
+    <div class="row">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title"><i class="fa fa-clone"></i> Batch File Processing</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-12 mb-3" id="invalidFile">
+                            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                <i class="fa fa-exclamation-circle flex-shrink-0 me-2"></i>
+                                <div>
+                                    You have selected an invalid file. Please upload only <b>Excel (.xls, .xlsx, .csv) or
+                                    JSON (.json)</b> files for processing.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8 mb-4">
+                            <label class="form-label">Upload File <span class="text-danger">*</span></label>
+                            <span class="badge badge-secondary">Please upload the Excel / JSON file to get the
+                                result....</span>
+                            <input type="file" class="form-control" name="batch_file" required>
+                        </div>
+                        <div class="col-md-4 text-end" style="margin-top: 27px;" id="btnAction">
+                            <button type="submit" class="btn btn-sm btn-primary"><i class="ti ti-transfer"></i>
+                                Process Now</button>
+                            <a href="{% url 'batch-processing' %}" class="btn btn-sm btn-dark"><i class="ti ti-reload"></i>
+                                Reset</a>
+                        </div>
+                        <div class="col-md-12" id="forExcel">
+                            <textarea rows="10" cols="10" class="form-control"></textarea>
+                        </div>
+                        <div class="col-md-12" id="forJson">
+                            <textarea rows="10" cols="10" class="form-control"
+                                placeholder="Paste your JSON here..."></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<!-- /Page Content -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const fileInput = document.querySelector('input[name="batch_file"]');
+        const forExcel = document.getElementById('forExcel');
+        const forJson = document.getElementById('forJson');
+        const invalidFile = document.getElementById('invalidFile');
+        const btnAction = document.getElementById('btnAction');
+
+        // Initially hide all optional blocks
+        forExcel.style.display = "none";
+        forJson.style.display = "none";
+        invalidFile.style.display = "none";
+        btnAction.style.display = "none";
+
+        fileInput.addEventListener("change", function () {
+            const file = this.files[0];
+            if (!file) return;
+
+            const fileName = file.name.toLowerCase();
+            const ext = fileName.split('.').pop();
+
+            // Reset all visibility
+            forExcel.style.display = "none";
+            forJson.style.display = "none";
+            invalidFile.style.display = "none";
+            btnAction.style.display = "none";
+
+            if (["xls", "xlsx", "csv"].includes(ext)) {
+                forExcel.style.display = "block";
+                btnAction.style.display = "block";
+            } else if (ext === "json") {
+                forJson.style.display = "block";
+                btnAction.style.display = "block";
+            } else {
+                invalidFile.style.display = "block";
+            }
+        });
+    });
+</script>
+
+{% include 'inc/footer.html' %}

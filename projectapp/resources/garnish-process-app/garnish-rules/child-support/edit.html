@@ -1,0 +1,390 @@
+{% include 'inc/header.html' %}
+{% load static %}
+{% include 'inc/topbar.html' %}
+{% include 'inc/sidebar.html' %}
+<!-- Page Content -->
+<div class="content">
+    <div class="row">
+        <div class="col-xl-2 d-flex"></div>
+        <div class="col-xl-8 d-flex">
+            <div class="card flex-fill">
+                <div class="card-header">
+                    <h5 class="card-title"><i class="ti ti-edit"></i> Update Firm / Company
+                    <a href="{% url 'companies' 'list' %}" class="btn btn-sm btn-sm btn-outline-dark" style="float: right;"><i class="fa fa-arrow-left"></i> Go Back</a>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form id="companyForm" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="modal-body pb-0">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div>
+                                        <h6 class="mb-3"><i class="fa fa-info-circle"></i> Basic Information</h6>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div
+                                        class="d-flex align-items-center flex-wrap row-gap-3 bg-light w-100 rounded p-3 mb-4">
+                                        <div
+                                            class="d-flex align-items-center justify-content-center avatar avatar-xxl border border-dashed me-2 flex-shrink-0 text-dark frames">
+                                            <img src="{% get_media_prefix %}{{ firm_info.firm_logo }}"
+                                                alt="Firm Logo">
+                                        </div>
+                                        <div class="profile-upload">
+                                            <div class="mb-2">
+                                                <h6 class="mb-1">Company / Firm Logo</h6>
+                                                <p class="fs-12">Image should be below 4 mb</p>
+                                            </div>
+                                            <div class="profile-uploader d-flex align-items-center">
+                                                <div class="drag-upload-btn btn-sm btn btn-sm btn-sm btn-primary me-2">
+                                                    Upload
+                                                    <input type="file" class="form-control image-sign" name="firm_logo"
+                                                    >
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Firm Name <span class="text-danger"> *</span></label>
+                                        <input type="text" class="form-control" name="firm_name" value="{{ firm_info.firm_name }}" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Website URL (if have)</label>
+                                        <input type="url" class="form-control" name="firm_weburl"
+                                            value="{{ firm_info.firm_weburl }}" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Official Email Id <span class="text-danger">
+                                                *</span></label>
+                                        <input type="email" class="form-control" name="official_emailid" value="{{ firm_info.official_emailid }}" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Contact Number <span class="text-danger">
+                                                *</span></label>
+                                        <input type="number" class="form-control" value="{{ firm_info.contact_number }}" name="contact_number" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Country <span class="text-danger"> *</span></label>
+                                        <select class="form-select" name="country" id="country"
+                                            data-url="{% url 'get_states' %}" onchange='checkCountry(this.value);'
+                                            required>
+                                            <option value="">Select</option>
+                                            {% for country in countries %}
+                                            <option value="{{ country.id }}" {% if country.id == firm_info.country_id %} selected {% endif %}>{{ country.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">State <span class="text-danger"> *</span></label>
+                                        <select class="form-select" name="state" id="state"
+                                            data-url="{% url 'get_cities' %}" onchange='checkState(this.value);'
+                                             required>
+                                            {% for state in states %}
+                                                <option value="{{ state.id }}" {% if state.id == firm_info.state_id %} selected {% endif %}>{{ state.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">City <span class="text-danger"> *</span></label>
+                                        <select class="form-select" name="city" id="city" required>
+                                            {% for city in cities %}
+                                                <option value="{{ city.id }}" {% if city.id == firm_info.city_id %} selected {% endif %}>{{ city.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Address <span class="text-danger">
+                                                *</span></label>
+                                        <input type="text" class="form-control" name="address" value="{{ firm_info.address}}" required />
+                                    </div>
+                                </div>
+                                <div class="border-bottom mt-2 mb-3"></div>
+                                <div class="col-md-12">
+                                    <div>
+                                        <h6 class="mb-3"><i class="fa fa-info-circle"></i> Business Information</h6>
+                                    </div>
+                                </div>
+                                <div class="col-md-6" id="firm_type_div">
+                                    <div class="mb-3">
+                                        <label class="form-label">Firm Type <span class="text-danger"> *</span></label>
+                                        <select class="select" name="firm_type" onchange='CheckFirmType(this.value);'
+                                            required>
+                                            <option value="">Select</option>
+                                            <option value="Company" {% if firm_info.business_info.firm_type == 'Company' %} selected {% endif %}>Company</option>
+                                            <option value="Institute" {% if firm_info.business_info.firm_type == 'Institute' %} selected {% endif %}>Institute</option>
+                                            <option value="Other" {% if firm_info.business_info.firm_type == 'Other' %} selected {% endif %}>Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6" id="firm_regtype_div">
+                                    <div class="mb-3">
+                                        <label class="form-label">Firm Registration Type <span class="text-danger">
+                                                *</span></label>
+                                        <select class="select" name="firm_registration_type"
+                                            onchange='CheckRegType(this.value);' required>
+                                            <option value="">Select</option>
+                                            <optgroup label="Firm">
+                                                <option value="Sole Proprietorship" {% if firm_info.business_info.firm_registration_type == 'Sole Proprietorship' %} selected {% endif %} >Sole Proprietorship</option>
+                                                <option value="Partnership" {% if firm_info.business_info.firm_registration_type == 'Partnership' %} selected {% endif %}>Partnership Firm</option>
+                                                <option value="LLP" {% if firm_info.business_info.firm_registration_type == 'LLP' %} selected {% endif %}>Limited Liability Partnership (LLP)</option>
+                                            </optgroup>
+                                            <optgroup label="Company">
+                                                <option value="Private Limited" {% if firm_info.business_info.firm_registration_type == 'Private Limited' %} selected {% endif %}>Private Limited Company</option>
+                                                <option value="Public Limited" {% if firm_info.business_info.firm_registration_type == 'Public Limited' %} selected {% endif %}>Public Limited Company</option>
+                                                <option value="OPC" {% if firm_info.business_info.firm_registration_type == 'OPC' %} selected {% endif %}>One Person Company (OPC)</option>
+                                                <option value="Non-Profit Company" {% if firm_info.business_info.firm_registration_type == 'Non-Profit Company' %} selected {% endif %}>Non-Profit Company</option>
+                                            </optgroup>
+                                            <optgroup label="Institute">
+                                                <option value="Trust" {% if firm_info.business_info.firm_registration_type == 'Trust' %} selected {% endif %}>Trust</option>
+                                                <option value="Society" {% if firm_info.business_info.firm_registration_type == 'Society' %} selected {% endif %}>Society</option>
+                                                <option value="NGO" {% if firm_info.business_info.firm_registration_type == 'NGO' %} selected {% endif %}>NGO</option>
+                                                <option value="Educational Institute" {% if firm_info.business_info.firm_registration_type == 'Educational Institute' %} selected {% endif %}>Educational Institute</option>
+                                                <option value="Research Institute" {% if firm_info.business_info.firm_registration_type == 'Research Institute' %} selected {% endif %}>Research Institute</option>
+                                            </optgroup>
+                                            <option value="Not Registered" {% if firm_info.business_info.firm_registration_type == 'Not Registered' %} selected {% endif %}>Not Registered</option>
+                                            <option value="Other" {% if firm_info.business_info.firm_registration_type == 'Other' %} selected {% endif %}>Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5" id="companydoc_div" style="display: none;">
+                                    <div style="display: none;" id="registration_certificate_div">
+                                        <div
+                                            class="d-flex align-items-center flex-wrap row-gap-3 bg-light w-100 rounded p-2">
+                                            <div class="profile-upload">
+                                                <div class="mb-2">
+                                                    <h6 class="mb-1">Upload Registration Certificate</h6>
+                                                </div>
+                                                <div class="profile-uploader d-flex align-items-center">
+                                                    <div class="drag-upload-btn btn-sm btn btn-sm btn-sm btn-primary me-2">
+                                                        Upload
+                                                        <input type="file" class="form-control image-sign"
+                                                            name="reg_certificate">
+                                                    </div>
+                                                    <a href="javascript:void(0);"
+                                                        class="btn btn-sm btn-light btn-sm">Cancel</a>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3" id="docinfo_div" style="display: none;">
+                                        <label class="form-label">Document <span class="text-danger"> *</span></label>
+                                        <select class="select" name="doc_type" id="doc_type"
+                                            onchange='CheckDocType(this.value);'>
+                                            <option value="">Select</option>
+                                            <option value="PAN">PAN</option>
+                                            <option value="AADHAAR">AADHAAR</option>
+                                        </select>
+                                    </div>
+
+
+                                </div>
+                                <div class="col-md-12" {% if firm_info.business_info.firm_type != 'Other' %} style="display: none;" {% endif %} id="write_about_business_div">
+                                    <div class="mb-3">
+                                        <label class="form-label">Other (Write about your firm) <span
+                                                class="text-danger">
+                                                *</span></label>
+                                        <textarea class="form-control" name="about_firm">{{firm_info.business_info.about_firm}}</textarea>
+                                    </div>
+                                </div>
+                                <div id="pancard_div" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">PAN Number <span class="text-danger">
+                                                        *</span></label>
+                                                <input type="text" class="form-control" name="pan_number" value="{{firm_info.business_info.pan_number}}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div
+                                                class="d-flex align-items-center flex-wrap row-gap-3 bg-light w-100 rounded p-2">
+                                                <div class="profile-upload">
+                                                    <div class="mb-2">
+                                                        <h6 class="mb-1">Upload PAN Front</h6>
+                                                    </div>
+                                                    <div class="profile-uploader d-flex align-items-center">
+                                                        <div class="drag-upload-btn btn-sm btn btn-sm btn-sm btn-primary me-2">
+                                                            Upload
+                                                            <input type="file" class="form-control image-sign"
+                                                                name="pan_front">
+                                                        </div>
+                                                        <a href="javascript:void(0);"
+                                                            class="btn btn-sm btn-light btn-sm">Cancel</a>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div
+                                                class="d-flex align-items-center flex-wrap row-gap-3 bg-light w-100 rounded p-2">
+                                                <div class="profile-upload">
+                                                    <div class="mb-2">
+                                                        <h6 class="mb-1">Upload PAN Back</h6>
+                                                    </div>
+                                                    <div class="profile-uploader d-flex align-items-center">
+                                                        <div class="drag-upload-btn btn-sm btn btn-sm btn-sm btn-primary me-2">
+                                                            Upload
+                                                            <input type="file" class="form-control image-sign"
+                                                                name="pan_back">
+                                                        </div>
+                                                        <a href="javascript:void(0);"
+                                                            class="btn btn-sm btn-light btn-sm">Cancel</a>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="aadhaarcard_div" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Aadhaar Number <span class="text-danger">
+                                                        *</span></label>
+                                                <input type="text" class="form-control" name="aadhaar_number" value="{{firm_info.business_info.aadhaar_number}}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div
+                                                class="d-flex align-items-center flex-wrap row-gap-3 bg-light w-100 rounded p-2">
+                                                <div class="profile-upload">
+                                                    <div class="mb-2">
+                                                        <h6 class="mb-1">Upload Aadhaar Front</h6>
+                                                    </div>
+                                                    <div class="profile-uploader d-flex align-items-center">
+                                                        <div class="drag-upload-btn btn-sm btn btn-sm btn-sm btn-primary me-2">
+                                                            Upload
+                                                            <input type="file" class="form-control image-sign"
+                                                                name="aadhaar_front">
+                                                        </div>
+                                                        <a href="javascript:void(0);"
+                                                            class="btn btn-sm btn-light btn-sm">Cancel</a>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div
+                                                class="d-flex align-items-center flex-wrap row-gap-3 bg-light w-100 rounded p-2">
+                                                <div class="profile-upload">
+                                                    <div class="mb-2">
+                                                        <h6 class="mb-1">Upload Aadhaar Back</h6>
+                                                    </div>
+                                                    <div class="profile-uploader d-flex align-items-center">
+                                                        <div class="drag-upload-btn btn-sm btn btn-sm btn-sm btn-primary me-2">
+                                                            Upload
+                                                            <input type="file" class="form-control image-sign"
+                                                                name="aadhaar_back">
+                                                        </div>
+                                                        <a href="javascript:void(0);"
+                                                            class="btn btn-sm btn-light btn-sm">Cancel</a>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12" id="tax_type_div">
+                                    <div class="mb-3 ">
+                                        <label class="form-label">Tax Type <span class="text-danger"> *</span></label>
+                                        <select class="select" name="tax_type" onchange='CheckTaxType(this.value);'
+                                            required>
+                                            <option value="">Select</option>
+                                            <option value="GST" {% if firm_info.business_info.tax_type == 'GST' %} selected {% endif %}>GST</option>
+                                            <option value="Non GST" {% if firm_info.business_info.tax_type == 'Non GST' %} selected {% endif %}>Non GST</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4" id="gstnumber_div" style="display: none;">
+                                    <div class="mb-3">
+                                        <label class="form-label">GST Number <span class="text-danger"> *</span></label>
+                                        <input type="text" class="form-control" name="gst_number" value="{{firm_info.business_info.gst_number}}"/>
+                                        <!-- pattern="^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$" -->
+                                    </div>
+                                </div>
+                                <div class="col-md-5" id="gstcertificate_div" style="display: none;">
+                                    <div
+                                        class="d-flex align-items-center flex-wrap row-gap-3 bg-light w-100 rounded p-2">
+                                        <div class="profile-upload">
+                                            <div class="mb-2">
+                                                <h6 class="mb-1">Upload GST Certificate</h6>
+                                            </div>
+                                            <div class="profile-uploader d-flex align-items-center">
+                                                <div class="drag-upload-btn btn-sm btn btn-sm btn-sm btn-primary me-2">
+                                                    Upload
+                                                    <input type="file" class="form-control image-sign"
+                                                        name="gst_certificate">
+                                                </div>
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-light btn-sm">Cancel</a>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border-bottom mt-2 mb-3"></div>
+                                <div class="col-md-12">
+                                    <div>
+                                        <h6 class="mb-3"><i class="fa fa-info-circle"></i> Owner Information</h6>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Founder / Co-Founder Name <span class="text-danger">
+                                                *</span></label>
+                                        <input type="text" class="form-control" name="owner_name" value="{{firm_info.business_owner_info.owner_name}}" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Contact Number <span class="text-danger">
+                                                *</span></label>
+                                        <input type="number" class="form-control" name="owner_contact_number"
+                                            value="{{firm_info.business_owner_info.contact_number}}" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Email Id <span class="text-danger"> *</span></label>
+                                        <input type="email" class="form-control" name="owner_email" value="{{firm_info.business_owner_info.email_id}}" required />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 d-flex"></div>
+</div>
+<!-- /Page Content -->
+{% include 'inc/footer.html' %}

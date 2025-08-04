@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-@&d@nxp(**bg+h^x0+5p@&x+xaevw3%*etc$1t+js1%6(0)y!3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'projectapp.wsgi.application'
 DATABASES = {
     'default': {
          'ENGINE': 'django.db.backends.mysql',  
-         'NAME': 'projectapp_pydb',  
+         'NAME': 'garnishment_db',  
          'USER': 'root',  
          'PASSWORD': '',  
          'HOST': '127.0.0.1',  

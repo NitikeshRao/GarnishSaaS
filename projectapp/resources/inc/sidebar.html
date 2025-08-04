@@ -55,25 +55,25 @@
         </div>
         <div class="d-flex align-items-center justify-content-between menu-item mb-3">
             <div class="me-3">
-                <a href="calendar.html" class="btn btn-menubar">
+                <a href="calendar.html" class="btn btn-sm btn-menubar">
                     <i class="ti ti-layout-grid-remove"></i>
                 </a>
             </div>
             <div class="me-3">
-                <a href="chat.html" class="btn btn-menubar position-relative">
+                <a href="chat.html" class="btn btn-sm btn-menubar position-relative">
                     <i class="ti ti-brand-hipchat"></i>
                     <span
                         class="badge bg-info rounded-pill d-flex align-items-center justify-content-center header-badge">5</span>
                 </a>
             </div>
             <div class="me-3 notification-item">
-                <a href="activity.html" class="btn btn-menubar position-relative me-1">
+                <a href="activity.html" class="btn btn-sm btn-menubar position-relative me-1">
                     <i class="ti ti-bell"></i>
                     <span class="notification-status-dot"></span>
                 </a>
             </div>
             <div class="me-0">
-                <a href="email.html" class="btn btn-menubar">
+                <a href="email.html" class="btn btn-sm btn-menubar">
                     <i class="ti ti-message"></i>
                 </a>
             </div>
@@ -97,11 +97,13 @@
                 </li>
 
                 <li class="menu-title"><span>Modules</span></li>
-                <li>
+
+
+                <li style="margin-bottom: -18px !important;">
                     <ul>
                         <li class="submenu">
                             <a href="javascript:void(0);"
-                                class="{% if request.resolver_match.url_name == 'companies' or request.resolver_match.url_name == 'garnish-employee-calculator'%} active subdrop {% endif %}">
+                                class="{% if request.resolver_match.url_name == 'companies' %} active subdrop {% endif %}">
                                 <i class="ti ti-layout-grid-add"></i><span>Management Modules</span>
                                 <span class="menu-arrow"></span>
                             </a>
@@ -109,17 +111,43 @@
                                 <li><a href="{% url 'companies' 'list' %}"
                                         class="{% if request.resolver_match.url_name == 'companies' %} active {% endif %}">Companies
                                         / Firms</a></li>
-                                <li class="submenu submenu-two">
-                                    <a href="javascript:void(0);"
-                                        class="{% if request.resolver_match.url_name == 'garnish-employee-calculator' %} active subdrop {% endif %}">Garnish Processing<span class="menu-arrow inside-submenu"></span></a>
-                                    <ul>
-                                        <li><a href="{% url 'garnish-employee-calculator' %}"
-                                                class="{% if request.resolver_match.url_name == 'garnish-employee-calculator' %} active {% endif %}">Employee Calculator</a></li>
-                                    </ul>
-                                </li>
                             </ul>
                         </li>
                     </ul>
+                </li>
+                <li>
+                    <ul>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"
+                                class="{% if request.resolver_match.url_name == 'garnishment-calculator' or request.resolver_match.url_name == 'batch-processing' %} active subdrop {% endif %}">
+                                <i class="ti ti-server"></i><span>Garnish
+                                    Processing</span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <ul>
+                                <li><a href="{% url 'garnishment-calculator' %}"
+                                        class="{% if request.resolver_match.url_name == 'garnishment-calculator' %} active {% endif %}">Garnishment
+                                        Calculator</a></li>
+                                <li><a href="{% url 'batch-processing' %}"
+                                        class="{% if request.resolver_match.url_name == 'batch-processing' %} active {% endif %}">Batch
+                                        Processing</a></li>
+                                <li class="submenu submenu-two">
+                                    <a href="javascript:void(0);">Garnish Rules<span
+                                            class="menu-arrow inside-submenu"></span></a>
+                                    <ul>
+                                        <li><a href="{% url 'child-support-rules' %}">Child Support Rules</a></li>
+                                        <li><a href="javascript:void(0);">State Tax Levy Rules</a></li>
+                                        <li><a href="javascript:void(0);">Creditor Debt Rules</a></li>
+                                        <li><a href="javascript:void(0);">Fees Rules</a></li>
+                                    </ul>
+                                </li>
+
+                            </ul>
+                        </li>
+
+                    </ul>
+                </li>
+
                 </li>
                 <li class="menu-title"><span>Configurations</span></li>
                 <li>
