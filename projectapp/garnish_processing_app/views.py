@@ -48,6 +48,54 @@ def childSupportRules(request):
         if request.method == 'POST':
             return HttpResponse('i am post method of child-support-rules')
         else:
-            return render(request,'garnish-process-app/garnish-rules/child-support/index.html')
+            us_states = [
+                'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
+                'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
+                'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan',
+                'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+                'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio',
+                'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
+                'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
+                'Wisconsin', 'Wyoming'
+            ]
+            return render(request,'garnish-process-app/garnish-rules/child-support/index.html', {'states': us_states})
+    else:
+        return HttpResponseRedirect(reverse('secure-login'))
+    
+def stateTaxLevyRules(request):    
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            return HttpResponse('i am post method of state-tax-levy-rules')
+        else:
+            us_states = [
+                'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
+                'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
+                'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan',
+                'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+                'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio',
+                'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
+                'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
+                'Wisconsin', 'Wyoming'
+            ]
+            return render(request,'garnish-process-app/garnish-rules/state-tax-levy/index.html', {'states': us_states})
+    else:
+        return HttpResponseRedirect(reverse('secure-login'))
+
+def creditorDeptRules(request):    
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            return HttpResponse('i am post method of state-tax-levy-rules')
+        else:
+            us_states = [
+                'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
+                'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
+                'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan',
+                'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+                'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio',
+                'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
+                'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
+                'Wisconsin', 'Wyoming'
+            ]
+            return render(request,'garnish-process-app/garnish-rules/creditor-dept/index.html', {'states': us_states})
     else:
         return HttpResponseRedirect(reverse('secure-login'))

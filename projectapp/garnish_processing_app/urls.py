@@ -10,4 +10,6 @@ urlpatterns = [
 
     #======================== Rules Manager ========================
     path('child-support-rules', views.childSupportRules, name='child-support-rules'),
+    path('state-tax-levy-rules', views.stateTaxLevyRules, name='state-tax-levy-rules'),
+    path('creditor-dept-rules', views.creditorDeptRules, name='creditor-dept-rules'),
 ]

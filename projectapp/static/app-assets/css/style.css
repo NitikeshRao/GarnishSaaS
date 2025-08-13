@@ -8085,7 +8085,7 @@ fieldset:disabled .btn {
 }
 
 .form-select:focus {
-  border-color: rgba(var(#e0602b), 0.5);
+  border-color: #c7673b;
   outline: 0;
   box-shadow: none;
 }
@@ -13006,7 +13006,7 @@ svg.collapse-open, svg.collapse-close {
   border-radius: 5px;
 }
 .modal .modal-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
 }
 @media (max-width: 991.98px) {

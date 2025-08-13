@@ -1,0 +1,308 @@
+{
+    "success": true,
+    "message": "All data fetched successfully",
+    "status_code": 200,
+    "data": [
+        {
+            "id": 1,
+            "state": "california",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "25% of disposable earning"
+        },
+        {
+            "id": 2,
+            "state": "illinois",
+            "deduction_basis": "gross pay",
+            "withholding_limit": "15",
+            "withholding_limit_rule": "15% of gross pay"
+        },
+        {
+            "id": 3,
+            "state": "kansas",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "100",
+            "withholding_limit_rule": "100% of disposable earning less support and other wage attachments with priority"
+        },
+        {
+            "id": 4,
+            "state": "kentucky",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "100",
+            "withholding_limit_rule": "100% of disposable earning less weekly exemptions for the following:\n$125 for the employee - taxpayer\n\n$60 for each person the employee provides more than 50% of support &\n\nSupport owed by the court"
+        },
+        {
+            "id": 5,
+            "state": "louisiana",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "25% of disposable earning"
+        },
+        {
+            "id": 6,
+            "state": "maryland",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "25% of disposable earning less payments for medical insurance premiums"
+        },
+        {
+            "id": 7,
+            "state": "michigan",
+            "deduction_basis": null,
+            "withholding_limit": null,
+            "withholding_limit_rule": null
+        },
+        {
+            "id": 8,
+            "state": "colorado",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "20",
+            "withholding_limit_rule": "Lesser of 20% of your disposable earnings for that week or the amount of your disposable earnings for the week that exceeds 40 times the state or federal minimum wage, whichever is higher"
+        },
+        {
+            "id": 9,
+            "state": "connecticut",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "25% of disposable earning"
+        },
+        {
+            "id": 10,
+            "state": "hawaii",
+            "deduction_basis": "gross pay",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "25% of gross pay"
+        },
+        {
+            "id": 11,
+            "state": "idaho",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "25% of disposable earning"
+        },
+        {
+            "id": 12,
+            "state": "massachusetts",
+            "deduction_basis": "gross pay",
+            "withholding_limit": "15",
+            "withholding_limit_rule": "lesser of 15% of gross wages or the amount by which disposable income exceeds 50 times the state's minimum wage."
+        },
+        {
+            "id": 13,
+            "state": "arkansas",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "25% of disposable earning"
+        },
+        {
+            "id": 14,
+            "state": "indiana",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "Lesser of 25% of disposable earnings per week or the amount by which the disposable income exceeds 30 times the federal minimum wage."
+        },
+        {
+            "id": 15,
+            "state": "iowa",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "Lesser of 25% of disposable earnings per week or the amount by which the disposable income exceeds 30 times the federal minimum wage."
+        },
+        {
+            "id": 16,
+            "state": "minnesota",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "Lesser of 25% of disposable earning or the amount by which disposable earning exceed 40 times the $7.25 federal minimum wage (FMW)"
+        },
+        {
+            "id": 17,
+            "state": "georgia",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "Lesser of 25% of disposable earnings per week or the amount by which the disposable income exceeds 30 times the federal minimum wage."
+        },
+        {
+            "id": 18,
+            "state": "maine",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "Lesser of 25% of disposable earnings per week or the amount by which the disposable income exceeds 30 times the federal minimum wage."
+        },
+        {
+            "id": 19,
+            "state": "mississippi",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "Generally 25% of disposable earning but may be greater, \nWithhold concurrently with support orders\nThe state requires 100% of final check-up to full amount due"
+        },
+        {
+            "id": 20,
+            "state": "montana",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "25% of disposable earning"
+        },
+        {
+            "id": 21,
+            "state": "nebraska",
+            "deduction_basis": null,
+            "withholding_limit": null,
+            "withholding_limit_rule": "Net Pay less exemptions"
+        },
+        {
+            "id": 22,
+            "state": "nevada",
+            "deduction_basis": null,
+            "withholding_limit": null,
+            "withholding_limit_rule": "No state tax"
+        },
+        {
+            "id": 23,
+            "state": "new hampshire",
+            "deduction_basis": null,
+            "withholding_limit": null,
+            "withholding_limit_rule": "Follow Instructions"
+        },
+        {
+            "id": 24,
+            "state": "north carolina",
+            "deduction_basis": "gross pay",
+            "withholding_limit": "10",
+            "withholding_limit_rule": "10% of gross pay"
+        },
+        {
+            "id": 25,
+            "state": "ohio",
+            "deduction_basis": null,
+            "withholding_limit": null,
+            "withholding_limit_rule": "Follow Instructions"
+        },
+        {
+            "id": 26,
+            "state": "oklahoma",
+            "deduction_basis": null,
+            "withholding_limit": null,
+            "withholding_limit_rule": "No data available"
+        },
+        {
+            "id": 27,
+            "state": "oregon",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "25% of disposable earning"
+        },
+        {
+            "id": 28,
+            "state": "pennsylvania",
+            "deduction_basis": "gross pay",
+            "withholding_limit": "10",
+            "withholding_limit_rule": "10% of gross wages"
+        },
+        {
+            "id": 29,
+            "state": "rhode island",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "25% of disposable earning with an exemption amount of $75 for the debtor or and $25 for each declared exemption"
+        },
+        {
+            "id": 30,
+            "state": "south carolina",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "25% of disposable earning if the Dist Code in the Notice of Levy is AGYC\n25% of gross pay if the Dist Code in the Notice of Levy is such as IIT, SAL or EWG"
+        },
+        {
+            "id": 31,
+            "state": "utah",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "25% of disposable earning"
+        },
+        {
+            "id": 32,
+            "state": "virginia",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "100",
+            "withholding_limit_rule": "100% of disposable earning"
+        },
+        {
+            "id": 33,
+            "state": "west virginia",
+            "deduction_basis": null,
+            "withholding_limit": null,
+            "withholding_limit_rule": "Net Pay less 30 times FMW plus $25 for each declared dependent"
+        },
+        {
+            "id": 34,
+            "state": "wisconsin",
+            "deduction_basis": "gross pay",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "25% of gross pay"
+        },
+        {
+            "id": 35,
+            "state": "missouri",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "100",
+            "withholding_limit_rule": "100% of disposable earning"
+        },
+        {
+            "id": 36,
+            "state": "new jersey",
+            "deduction_basis": "gross pay",
+            "withholding_limit": "10",
+            "withholding_limit_rule": "10% of gross pay if the debtor's income is below 250% of the poverty level 25% of gross pay if the income of the debtor above 250% of the poverty level"
+        },
+        {
+            "id": 37,
+            "state": "washington",
+            "deduction_basis": null,
+            "withholding_limit": null,
+            "withholding_limit_rule": "Washington does not have a state income tax."
+        },
+        {
+            "id": 38,
+            "state": "new mexico",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "Lesser of 25% of disposable earning or an amount each week equal to 40 times the federal minimum wage"
+        },
+        {
+            "id": 39,
+            "state": "new york",
+            "deduction_basis": "gross pay",
+            "withholding_limit": "10",
+            "withholding_limit_rule": "Lesser of 10% of your gross wages or 25% of your disposable income to the extent that this amount exceeds 30 times the federal or state minimum wage (whichever is greater). If your disposable income is less than 30 times the minimum wage, it can't be garnished at all"
+        },
+        {
+            "id": 40,
+            "state": "vermont",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "Lesser of 25% of disposable earning or the amount by which disposable earning exceeds 30 times the Federal Minimum Wage"
+        },
+        {
+            "id": 41,
+            "state": "delaware",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "15",
+            "withholding_limit_rule": "15% of disposable earning"
+        },
+        {
+            "id": 42,
+            "state": "alabama",
+            "deduction_basis": "gross pay",
+            "withholding_limit": "25",
+            "withholding_limit_rule": "25% of Gross Pay"
+        },
+        {
+            "id": 43,
+            "state": "arizona",
+            "deduction_basis": "disposable earning",
+            "withholding_limit": "10",
+            "withholding_limit_rule": "Lesser of 10% of disposable earnings, or 60 times the highest applicable federal, state or local minimum wage."
+        }
+    ]
+}
