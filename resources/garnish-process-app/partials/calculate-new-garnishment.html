@@ -1,0 +1,153 @@
+{% load static %}
+<!-- Add Company -->
+<div class="modal fade" id="calculate_new_garnishment">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Garnishment Calculator</h4>
+                <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="ti ti-x"></i>
+                </button>
+            </div>
+            <form id="GarnishmentCalculatorForm" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body pb-0">
+                    <div class="row">
+                        <!-- Common Fields -->
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Garnishment Type <span class="text-danger">*</span></label>
+                                <select class="form-select" name="garnishment_type" required>
+                                    <option value="">Select</option>
+                                    <option value="Child Support">Child Support</option>
+                                    <option value="Student Loan Default">Student Loan Default</option>
+                                    <option value="Creditor Debt">Creditor Debt</option>
+                                    <option value="Federal Tax Levy">Federal Tax Levy</option>
+                                    <option value="State Tax Levy">State Tax Levy</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Work State <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="work_state"
+                                    placeholder="Enter state of work" required />
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Pay Period <span class="text-danger">*</span></label>
+                                <select class="form-select" name="pay_period" required>
+                                    <option value="">Select</option>
+                                    <option value="Weekly">Weekly</option>
+                                    <option value="Biweekly">Biweekly</option>
+                                    <option value="Monthly">Monthly</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Fields Container -->
+                    <div class="row" id="dynamic-fields"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-light me-2" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-primary">Calculate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Z-index fix for Flatpickr -->
+<style>
+  .flatpickr-calendar {
+    z-index: 1056 !important;
+  }
+</style>
+
+<!-- Script -->
+<script>
+  const fieldSets = {
+    'Child Support': [
+      'Gross Pay', 'Total Mandatory Deductions', 'Support Second Family', 'Arrears Greater Than 12 Weeks',
+      'Ordered Amount', 'Arrear Amount'
+    ],
+    'Student Loan Default': [
+      'No. of Student Default Loan', 'Gross Pay', 'Total Mandatory Deductions'
+    ],
+    'Creditor Debt': [
+      'Filing Status', 'No. of Dependent Child', 'Gross Pay', 'Consumer Debt', 'Non-Consumer Debt',
+      'Garn-Start Date', 'Total Mandatory Deductions', 'Net Pay', 'No. of Exemptions (Including Self)'
+    ],
+    'Federal Tax Levy': [
+      'Filing Status', 'Age', 'Net Pay', 'Is Blind', 'Statement of Exemption Received Date',
+      'No. of Exemptions (Including Self)', 'Has Spouse', 'Is Spouse Blind', 'Spouse Age'
+    ],
+    'State Tax Levy': [
+      'Garn Start Date', 'Gross Pay', 'Total Mandatory Deductions', 'Net Pay', 'No. of Exemptions (Including Self)'
+    ]
+  };
+
+  const garnishmentTypeSelect = document.querySelector('[name="garnishment_type"]');
+  const container = document.getElementById('dynamic-fields');
+
+  function initializeFlatpickr() {
+    flatpickr(".flatpickr", {
+      dateFormat: "Y-m-d"
+    });
+  }
+
+  garnishmentTypeSelect.addEventListener('change', function () {
+    const type = this.value;
+    container.innerHTML = '';
+
+    if (fieldSets[type]) {
+      fieldSets[type].forEach(label => {
+        const name = label.toLowerCase().replace(/[^a-z0-9]/gi, '_');
+        const isDate = /date/i.test(label);
+        const isNumeric = /amount|age|no\.|net pay|gross pay|deductions|exemptions|loan/i.test(label);
+
+        // Force specific fields to boolean
+        const isSwitch = /is |has |support|arrears/i.test(label) ||
+          (type === 'Creditor Debt' && ['Consumer Debt', 'Non-Consumer Debt'].includes(label));
+
+        if (isSwitch) {
+          container.innerHTML += `
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label d-block">${label}</label>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" id="switch_${name}" name="${name}">
+                  <label class="form-check-label" for="switch_${name}">${label}</label>
+                </div>
+              </div>
+            </div>`;
+        } else if (isDate) {
+          container.innerHTML += `
+            <div class="col-md-6 col-12 mb-3">
+              <label class="form-label">${label}</label>
+              <input type="text" class="form-control flatpickr" name="${name}" placeholder="YYYY-MM-DD" />
+            </div>`;
+        } else {
+          container.innerHTML += `
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label">${label}</label>
+                <input type="${isNumeric ? 'number' : 'text'}" class="form-control" name="${name}" placeholder="Enter ${label}" />
+              </div>
+            </div>`;
+        }
+      });
+      initializeFlatpickr(); // Re-initialize after rendering fields
+    }
+  });
+
+  document.getElementById('calculate_new_garnishment').addEventListener('shown.bs.modal', function () {
+    initializeFlatpickr();
+  });
+</script>
+
