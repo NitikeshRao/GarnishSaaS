@@ -13,11 +13,40 @@
     }
 
     #jsonEditor,
-    #excelEditor {
+    #excelEditor,
+    #calculationEditor {
         width: 100%;
         height: 500px;
         border: 1px solid #ddd;
         font-size: 14px;
+    }
+    
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .card-header .btn {
+        margin: 0;
+    }
+    
+    .card-header h6 {
+        margin: 0;
+        line-height: 1.2;
+    }
+    
+    .card {
+        height: 600px;
+        margin-bottom: 20px;
+    }
+    
+    .card-body {
+        height: calc(100% - 50px);
+        padding: 0 !important;
     }
 </style>
 <div class="content">
@@ -43,7 +72,7 @@
                             <label class="form-label">Upload File <span class="text-danger">*</span></label>
                             <span class="badge badge-secondary">Please upload the Excel / JSON file to get the
                                 result....</span>
-                            <input type="file" class="form-control" name="batch_file" required>
+                            <input type="file" class="form-control" name="file" required>
                         </div>
                         <div class="col-md-4 text-end" style="margin-top: 27px;" id="btnAction">
                             <button type="submit" class="btn btn-sm btn-primary"><i class="ti ti-transfer"></i>
@@ -54,18 +83,38 @@
                         </div>
 
                         <!-- Excel Editor -->
-                        <div class="col-md-12" id="forExcel">
-                            <div id="excelEditor">{ "success": true, "message": "All data fetched successfully", "status_code": 200 }</div>
+                        <div class="col-md-6" id="forExcel">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="card-title">Converted JSON Data</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="excelEditor"></div>
+                                </div>
+                            </div>
                             <!-- Hidden field -->
                             <textarea name="excel_data" id="excelInput" style="display:none;"></textarea>
                         </div>
 
                         <!-- JSON Editor -->
-                        <div class="col-md-12" id="forJson">
+                        <div class="col-md-6" id="forJson">
                             <div id="jsonEditor">{ "success": true, "message": "All data fetched successfully", "status_code": 200 }</div>
                             <!-- Hidden field -->
                             <textarea name="json_data" id="jsonInput" style="display:none;"></textarea>
                         </div>
+
+                        <!-- Calculation Results -->
+                        <div class="col-md-6" id="calculationResults">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="card-title">Calculation Results</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="calculationEditor"></div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </form>
             </div>
@@ -78,19 +127,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.31.1/ace.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const fileInput = document.querySelector('input[name="batch_file"]');
+        const fileInput = document.querySelector('input[name="file"]');
         const forExcel = document.getElementById('forExcel');
         const forJson = document.getElementById('forJson');
         const invalidFile = document.getElementById('invalidFile');
         const btnAction = document.getElementById('btnAction');
         const jsonInput = document.getElementById('jsonInput');
         const excelInput = document.getElementById('excelInput');
+        const calculationResults = document.getElementById('calculationResults');
 
         // Initially hide
         forExcel.style.display = "none";
         forJson.style.display = "none";
         invalidFile.style.display = "none";
         btnAction.style.display = "none";
+        calculationResults.style.display = "none";
 
         // Ace Editors Init
         var jsonEditor = ace.edit("jsonEditor");
@@ -99,7 +150,33 @@
 
         var excelEditor = ace.edit("excelEditor");
         excelEditor.setTheme("ace/theme/monokai"); // Light theme
-        excelEditor.session.setMode("ace/mode/text"); // Plain text for CSV/Excel
+        excelEditor.session.setMode("ace/mode/json"); // JSON mode for results display
+
+        // Initialize calculation editor
+        var calculationEditor = ace.edit("calculationEditor");
+        calculationEditor.setTheme("ace/theme/monokai");
+        calculationEditor.session.setMode("ace/mode/json");
+        calculationEditor.setValue('// Calculation results will appear here...');
+
+        // Check if there are results and populate the editor
+        var resultsData = '{{ results|escapejs }}';
+        console.log('Results data from Django:', resultsData);
+        if (resultsData && resultsData !== '') {
+            console.log('Setting editor value and triggering calculation...');
+            excelEditor.setValue(resultsData);
+            excelEditor.clearSelection();
+            forExcel.style.display = "block";
+            calculationResults.style.display = "block"; // Show calculation results section
+            btnAction.style.display = "block"; // Show buttons when results are available
+            
+            // Automatically trigger calculation when JSON data is available
+            setTimeout(() => {
+                console.log('Auto-triggering calculation...');
+                calculateGarnishment();
+            }, 1000); // Increased delay to ensure editor is fully loaded
+        } else {
+            console.log('No results data available');
+        }
 
         // On file change
         fileInput.addEventListener("change", function () {
@@ -113,9 +190,11 @@
             forJson.style.display = "none";
             invalidFile.style.display = "none";
             btnAction.style.display = "none";
+            calculationResults.style.display = "none";
 
             if (["xls", "xlsx", "csv"].includes(ext)) {
                 forExcel.style.display = "block";
+                calculationResults.style.display = "block"; // Show calculation results section
                 btnAction.style.display = "block";
             } else if (ext === "json") {
                 forJson.style.display = "block";
@@ -127,9 +206,72 @@
 
         // Sync editors before submit
         document.querySelector("form").addEventListener("submit", function () {
-            jsonInput.value = jsonEditor.getValue();
-            excelInput.value = excelEditor.getValue();
+            if (jsonInput) {
+                jsonInput.value = jsonEditor.getValue();
+            }
+            if (excelInput) {
+                excelInput.value = excelEditor.getValue();
+            }
         });
+
+        // Function to calculate garnishment
+        function calculateGarnishment() {
+            try {
+                // Get the JSON data from the excel editor
+                const jsonData = excelEditor.getValue();
+                const parsedData = JSON.parse(jsonData);
+                
+                // Validate that we have the required data
+                if (!parsedData.batch_id) {
+                    excelEditor.setValue('// Error: Invalid data structure\n// Required field: batch_id');
+                    return;
+                }
+                
+                // Show loading state in the editor
+                calculationEditor.setValue('// Calculating garnishment amounts...\n// Please wait...\n\nProcessing batch: ' + parsedData.batch_id);
+                
+                console.log('Sending data to API:', parsedData);
+                
+                // Make API call to PostCalculationView
+                fetch('/processor/calculate/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    },
+                    body: JSON.stringify(parsedData)
+                })
+                .then(response => {
+                    console.log('API Response status:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('API Response data:', data);
+                    // Display results in the calculation editor
+                    const formattedResults = JSON.stringify(data, null, 2);
+                    calculationEditor.setValue(formattedResults);
+                    calculationEditor.clearSelection();
+                    
+                    // Also update the hidden input field for form submission
+                    if (excelInput) {
+                        excelInput.value = formattedResults;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    calculationEditor.setValue(`// Error occurred during calculation:\n${error.message}\n\nPlease check:\n1. Server is running\n2. API endpoint is accessible\n3. Data format is correct`);
+                    calculationResults.style.display = "block";
+                });
+                
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                calculationEditor.setValue(`// Error: Invalid JSON data\n${error.message}\n\nPlease ensure the JSON data is properly formatted.`);
+                calculationResults.style.display = "block";
+            }
+        }
     });
 </script>
 {% include 'inc/footer.html' %}

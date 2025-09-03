@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'master_app',
     'company_app',
     'garnish_processing_app',
+    'processor',
+    'user_app',
     'rest_framework',  # DRF for building APIs
 
 ]
@@ -90,10 +92,11 @@ WSGI_APPLICATION = 'projectapp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
          'ENGINE': 'django.db.backends.mysql',  
-         'NAME': 'garnishment_db',  
+         'NAME': 'garnishedge_saas',  
          'USER': 'root',  
          'PASSWORD': '',  
          'HOST': '127.0.0.1',  

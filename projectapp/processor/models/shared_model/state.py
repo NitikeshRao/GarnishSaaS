@@ -1,0 +1,13 @@
+from django.db import models
+
+class GarnishmentState(models.Model):
+    state_code = models.CharField(max_length=100,unique=True)
+    state = models.CharField(max_length=100, null=True, blank=True,db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    class Meta:
+        db_table = "garnishment_state"
+        verbose_name ="state"
+
+    def __str__(self):
+        return f"{self.state} ({self.state_code})"

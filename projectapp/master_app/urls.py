@@ -12,6 +12,10 @@ urlpatterns = [
     #======================== Garnish Processing Manager ========================
 
     path('garnish-process/', include('garnish_processing_app.urls')),
+    
+    #======================== Processor Manager ========================
+    
+    path('processor/', include('processor.urls')),
 
     #======================== ADDONS ROUTES ========================
 
