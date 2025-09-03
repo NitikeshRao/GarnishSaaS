@@ -20,7 +20,7 @@
                                 <select class="form-select" name="garnishment_type" required>
                                     <option value="">Select</option>
                                     <option value="Child Support">Child Support</option>
-                                    <option value="Student Loan Default">Student Loan Default</option>
+                                    <option value="Student Default Loan">Student Default Loan</option>
                                     <option value="Creditor Debt">Creditor Debt</option>
                                     <option value="Federal Tax Levy">Federal Tax Levy</option>
                                     <option value="State Tax Levy">State Tax Levy</option>
@@ -51,10 +51,66 @@
 
                     <!-- Dynamic Fields Container -->
                     <div class="row" id="dynamic-fields"></div>
+
+                    <!-- Results Container -->
+                    <div class="row mt-3" id="calculation-results" style="display: none;">
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <h6>Calculation Results:</h6>
+                                
+                                <!-- Summary Information -->
+                                <div class="row mb-3">
+                                    <div class="col-md-3">
+                                        <strong>Batch ID:</strong> <span id="summary-batch-id"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong>Status:</strong> <span id="summary-status"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong>Total Cases:</strong> <span id="summary-total-cases"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong>Successful Cases:</strong> <span id="summary-successful-cases"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Main Results Table -->
+                                <div class="table-responsive">
+                                    <table class="table table-dark table-striped table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>DISPOSABLE EARNINGS</th>
+                                                <th>ALLOWABLE DISPOSABLE EARNINGS</th>
+                                                <th>TOTAL MANDATORY DEDUCTION</th>
+                                                <th>WITHHOLDING AMOUNT</th>
+                                                <th>WITHHOLDING ARREAR</th>
+                                                <th>GARNISHMENT FEES</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="results-table-body">
+                                            <!-- Table rows will be populated here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Additional Details -->
+                                <div class="row mt-3" id="additional-details">
+                                    <!-- Additional details will be populated here -->
+                                </div>
+
+                                <!-- Detailed Results JSON -->
+                                <details class="mt-3">
+                                    <summary><strong>Detailed Results (JSON)</strong></summary>
+                                    <pre class="mt-2 p-2 bg-light rounded" style="font-size: 12px; max-height: 300px; overflow-y: auto;" id="detailed-json"></pre>
+                                </details>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-light me-2" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-warning me-2" id="reset-btn">Reset</button>
                     <button type="submit" class="btn btn-sm btn-primary">Calculate</button>
                 </div>
             </form>
@@ -67,6 +123,23 @@
   .flatpickr-calendar {
     z-index: 1056 !important;
   }
+  
+  /* Multiple loan styling */
+  .table-warning {
+    background-color: rgba(255, 193, 7, 0.1) !important;
+    border-left: 4px solid #ffc107 !important;
+  }
+  
+  .loan-header {
+    background-color: rgba(13, 110, 253, 0.1) !important;
+    border-left: 4px solid #0d6efd !important;
+    font-weight: bold;
+  }
+  
+  .loan-header td {
+    font-weight: bold;
+    color: #0d6efd !important;
+  }
 </style>
 
 <!-- Script -->
@@ -76,7 +149,7 @@
       'Gross Pay', 'Total Mandatory Deductions', 'Support Second Family', 'Arrears Greater Than 12 Weeks',
       'Ordered Amount', 'Arrear Amount'
     ],
-    'Student Loan Default': [
+    'Student Default Loan': [
       'No. of Student Default Loan', 'Gross Pay', 'Total Mandatory Deductions'
     ],
     'Creditor Debt': [
@@ -94,6 +167,7 @@
 
   const garnishmentTypeSelect = document.querySelector('[name="garnishment_type"]');
   const container = document.getElementById('dynamic-fields');
+  const form = document.getElementById('GarnishmentCalculatorForm');
 
   function initializeFlatpickr() {
     flatpickr(".flatpickr", {
@@ -101,13 +175,354 @@
     });
   }
 
+  // Generate random values for ee_id and batch_id
+  function generateRandomId(prefix, length = 6) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = prefix;
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  }
+
+  // Map form data to API payload for Child Support and Student Default Loan
+  function mapFormDataToPayload(formData, garnishmentType) {
+    const payload = {
+      batch_id: generateRandomId('B'),
+      cases: [{
+        ee_id: generateRandomId('EE'),
+        work_state: formData.get('work_state').toLowerCase(),
+        no_of_exemption_including_self: 0,
+        is_multiple_garnishment_type: false,
+        no_of_student_default_loan: garnishmentType == 'Student Default Loan' ? parseInt(formData.get('no_of_student_default_loan') || 0) : 1,
+        pay_period: formData.get('pay_period'),
+        home_state: "California",
+        filing_status: "single",
+        wages: 0,
+        commission_and_bonus: parseFloat(formData.get('gross_pay') || 0),
+        non_accountable_allowances: 0,
+        gross_pay: parseFloat(formData.get('gross_pay') || 0),
+        payroll_taxes: {
+          federal_income_tax: parseFloat(formData.get('total_mandatory_deductions') || 0),
+          social_security_tax: 0,
+          medicare_tax: 0,
+          state_tax: 0,
+          local_tax: 0,
+          union_dues: 0,
+          wilmington_tax: 0,
+          medical_insurance_pretax: 0,
+          industrial_insurance: 0,
+          life_insurance: 0,
+          california_sdi: 0,
+          famli_tax: 0
+        },
+        net_pay: 1900,
+        is_blind: false,
+        statement_of_exemption_received_date: "06-07-2025",
+        garn_start_date: "12-27-2025",
+        non_consumer_debt: false,
+        consumer_debt: false,
+        age: 40,
+        spouse_age: 34,
+        is_spouse_blind: false,
+        support_second_family: garnishmentType === 'Child Support' ? (formData.get('support_second_family') === 'on') : false,
+        no_of_dependent_child: 0,
+        arrears_greater_than_12_weeks: garnishmentType === 'Child Support' ? (formData.get('arrears_greater_than_12_weeks') === 'on') : false,
+        ftb_type: "vehicle_registration",
+        garnishment_data: [
+          {
+            type: garnishmentType === 'Child Support' ? "child_support" : "student_default_loan",
+            data: [
+              {
+                case_id: generateRandomId('C'),
+                ordered_amount: garnishmentType === 'Child Support' ? parseFloat(formData.get('ordered_amount') || 0) : 0,
+                arrear_amount: garnishmentType === 'Child Support' ? parseFloat(formData.get('arrear_amount') || 0) : 0
+              }
+            ]
+          }
+        ],
+        garnishment_orders: [
+          "franchise_tax_board"
+        ]
+      }]
+    };
+    return payload;
+  }
+
+  // Make API call to calculate garnishment
+  async function calculateGarnishment(payload) {
+    try {
+      const response = await fetch('/processor/calculate/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error('Error calculating garnishment:', error);
+      throw error;
+    }
+  }
+
+  // Handle form submission
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const garnishmentType = garnishmentTypeSelect.value;
+    
+    if (garnishmentType === 'Child Support' || garnishmentType === 'Student Default Loan') {
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      
+      try {
+        submitBtn.textContent = 'Calculating...';
+        submitBtn.disabled = true;
+        
+        const formData = new FormData(form);
+        const payload = mapFormDataToPayload(formData, garnishmentType);
+        
+        const result = await calculateGarnishment(payload);
+        
+        // Display results
+        const resultsContainer = document.getElementById('calculation-results');
+        const summaryBatchId = document.getElementById('summary-batch-id');
+        const summaryStatus = document.getElementById('summary-status');
+        const summaryTotalCases = document.getElementById('summary-total-cases');
+        const summarySuccessfulCases = document.getElementById('summary-successful-cases');
+        const resultsTableBody = document.getElementById('results-table-body');
+        const detailedJson = document.getElementById('detailed-json');
+        const additionalDetails = document.getElementById('additional-details');
+
+        summaryBatchId.textContent = result.batch_id || 'N/A';
+        summaryStatus.textContent = result.success ? 'Success' : 'Failed';
+        summaryTotalCases.textContent = result.summary?.total_cases || 0;
+        summarySuccessfulCases.textContent = result.summary?.successful_cases || 0;
+
+        resultsTableBody.innerHTML = ''; // Clear previous table rows
+        additionalDetails.innerHTML = ''; // Clear previous additional details
+
+        if (result.results && result.results.length > 0) {
+          result.results.forEach(caseResult => {
+            // Extract withholding amounts from agency array
+            let withholdingAmounts = [];
+            let withholdingArrear = 'N/A';
+            let garnishmentFees = 'N/A';
+
+            if (caseResult.agency && caseResult.agency.length > 0) {
+              // Extract withholding amounts - handle multiple student loans
+              if (caseResult.agency[0].withholding_amt && caseResult.agency[0].withholding_amt.length > 0) {
+                caseResult.agency[0].withholding_amt.forEach((amt, index) => {
+                  if (amt.student_default_loan !== undefined) {
+                    withholdingAmounts.push({
+                      amount: amt.student_default_loan,
+                      loanNumber: index + 1,
+                      type: 'student_default_loan'
+                    });
+                  } else if (amt.garnishment_amount !== undefined) {
+                    withholdingAmounts.push({
+                      amount: amt.garnishment_amount,
+                      loanNumber: index + 1,
+                      type: 'garnishment'
+                    });
+                  }
+                });
+              }
+              
+              // Extract withholding arrear
+              if (caseResult.agency[1] && caseResult.agency[1].arrear && caseResult.agency[1].arrear.length > 0) {
+                withholdingArrear = caseResult.agency[1].arrear[0].withholding_arrear || 'N/A';
+              }
+            }
+
+            // Extract garnishment fees from er_deduction
+            if (caseResult.er_deduction && caseResult.er_deduction.garnishment_fees) {
+              garnishmentFees = caseResult.er_deduction.garnishment_fees;
+            }
+
+            // If no withholding amounts found, create a default row
+            if (withholdingAmounts.length === 0) {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td>${caseResult.disposable_earning || 'N/A'}</td>
+                <td>${caseResult.allowable_disposable_earning || 'N/A'}</td>
+                <td>${caseResult.total_mandatory_deduction || 'N/A'}</td>
+                <td>N/A</td>
+                <td>${withholdingArrear}</td>
+                <td>${garnishmentFees}</td>
+              `;
+              resultsTableBody.appendChild(row);
+            } else {
+              // Create a row for each withholding amount
+              withholdingAmounts.forEach((withholding, index) => {
+                const row = document.createElement('tr');
+                
+                // For student default loans, show loan number in the first column
+                let firstColumn = caseResult.disposable_earning || 'N/A';
+                if (withholding.type === 'student_default_loan' && withholdingAmounts.length > 1) {
+                  firstColumn = `Loan ${withholding.loanNumber} - ${caseResult.disposable_earning || 'N/A'}`;
+                }
+                
+                row.innerHTML = `
+                  <td>${firstColumn}</td>
+                  <td>${caseResult.allowable_disposable_earning || 'N/A'}</td>
+                  <td>${caseResult.total_mandatory_deduction || 'N/A'}</td>
+                  <td>${withholding.amount}</td>
+                  <td>${withholdingArrear}</td>
+                  <td>${garnishmentFees}</td>
+                `;
+                
+                // Add visual distinction for multiple loans
+                if (withholdingAmounts.length > 1) {
+                  row.classList.add('table-warning');
+                }
+                
+                resultsTableBody.appendChild(row);
+              });
+              
+              // Add a summary row for multiple loans
+              if (withholdingAmounts.length > 1 && withholdingAmounts[0].type === 'student_default_loan') {
+                const totalAmount = withholdingAmounts.reduce((sum, withholding) => sum + withholding.amount, 0);
+                const summaryRow = document.createElement('tr');
+                summaryRow.classList.add('loan-header');
+                summaryRow.innerHTML = `
+                  <td><strong>Total (${withholdingAmounts.length} Loans)</strong></td>
+                  <td>${caseResult.allowable_disposable_earning || 'N/A'}</td>
+                  <td>${caseResult.total_mandatory_deduction || 'N/A'}</td>
+                  <td><strong>${totalAmount.toFixed(2)}</strong></td>
+                  <td>${withholdingArrear}</td>
+                  <td>${garnishmentFees}</td>
+                `;
+                resultsTableBody.appendChild(summaryRow);
+              }
+            }
+
+            // Add specific details for each case if available
+            if (caseResult.garnishment_data && caseResult.garnishment_data.length > 0) {
+              const caseDetails = document.createElement('div');
+              caseDetails.className = 'col-md-6 mb-3';
+              caseDetails.innerHTML = `
+                <div class="card">
+                  <div class="card-header">
+                    <h6 class="mb-0">Case Details for ${caseResult.ee_id || 'N/A'}</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <p><strong>Employee ID:</strong> ${caseResult.ee_id || 'N/A'}</p>
+                        <p><strong>Work State:</strong> ${caseResult.work_state || 'N/A'}</p>
+                        <p><strong>Pay Period:</strong> ${caseResult.pay_period || 'N/A'}</p>
+                        <p><strong>Filing Status:</strong> ${caseResult.filing_status || 'N/A'}</p>
+                        <p><strong>Gross Pay:</strong> ${caseResult.gross_pay || 'N/A'}</p>
+                        <p><strong>Net Pay:</strong> ${caseResult.net_pay || 'N/A'}</p>
+                        <p><strong>Age:</strong> ${caseResult.age || 'N/A'}</p>
+                        <p><strong>Spouse Age:</strong> ${caseResult.spouse_age || 'N/A'}</p>
+                      </div>
+                      <div class="col-md-6">
+                        <p><strong>Student Default Loan:</strong> ${caseResult.no_of_student_default_loan || 'N/A'}</p>
+                        <p><strong>Ordered Amount:</strong> ${caseResult.garnishment_data[0].data[0].ordered_amount || 'N/A'}</p>
+                        <p><strong>Arrear Amount:</strong> ${caseResult.garnishment_data[0].data[0].arrear_amount || 'N/A'}</p>
+                        <p><strong>Support Second Family:</strong> ${caseResult.support_second_family ? 'Yes' : 'No'}</p>
+                        <p><strong>Arrears > 12 Weeks:</strong> ${caseResult.arrears_greater_than_12_weeks ? 'Yes' : 'No'}</p>
+                        <p><strong>Is Blind:</strong> ${caseResult.is_blind ? 'Yes' : 'No'}</p>
+                        <p><strong>Is Spouse Blind:</strong> ${caseResult.is_spouse_blind ? 'Yes' : 'No'}</p>
+                        <p><strong>Dependent Children:</strong> ${caseResult.no_of_dependent_child || 'N/A'}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              `;
+              additionalDetails.appendChild(caseDetails);
+            }
+          });
+        }
+
+        // Set the detailed JSON
+        detailedJson.textContent = JSON.stringify(result.results, null, 2);
+        
+        resultsContainer.style.display = 'block';
+        
+        // Scroll to results
+        resultsContainer.scrollIntoView({ behavior: 'smooth' });
+        
+      } catch (error) {
+        console.error('Calculation failed:', error);
+        
+        // Display error
+        const resultsContainer = document.getElementById('calculation-results');
+        const resultsTableBody = document.getElementById('results-table-body');
+        const detailedJson = document.getElementById('detailed-json');
+        const additionalDetails = document.getElementById('additional-details');
+        
+        // Clear previous content
+        resultsTableBody.innerHTML = '';
+        additionalDetails.innerHTML = '';
+        
+        // Show error in the table
+        const errorRow = document.createElement('tr');
+        errorRow.innerHTML = `
+          <td colspan="6" class="text-center text-danger">
+            <strong>Error:</strong> ${error.message || 'An error occurred during calculation'}
+          </td>
+        `;
+        resultsTableBody.appendChild(errorRow);
+        
+        // Set error in detailed JSON
+        detailedJson.textContent = JSON.stringify({ error: error.message || 'An error occurred during calculation' }, null, 2);
+        
+        resultsContainer.style.display = 'block';
+        resultsContainer.scrollIntoView({ behavior: 'smooth' });
+        
+      } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    } else {
+      // For other garnishment types, show a message
+      alert(`Calculation for ${garnishmentType} is not yet implemented. Only Child Support and Student Default Loan calculations are currently available.`);
+    }
+  });
+
   garnishmentTypeSelect.addEventListener('change', function () {
     const type = this.value;
     container.innerHTML = '';
+    
+    // Hide results when changing garnishment type
+    document.getElementById('calculation-results').style.display = 'none';
 
     if (fieldSets[type]) {
       fieldSets[type].forEach(label => {
-        const name = label.toLowerCase().replace(/[^a-z0-9]/gi, '_');
+        // Improved field name generation to handle special cases
+        let name = label.toLowerCase();
+        
+        // Handle specific field names to ensure consistency
+        if (label === 'No. of Student Default Loan') {
+          name = 'no_of_student_default_loan';
+        } else if (label === 'Total Mandatory Deductions') {
+          name = 'total_mandatory_deductions';
+        } else if (label === 'Gross Pay') {
+          name = 'gross_pay';
+        } else if (label === 'Support Second Family') {
+          name = 'support_second_family';
+        } else if (label === 'Arrears Greater Than 12 Weeks') {
+          name = 'arrears_greater_than_12_weeks';
+        } else if (label === 'Ordered Amount') {
+          name = 'ordered_amount';
+        } else if (label === 'Arrear Amount') {
+          name = 'arrear_amount';
+        } else {
+          // Fallback to regex conversion for other fields
+          name = label.toLowerCase().replace(/[^a-z0-9]/gi, '_');
+        }
+        
         const isDate = /date/i.test(label);
         const isNumeric = /amount|age|no\.|net pay|gross pay|deductions|exemptions|loan/i.test(label);
 
@@ -141,6 +556,7 @@
               </div>
             </div>`;
         }
+
       });
       initializeFlatpickr(); // Re-initialize after rendering fields
     }
@@ -148,6 +564,33 @@
 
   document.getElementById('calculate_new_garnishment').addEventListener('shown.bs.modal', function () {
     initializeFlatpickr();
+  });
+
+  // Reset button functionality
+  document.getElementById('reset-btn').addEventListener('click', function() {
+    // Reset the form
+    form.reset();
+    
+    // Reset garnishment type selection
+    garnishmentTypeSelect.value = '';
+    
+    // Clear dynamic fields
+    container.innerHTML = '';
+    
+    // Hide results section
+    document.getElementById('calculation-results').style.display = 'none';
+    
+    // Reset any custom form elements (like switches)
+    const switches = form.querySelectorAll('input[type="checkbox"]');
+    switches.forEach(switchInput => {
+      switchInput.checked = false;
+    });
+    
+    // Clear any date inputs
+    const dateInputs = form.querySelectorAll('.flatpickr');
+    dateInputs.forEach(dateInput => { 
+      dateInput.value = '';
+    });
   });
 </script>
 

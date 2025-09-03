@@ -117,23 +117,23 @@ class CalculationDataView:
             
         return config_data
     
-    def preload_garnishment_fees(self) -> list:
-        """
-        Preloads garnishment fee configurations from the DB once.
-        """
-        try:
-            fees = (
-            GarnishmentFees.objects
-            .select_related("state", "garnishment_type", "pay_period", "rule")
-            .all()
-            .order_by("-created_at")
-        )
-            serializer = GarnishmentFeesSerializer(fees, many=True)
-            logger.info("Successfully loaded garnishment fee config")
-            return serializer.data
-        except Exception as e:
-            logger.error(f"Error loading garnishment fees: {e}", exc_info=True)
-            return []
+    # def preload_garnishment_fees(self) -> list:
+    #     """
+    #     Preloads garnishment fee configurations from the DB once.
+    #     """
+    #     try:
+    #         fees = (
+    #         GarnishmentFees.objects
+    #         .select_related("state", "garnishment_type", "pay_period", "rule")
+    #         .all()
+    #         .order_by("-created_at")
+    #     )
+    #         serializer = GarnishmentFeesSerializer(fees, many=True)
+    #         logger.info("Successfully loaded garnishment fee config")
+    #         return serializer.data
+    #     except Exception as e:
+    #         logger.error(f"Error loading garnishment fees: {e}", exc_info=True)
+    #         return []
 
 
     def validate_fields(self, record, required_fields):
@@ -183,7 +183,7 @@ class CalculationDataView:
                 f"Malformed suspension date for employee {record[EE.EMPLOYEE_ID]}: {e}")
             return True
 
-    def get_garnishment_fees(self, record, total_withhold_amt):
+    def get_garnishment_fees(self, record, total_withhold_amt,garn_fees=None):
         """
         Calculates garnishment fees based on employee data and suspension status.
         """
@@ -214,7 +214,7 @@ class CalculationDataView:
         """
         try:
             fee = GarFeesRulesEngine(work_state).apply_rule(
-                record, withholding_amt,garn_fees)
+                record, withholding_amt)
             if isinstance(fee, (int, float)):
                 return round(fee, 2)
             return fee
@@ -373,11 +373,18 @@ class CalculationDataView:
             total_mandatory_deduction_val = ChildSupport(
                 work_state).calculate_md(record)
             loan_amt = result["student_loan_amt"]
+            print("result",result)
+
 
             if len(loan_amt) == 1:
-                record[CR.AGENCY] = [{
-                    CR.WITHHOLDING_AMT: [
-                        {GR.STUDENT_DEFAULT_LOAN: loan_amt.values()}]}]
+                if isinstance(loan_amt, (int, float,list,dict)):
+                    record[CR.AGENCY] = [{
+                        CR.WITHHOLDING_AMT: [
+                            {GR.STUDENT_DEFAULT_LOAN: loan_amt.values()}]}]
+                else:
+                    record[CR.AGENCY] = [{
+                        CR.WITHHOLDING_AMT: [
+                            {GR.STUDENT_DEFAULT_LOAN: loan_amt}]}]
             else:
                 record[CR.AGENCY] = [{
                     CR.WITHHOLDING_AMT: [{GR.STUDENT_DEFAULT_LOAN: amt}
@@ -390,9 +397,11 @@ class CalculationDataView:
             record[CR.WITHHOLDING_CAP] = CM.NA
             record[CR.TOTAL_MANDATORY_DEDUCTION] = round(
                     total_mandatory_deduction_val, 2)
-            record[CR.DISPOSABLE_EARNING] = result[CR.DISPOSABLE_EARNING]
+            record[CR.DISPOSABLE_EARNING] = result["disposable_earning"]
             return record
         except Exception as e:
+            import traceback as t
+            print("eee",t.print_exc())
             logger.error(f"Error calculating student loan: {e}")
             return {"error": f"Error calculating student loan: {e}"}
 

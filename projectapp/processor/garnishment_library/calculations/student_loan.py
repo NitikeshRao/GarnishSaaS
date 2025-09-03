@@ -101,6 +101,8 @@ class StudentLoanCalculator:
                 return {"student_loan_amt": {"student_loan_amt1": 0, "de": 0}}
 
         except Exception as e:
+            import traceback as t
+            print("eee",t.print_exc())
             return Response(
                 {
                     "error": str(e),

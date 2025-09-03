@@ -86,7 +86,7 @@ class PostCalculationView(APIView):
             logger.info(f"Processing batch {batch_id} with garnishment types: {all_garnishment_types}")
 
             # Step 2 & 3: Preload fees + config
-            gar_fees = calculation_service.preload_garnishment_fees()
+            #gar_fees = calculation_service.preload_garnishment_fees()
             full_config_data = calculation_service.preload_config_data(all_garnishment_types)
 
             # Step 4: Process each case
