@@ -294,6 +294,8 @@
                   if (garnishmentType === "Child Support") return "child_support";
                   if (garnishmentType === "Student Default Loan") return "student_default_loan";
                   if (garnishmentType === "Creditor Debt") return "creditor_debt";
+                  if (garnishmentType === "State Tax Levy") return "state_tax_levy";
+
                   return garnishmentType.toLowerCase().replace(/\s+/g, "_"); // fallback
                 })(),
             data: [
@@ -343,7 +345,7 @@
     
     const garnishmentType = garnishmentTypeSelect.value;
     
-    if (garnishmentType === 'Child Support' || garnishmentType === 'Student Default Loan' || garnishmentType === 'Creditor Debt' ) {
+    if (garnishmentType === 'Child Support' || garnishmentType === 'Student Default Loan' || garnishmentType === 'Creditor Debt' ||garnishmentType === 'State Tax Levy' ) {
       const submitBtn = form.querySelector('button[type="submit"]');
       const originalText = submitBtn.textContent;
       
