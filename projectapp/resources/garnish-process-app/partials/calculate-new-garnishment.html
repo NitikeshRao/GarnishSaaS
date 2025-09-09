@@ -238,6 +238,12 @@
     return result;
   }
 
+  function toMMDDYYYY(dateStr) {
+  if (!dateStr) return null;
+  const [year, month, day] = dateStr.split("-");
+  return `${month}/${day}/${year}`;
+}
+
   // Map form data to API payload for Child Support and Student Default Loan
   function mapFormDataToPayload(formData, garnishmentType) {
     const payload = {
@@ -245,12 +251,12 @@
       cases: [{
         ee_id: generateRandomId('EE'),
         work_state: formData.get('work_state').toLowerCase(),
-        no_of_exemption_including_self: 0,
+        no_of_exemption_including_self: parseInt(formData.get('no__of_exemptions__including_self_') || 0),
         is_multiple_garnishment_type: false,
         no_of_student_default_loan: garnishmentType == 'Student Default Loan' ? parseInt(formData.get('no_of_student_default_loan') || 0) : 1,
         pay_period: formData.get('pay_period'),
         home_state: "California",
-        filing_status: "single",
+        filing_status: formData.get('filing_status'),
         wages: 0,
         commission_and_bonus: parseFloat(formData.get('gross_pay') || 0),
         non_accountable_allowances: 0,
@@ -269,22 +275,27 @@
           california_sdi: 0,
           famli_tax: 0
         },
-        net_pay: 1900,
+        net_pay: parseFloat(formData.get('net_pay') || 0),
         is_blind: false,
         statement_of_exemption_received_date: "06-07-2025",
-        garn_start_date: "12-27-2025",
-        non_consumer_debt: false,
-        consumer_debt: false,
+        garn_start_date: toMMDDYYYY(formData.get('garn_start_date'))|| null,
+        non_consumer_debt: formData.get('non_consumer_debt') === 'on',
+        consumer_debt: formData.get('consumer_debt') === 'on',
         age: 40,
         spouse_age: 34,
         is_spouse_blind: false,
         support_second_family: garnishmentType === 'Child Support' ? (formData.get('support_second_family') === 'on') : false,
-        no_of_dependent_child: 0,
+        no_of_dependent_child: parseInt(formData.get('no__of_dependent_child') || 0),
         arrears_greater_than_12_weeks: garnishmentType === 'Child Support' ? (formData.get('arrears_greater_than_12_weeks') === 'on') : false,
         ftb_type: "vehicle_registration",
         garnishment_data: [
           {
-            type: garnishmentType === 'Child Support' ? "child_support" : "student_default_loan",
+            type: (() => {
+                  if (garnishmentType === "Child Support") return "child_support";
+                  if (garnishmentType === "Student Default Loan") return "student_default_loan";
+                  if (garnishmentType === "Creditor Debt") return "creditor_debt";
+                  return garnishmentType.toLowerCase().replace(/\s+/g, "_"); // fallback
+                })(),
             data: [
               {
                 case_id: generateRandomId('C'),
@@ -332,7 +343,7 @@
     
     const garnishmentType = garnishmentTypeSelect.value;
     
-    if (garnishmentType === 'Child Support' || garnishmentType === 'Student Default Loan') {
+    if (garnishmentType === 'Child Support' || garnishmentType === 'Student Default Loan' || garnishmentType === 'Creditor Debt' ) {
       const submitBtn = form.querySelector('button[type="submit"]');
       const originalText = submitBtn.textContent;
       
@@ -594,12 +605,30 @@
                 </div>
               </div>
             </div>`;
+
         } else if (isDate) {
           container.innerHTML += `
             <div class="col-md-6 col-12 mb-3">
               <label class="form-label">${label}</label>
               <input type="text" class="form-control flatpickr" name="${name}" placeholder="YYYY-MM-DD" />
             </div>`;
+
+        } else if (label === 'Filing Status') {
+          container.innerHTML += `
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label">${label}</label>
+                <select class="form-control" name="${name}">
+                  <option value="">Select Filing Status</option>
+                  <option value="single">Single</option>
+                  <option value="married_joint">Married Filing Jointly</option>
+                  <option value="married_separate">Married Filing Separately</option>
+                  <option value="head">Head of Household</option>
+                  <option value="widow">Qualifying Widow(er)</option>
+                </select>
+              </div>
+            </div>`;
+            
         } else {
           container.innerHTML += `
             <div class="col-md-4">
@@ -608,7 +637,8 @@
                 <input type="${isNumeric ? 'number' : 'text'}" class="form-control" name="${name}" placeholder="Enter ${label}" />
               </div>
             </div>`;
-        }
+          }
+
 
       });
       initializeFlatpickr(); // Re-initialize after rendering fields

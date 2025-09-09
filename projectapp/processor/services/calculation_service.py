@@ -370,11 +370,10 @@ class CalculationDataView:
         try:
             work_state = record.get(EE.WORK_STATE)
             result = StudentLoanCalculator().calculate(record)
+            payroll_taxes=record.get(PT.PAYROLL_TAXES)
             total_mandatory_deduction_val = ChildSupport(
-                work_state).calculate_md(record)
+                work_state).calculate_md(payroll_taxes)
             loan_amt = result["student_loan_amt"]
-            print("result",result)
-
 
             if len(loan_amt) == 1:
                 if isinstance(loan_amt, (int, float,list,dict)):
@@ -414,8 +413,9 @@ class CalculationDataView:
             work_state = record.get(EE.WORK_STATE)
             result = state_tax_view.calculate(
                 record, config_data[GT.STATE_TAX_LEVY])
+            payroll_taxes=record.get(PT.PAYROLL_TAXES)
             total_mandatory_deduction_val = ChildSupport(
-                work_state).calculate_md(record)
+                work_state).calculate_md(payroll_taxes)
             if result == CommonConstants.NOT_FOUND:
                 return None
             if isinstance(result, dict) and result.get(CR.WITHHOLDING_AMT, 0) <= 0:
@@ -456,6 +456,7 @@ class CalculationDataView:
         try:
             creditor_debt_calculator = CreditorDebtCalculator()
             work_state = record.get(EE.WORK_STATE)
+            payroll_taxes=record.get(PT.PAYROLL_TAXES)
             result = creditor_debt_calculator.calculate(
                 record, config_data[GT.CREDITOR_DEBT])
             if isinstance(result, tuple):
@@ -465,13 +466,13 @@ class CalculationDataView:
             elif result == CommonConstants.NOT_PERMITTED:
                 return CommonConstants.NOT_PERMITTED
             total_mandatory_deduction_val = ChildSupport(
-                work_state).calculate_md(record)
+                work_state).calculate_md(payroll_taxes)
             if result[CR.WITHHOLDING_AMT] <= 0:
                 return self._handle_insufficient_pay_garnishment(
                     record, result[CR.DISPOSABLE_EARNING], total_mandatory_deduction_val)
             else:
                 record[CR.AGENCY] = [{CR.WITHHOLDING_AMT: [
-                    {CR.CREDITOR_DEBT: max(round(result[CR.WITHHOLDING_AMT], 2), 0)}]}]
+                    {CR.GARNISHMENT_AMOUNT: max(round(result[CR.WITHHOLDING_AMT], 2), 0)}]}]
                 record[CR.DISPOSABLE_EARNING] = round(
                     result[CR.DISPOSABLE_EARNING], 2)
                 record[CR.TOTAL_MANDATORY_DEDUCTION] = round(

@@ -28,7 +28,9 @@ class CreditorDebtHelper():
         date = datetime(2022, 12, 5).date()
         
         garn_start_date = garn_start_date.replace("-", "/")
+        print("garn_start_date",garn_start_date)
         filed_date = datetime.strptime(garn_start_date, "%m/%d/%Y").date()
+        print("filed_date",filed_date)
         if filed_date > date :
             return True
         elif filed_date < date:
@@ -592,7 +594,7 @@ class CreditorDebtCalculator(StateWiseCreditorDebtFormulas):
 
         except Exception as e:
             import traceback as t
-            # print("dddd",t.print_exc())
+            print("dddd",t.print_exc())
             return Response(
                 {
                     "error": f"Exception in CreditorDebtCalculator.calculate: {str(e)}",
