@@ -24,6 +24,7 @@
                                     <option value="Creditor Debt">Creditor Debt</option>
                                     <option value="Federal Tax Levy">Federal Tax Levy</option>
                                     <option value="State Tax Levy">State Tax Levy</option>
+                                    <option value="Franchise Tax Board">Franchise Tax Board</option>
                                 </select>
                             </div>
                         </div>
@@ -215,6 +216,9 @@
     ],
     'State Tax Levy': [
       'Garn Start Date', 'Gross Pay', 'Total Mandatory Deductions', 'Net Pay', 'No. of Exemptions (Including Self)'
+    ],
+    'Franchise Tax Board': [
+    'FTB Type', 'Gross Pay', 'Total Mandatory Deductions'
     ]
   };
 
@@ -287,7 +291,7 @@
         support_second_family: garnishmentType === 'Child Support' ? (formData.get('support_second_family') === 'on') : false,
         no_of_dependent_child: parseInt(formData.get('no__of_dependent_child') || 0),
         arrears_greater_than_12_weeks: garnishmentType === 'Child Support' ? (formData.get('arrears_greater_than_12_weeks') === 'on') : false,
-        ftb_type: "vehicle_registration",
+        ftb_type: formData.get("ftb_type"),
         garnishment_data: [
           {
             type: (() => {
@@ -295,6 +299,7 @@
                   if (garnishmentType === "Student Default Loan") return "student_default_loan";
                   if (garnishmentType === "Creditor Debt") return "creditor_debt";
                   if (garnishmentType === "State Tax Levy") return "state_tax_levy";
+                  if (garnishmentType === "Franchise Tax Board") return "franchise_tax_board";
 
                   return garnishmentType.toLowerCase().replace(/\s+/g, "_"); // fallback
                 })(),
@@ -345,7 +350,9 @@
     
     const garnishmentType = garnishmentTypeSelect.value;
     
-    if (garnishmentType === 'Child Support' || garnishmentType === 'Student Default Loan' || garnishmentType === 'Creditor Debt' ||garnishmentType === 'State Tax Levy' ) {
+    if (garnishmentType === 'Child Support' || garnishmentType === 'Student Default Loan' || 
+        garnishmentType === 'Creditor Debt' ||garnishmentType === 'State Tax Levy'  || 
+        garnishmentType === 'Franchise Tax Board') {
       const submitBtn = form.querySelector('button[type="submit"]');
       const originalText = submitBtn.textContent;
       
@@ -615,6 +622,20 @@
               <input type="text" class="form-control flatpickr" name="${name}" placeholder="YYYY-MM-DD" />
             </div>`;
 
+        } else if (label === 'FTB Type') {
+          container.innerHTML += `
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label">${label}</label>
+                <select class="form-control" name="${name}">
+                  <option value="">Select FTB Type</option>
+                  <option value="vehicle_registration">Vehicle Registration</option>
+                  <option value="court_ordered_debt">Court Ordered Debt</option>
+                  <option value="state_tax_levy">State Tax Levy</option>
+                </select>
+              </div>
+            </div>`;
+
         } else if (label === 'Filing Status') {
           container.innerHTML += `
             <div class="col-md-4">
@@ -629,7 +650,7 @@
                   <option value="widow">Qualifying Widow(er)</option>
                 </select>
               </div>
-            </div>`;
+            </div>`;    
             
         } else {
           container.innerHTML += `
@@ -677,5 +698,6 @@
       dateInput.value = '';
     });
   });
+
 </script>
 
