@@ -497,6 +497,7 @@ class CalculationDataView:
             work_state = record.get(EE.WORK_STATE)
             result = creditor_debt_calculator.calculate(
                 record, config_data["franchise_tax_board"])
+            print("result",result)
             if isinstance(result, tuple):
                 result = result[0]
             if result == CommonConstants.NOT_FOUND:
@@ -524,6 +525,7 @@ class CalculationDataView:
                 record[CR.WITHHOLDING_CAP] = result.get(CR.WITHHOLDING_CAP)
                 return record
         except Exception as e:
+            print("nn",t.print_exc())
             logger.error(f"Error calculating franchise tax board: {e}")
             return {"error": f"Error calculating franchise tax board: {e}"}
         

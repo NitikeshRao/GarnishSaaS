@@ -11,6 +11,7 @@ from user_app.constants import (
     GarnishmentTypeFields as GT,
     FilingStatusFields
 )
+import traceback as t
 from processor.garnishment_library.utils import StateAbbreviations
 from processor.garnishment_library.calculations import ChildSupportHelper
 from rest_framework.response import Response
@@ -53,6 +54,7 @@ class StateWiseFTBStateTaxLevyFormulas():
          )
     def cal_california(self, ftb_type, config_data, disposable_earning):
         try:
+            print("config_data",config_data)
             if ftb_type.lower() == GT.STATE_TAX_LEVY.lower():
                 return CreditorDebtHelper()._general_debt_logic(disposable_earning, config_data)
             else:
@@ -88,6 +90,7 @@ class FranchaiseTaxBoard(StateWiseFTBStateTaxLevyFormulas):
             return self.cal_california(ftb_type, config_data, disposable_earning)
             
         except Exception as e:
+            print(t.print_exc())
             return Response(
                 {
                     "error": "Exception in calculating ftb for California: "

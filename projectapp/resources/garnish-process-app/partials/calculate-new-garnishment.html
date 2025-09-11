@@ -25,6 +25,7 @@
                                     <option value="Federal Tax Levy">Federal Tax Levy</option>
                                     <option value="State Tax Levy">State Tax Levy</option>
                                     <option value="Franchise Tax Board">Franchise Tax Board</option>
+                                    <option value="Multiple Garnishment">Multiple Garnishment</option>
                                 </select>
                             </div>
                         </div>
@@ -219,7 +220,10 @@
     ],
     'Franchise Tax Board': [
     'FTB Type', 'Gross Pay', 'Total Mandatory Deductions'
-    ]
+    ],
+    'Multiple Garnishment' : [
+    'Checkbox'
+    ],
   };
 
   const garnishmentTypeSelect = document.querySelector('[name="garnishment_type"]');
@@ -282,7 +286,7 @@
         net_pay: parseFloat(formData.get('net_pay') || 0),
         is_blind: false,
         statement_of_exemption_received_date: "06-07-2025",
-        garn_start_date: toMMDDYYYY(formData.get('garn_start_date'))|| null,
+        garn_start_date: toMMDDYYYY(formData.get('garn_start_date'))|| "08-07-2025",
         non_consumer_debt: formData.get('non_consumer_debt') === 'on',
         consumer_debt: formData.get('consumer_debt') === 'on',
         age: 40,
@@ -300,6 +304,7 @@
                   if (garnishmentType === "Creditor Debt") return "creditor_debt";
                   if (garnishmentType === "State Tax Levy") return "state_tax_levy";
                   if (garnishmentType === "Franchise Tax Board") return "franchise_tax_board";
+                  if (garnishmentType === "Multiple Garnishment") return "multiple_garnishment";
 
                   return garnishmentType.toLowerCase().replace(/\s+/g, "_"); // fallback
                 })(),
@@ -351,8 +356,8 @@
     const garnishmentType = garnishmentTypeSelect.value;
     
     if (garnishmentType === 'Child Support' || garnishmentType === 'Student Default Loan' || 
-        garnishmentType === 'Creditor Debt' ||garnishmentType === 'State Tax Levy'  || 
-        garnishmentType === 'Franchise Tax Board') {
+        garnishmentType === 'Creditor Debt' || garnishmentType === 'State Tax Levy'  || 
+        garnishmentType === 'Franchise Tax Board'|| garnishmentType === 'Multiple Garnishment') {
       const submitBtn = form.querySelector('button[type="submit"]');
       const originalText = submitBtn.textContent;
       
@@ -652,6 +657,43 @@
               </div>
             </div>`;    
             
+          } else if (/checkbox/i.test(label) || label === 'Checkbox') {
+          container.innerHTML += `
+            <div class="col-12 mb-3">
+              <label class="form-label">Select Garnishments</label>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="garnishment_types" value="Child Support" id="mg_child_support">
+                    <label class="form-check-label" for="mg_child_support">Child Support</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="garnishment_types" value="Federal Tax Levy" id="mg_federal" disabled>
+                    <label class="form-check-label" for="mg_federal">Federal Tax Levy</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="garnishment_types" value="State Tax Levy" id="mg_state" disabled>
+                    <label class="form-check-label" for="mg_state">State Tax Levy</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="garnishment_types" value="Creditor Debt" id="mg_creditor">
+                    <label class="form-check-label" for="mg_creditor">Creditor Debt</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="garnishment_types" value="Student Default Loan" id="mg_student">
+                    <label class="form-check-label" for="mg_student">Student Default Loan</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="garnishment_types" value="Franchise Tax Board" id="mg_ftb" disabled>
+                    <label class="form-check-label" for="mg_ftb">Franchise Tax Board</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+
         } else {
           container.innerHTML += `
             <div class="col-md-4">
@@ -661,8 +703,6 @@
               </div>
             </div>`;
           }
-
-
       });
       initializeFlatpickr(); // Re-initialize after rendering fields
     }
