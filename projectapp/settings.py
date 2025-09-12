@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 
 # Import global settings
 from .global_settings import *  # This imports all variables from global_settings.py
@@ -54,10 +55,24 @@ INSTALLED_APPS = [
 
 ]
 
+# Detect whether whitenoise is installed; only enable its middleware/storage if available.
+try:
+    import importlib
+    importlib.import_module('whitenoise')
+    WHITENOISE_AVAILABLE = True
+except Exception:
+    WHITENOISE_AVAILABLE = False
+
+# Middleware configuration
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+]
+
+if WHITENOISE_AVAILABLE:
+    MIDDLEWARE.append('whitenoise.middleware.WhiteNoiseMiddleware')
+
+MIDDLEWARE += [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -66,10 +81,12 @@ MIDDLEWARE = [
     'django_browser_reload.middleware.BrowserReloadMiddleware',
 ]
 
+# Only set STATICFILES_STORAGE when whitenoise is available
+if WHITENOISE_AVAILABLE:
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 
 ROOT_URLCONF = 'projectapp.urls'
-
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 TEMPLATES = [
     {
@@ -96,24 +113,20 @@ WSGI_APPLICATION = 'projectapp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-
-DATABASES = {
-    'default': {
-         'ENGINE': 'django.db.backends.mysql',  
-         'NAME': 'garnishedge_saas',  
-         'USER': 'garnishedge_saasusr',  
-         'PASSWORD': 'o4J#l&)edNH~q1K!',  
-         'HOST': '148.72.244.1',  
-         'PORT': '3306',  
-         'OPTIONS': {  
-             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  
-         }  
+# Database configuration: prefer DATABASE_URL but fall back to a local sqlite DB for development.
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
     }
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
-}
+else:
+    # Fallback to sqlite for local development when no DATABASE_URL is provided
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 
 # Password validation
