@@ -260,7 +260,7 @@
         ee_id: generateRandomId('EE'),
         work_state: formData.get('work_state').toLowerCase(),
         no_of_exemption_including_self: parseInt(formData.get('no__of_exemptions__including_self_') || 0),
-        is_multiple_garnishment_type: true | false,
+        is_multiple_garnishment_type: true,
         no_of_student_default_loan: garnishmentType == 'Student Default Loan' ? parseInt(formData.get('no_of_student_default_loan') || 0) : 1,
         pay_period: formData.get('pay_period'),
         home_state: "California",
@@ -315,9 +315,30 @@
                 arrear_amount: garnishmentType === 'Child Support' ? parseFloat(formData.get('arrear_amount') || 0) : 0
               }
             ]
+          },
+          {
+            type: (() => {
+                  if (garnishmentType === "Child Support") return "child_support";
+                  if (garnishmentType === "Student Default Loan") return "student_default_loan";
+                  if (garnishmentType === "Creditor Debt") return "creditor_debt";
+                  if (garnishmentType === "State Tax Levy") return "state_tax_levy";
+                  if (garnishmentType === "Franchise Tax Board") return "franchise_tax_board";
+                  if (garnishmentType === "Multiple Garnishment") return "multiple_garnishment";
+
+                  return garnishmentType.toLowerCase().replace(/\s+/g, "_"); // fallback
+                })(),
+            data: [
+              {
+                case_id: generateRandomId('C'),
+                ordered_amount: garnishmentType === 0,
+                arrear_amount: garnishmentType === 0
+              }
+            ]
           }
+
         ],
         garnishment_orders: [
+
           "franchise_tax_board"
         ]
       }]
@@ -579,7 +600,149 @@
     if (fieldSets[type]) {
       fieldSets[type].forEach(label => {
         // Improved field name generation to handle special cases
-        let name = label.toLowerCase();
+        renderField(label, type)
+        
+      });
+      initializeFlatpickr(); // Re-initialize after rendering fields
+    }
+  });
+
+// Listener for Multiple Garnishment checkboxes
+document.addEventListener('change', function (e) {
+  if (e.target && e.target.name === 'garnishment_types') {
+    const selectedTypes = Array.from(
+      document.querySelectorAll('input[name="garnishment_types"]:checked')
+    ).map(cb => cb.value);
+
+    const mgContainer = document.getElementById('multiple-garnishment-fields');
+    mgContainer.innerHTML = ''; // clear previous
+
+    selectedTypes.forEach(type => {
+      if (fieldSets[type]) {
+           const garnishmentThemes = {
+              "Child Support": { bg: "#e6d9f5", text: "#4b2e83" },
+              "Creditor Debt": { bg: "#ffe4d6", text: "#a94400" },
+              "Student Default Loan": { bg: "#d6f5e3", text: "#1f7a3d" },
+              "Federal Tax Levy": { bg: "#d6e9f5", text: "#004085" },
+              "State Tax Levy": { bg: "#fff3cd", text: "#856404" },
+              "Franchise Tax Board": { bg: "#f8d7da", text: "#721c24" }
+    };
+
+        const theme = garnishmentThemes[type] || { 
+          bg: "#f0f0f0", 
+          text: "#333", 
+        };
+
+        mgContainer.innerHTML += `
+          <div class="col-12 mb-4">
+            <div class="p-3 rounded shadow-sm"
+                style="background-color: ${theme.bg}; color: ${theme.text}; 
+                        cursor: pointer;"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapse_${type.replace(/\s+/g, '_')}">
+              
+              <!-- Header + Subtext grouped -->
+              <div class="d-flex flex-column">
+                <div class="d-flex align-items-center mb-1"
+                    style="font-size: 1.1rem; font-weight: 600;">
+                  <span>${type} Details</span>
+                </div>
+                <small style="color: ${theme.text}; font-weight: 400; opacity: 0.65; margin-left: 0.7rem;">
+                  Configure ${type.toLowerCase()} garnishment settings below.
+                </small>
+              </div>
+            </div>
+
+            <!-- Collapsible content area for fields -->
+            <div id="collapse_${type.replace(/\s+/g, '_')}" class="collapse mt-2">
+              <div id="body_${type.replace(/\s+/g, '_')}" 
+                  class="row p-3 border rounded bg-light">
+
+                <!-- 👉 Inject ${type} input fields here -->
+
+              </div>
+            </div>
+          </div>
+        `;
+
+        // Find the collapse body for this type
+        const collapseBody = document.getElementById(`body_${type.replace(/\s+/g, '_')}`);
+
+        fieldSets[type].forEach(label => {
+          const fieldWrapper = document.createElement('div');
+          fieldWrapper.className = 'col-md-4 mb-3';
+            
+          const name = label.toLowerCase().replace(/\s+/g, '_');
+
+          if (
+            /is |has |support|arrears/i.test(label) || 
+            /consumer debt|non[- ]consumer debt/i.test(label)
+          ) {
+            fieldWrapper.innerHTML = `
+              <label class="form-label d-block">${label}</label>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="${name}" name="${name}">
+                <label class="form-check-label" for="${name}">${label}</label>
+              </div>
+            `;
+          } else if (/date/i.test(label)) {
+            fieldWrapper.innerHTML = `
+              <label class="form-label">${label}</label>
+              <input type="text" class="form-control flatpickr" name="${name}" placeholder="YYYY-MM-DD">
+            `;
+          } else if (/amount|age|no\.|net pay|gross pay|deductions|exemptions|loan/i.test(label)) {
+            fieldWrapper.innerHTML = `
+              <label class="form-label">${label}</label>
+              <input type="number" class="form-control" name="${name}" placeholder="Enter ${label}">
+            `;
+          } else {
+            fieldWrapper.innerHTML = `
+              <label class="form-label">${label}</label>
+              <input type="text" class="form-control" name="${name}" placeholder="Enter ${label}">
+            `;
+          }
+          collapseBody.appendChild(fieldWrapper);
+        });
+      }
+    });
+
+    initializeFlatpickr(); // re-init for date fields
+  }
+});
+
+  document.getElementById('calculate_new_garnishment').addEventListener('shown.bs.modal', function () {
+    initializeFlatpickr();
+  });
+
+  // Reset button functionality
+  document.getElementById('reset-btn').addEventListener('click', function() {
+    // Reset the form
+    form.reset();
+    
+    // Reset garnishment type selection
+    garnishmentTypeSelect.value = '';
+    
+    // Clear dynamic fields
+    container.innerHTML = '';
+    
+    // Hide results section
+    document.getElementById('calculation-results').style.display = 'none';
+    
+    // Reset any custom form elements (like switches)
+    const switches = form.querySelectorAll('input[type="checkbox"]');
+    switches.forEach(switchInput => {
+      switchInput.checked = false;
+    });
+    
+    // Clear any date inputs
+    const dateInputs = form.querySelectorAll('.flatpickr');
+    dateInputs.forEach(dateInput => { 
+      dateInput.value = '';
+    });
+  });
+
+function renderField(label, type) {
+          let name = label.toLowerCase();
         
         // Handle specific field names to ensure consistency
         if (label === 'No. of Student Default Loan') {
@@ -730,144 +893,7 @@
               </div>
             </div>`;
           }
-      });
-      initializeFlatpickr(); // Re-initialize after rendering fields
-    }
-  });
 
-// Listener for Multiple Garnishment checkboxes
-document.addEventListener('change', function (e) {
-  if (e.target && e.target.name === 'garnishment_types') {
-    const selectedTypes = Array.from(
-      document.querySelectorAll('input[name="garnishment_types"]:checked')
-    ).map(cb => cb.value);
-
-    const mgContainer = document.getElementById('multiple-garnishment-fields');
-    mgContainer.innerHTML = ''; // clear previous
-
-    selectedTypes.forEach(type => {
-      if (fieldSets[type]) {
-           const garnishmentThemes = {
-              "Child Support": { bg: "#e6d9f5", text: "#4b2e83" },
-              "Creditor Debt": { bg: "#ffe4d6", text: "#a94400" },
-              "Student Default Loan": { bg: "#d6f5e3", text: "#1f7a3d" },
-              "Federal Tax Levy": { bg: "#d6e9f5", text: "#004085" },
-              "State Tax Levy": { bg: "#fff3cd", text: "#856404" },
-              "Franchise Tax Board": { bg: "#f8d7da", text: "#721c24" }
-    };
-
-        const theme = garnishmentThemes[type] || { 
-          bg: "#f0f0f0", 
-          text: "#333", 
-        };
-
-        mgContainer.innerHTML += `
-          <div class="col-12 mb-4">
-            <div class="p-3 rounded shadow-sm"
-                style="background-color: ${theme.bg}; color: ${theme.text}; 
-                        cursor: pointer;"
-                data-bs-toggle="collapse"
-                data-bs-target="#collapse_${type.replace(/\s+/g, '_')}">
-              
-              <!-- Header + Subtext grouped -->
-              <div class="d-flex flex-column">
-                <div class="d-flex align-items-center mb-1"
-                    style="font-size: 1.1rem; font-weight: 600;">
-                  <span>${type} Details</span>
-                </div>
-                <small style="color: ${theme.text}; font-weight: 400; opacity: 0.65; margin-left: 0.7rem;">
-                  Configure ${type.toLowerCase()} garnishment settings below.
-                </small>
-              </div>
-            </div>
-
-            <!-- Collapsible content area for fields -->
-            <div id="collapse_${type.replace(/\s+/g, '_')}" class="collapse mt-2">
-              <div id="body_${type.replace(/\s+/g, '_')}" 
-                  class="row p-3 border rounded bg-light">
-
-                <!-- 👉 Inject ${type} input fields here -->
-
-              </div>
-            </div>
-          </div>
-        `;
-
-        // Find the collapse body for this type
-        const collapseBody = document.getElementById(`body_${type.replace(/\s+/g, '_')}`);
-
-        fieldSets[type].forEach(label => {
-          const fieldWrapper = document.createElement('div');
-          fieldWrapper.className = 'col-md-4 mb-3';
-
-          const name = label.toLowerCase().replace(/\s+/g, '_');
-
-          if (
-            /is |has |support|arrears/i.test(label) || 
-            /consumer debt|non[- ]consumer debt/i.test(label)
-          ) {
-            fieldWrapper.innerHTML = `
-              <label class="form-label d-block">${label}</label>
-              <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="${name}" name="${name}">
-                <label class="form-check-label" for="${name}">${label}</label>
-              </div>
-            `;
-          } else if (/date/i.test(label)) {
-            fieldWrapper.innerHTML = `
-              <label class="form-label">${label}</label>
-              <input type="text" class="form-control flatpickr" name="${name}" placeholder="YYYY-MM-DD">
-            `;
-          } else if (/amount|age|no\.|net pay|gross pay|deductions|exemptions|loan/i.test(label)) {
-            fieldWrapper.innerHTML = `
-              <label class="form-label">${label}</label>
-              <input type="number" class="form-control" name="${name}" placeholder="Enter ${label}">
-            `;
-          } else {
-            fieldWrapper.innerHTML = `
-              <label class="form-label">${label}</label>
-              <input type="text" class="form-control" name="${name}" placeholder="Enter ${label}">
-            `;
-          }
-          collapseBody.appendChild(fieldWrapper);
-        });
-      }
-    });
-
-    initializeFlatpickr(); // re-init for date fields
-  }
-});
-
-  document.getElementById('calculate_new_garnishment').addEventListener('shown.bs.modal', function () {
-    initializeFlatpickr();
-  });
-
-  // Reset button functionality
-  document.getElementById('reset-btn').addEventListener('click', function() {
-    // Reset the form
-    form.reset();
-    
-    // Reset garnishment type selection
-    garnishmentTypeSelect.value = '';
-    
-    // Clear dynamic fields
-    container.innerHTML = '';
-    
-    // Hide results section
-    document.getElementById('calculation-results').style.display = 'none';
-    
-    // Reset any custom form elements (like switches)
-    const switches = form.querySelectorAll('input[type="checkbox"]');
-    switches.forEach(switchInput => {
-      switchInput.checked = false;
-    });
-    
-    // Clear any date inputs
-    const dateInputs = form.querySelectorAll('.flatpickr');
-    dateInputs.forEach(dateInput => { 
-      dateInput.value = '';
-    });
-  });
-
+}
 </script>
 
