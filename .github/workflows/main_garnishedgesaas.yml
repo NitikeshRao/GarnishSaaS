@@ -2,7 +2,7 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 # More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
 
-name: Build and deploy Python app to Azure Web App - GarnishEdgeSaas
+name: Build and deploy Python app to Azure Web App - GarnishEdgeSaaS
 
 on:
   push:
@@ -58,14 +58,14 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_626D23C8A7804A20BEC56CCEC67C79E3 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_40D89ECA910641A4A8E4AB8560DF2C43 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_297FCA46C8934A42A727B65584F90BCB }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_999EE2F93A6246A5841E38C9B14A2AE1 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_4274FE00F9DB4B91AAD1044B5966F992 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_AB7C74FAD027409EAFEECAE43F17DFCB }}
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'GarnishEdgeSaas'
+          app-name: 'GarnishEdgeSaaS'
           slot-name: 'Production'
           
