@@ -101,10 +101,10 @@ DATABASES = {
     'default': {
          'ENGINE': 'django.db.backends.mysql',  
          'NAME': 'garnishedge_saas',  
-         'USER': 'root',  
-         'PASSWORD': '',  
-         'HOST': '127.0.0.1',  
-         'PORT': '3306',  
+         'USER': 'garnishedge_saasusr',  
+         'PASSWORD': 'o4J#l&)edNH~q1K!',  
+         'HOST': '148.72.244.1',  
+         'PORT': 'o4J#l&)edNH~q1K!',  
          'OPTIONS': {  
              'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  
          }  
