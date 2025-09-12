@@ -42,3 +42,4 @@ drf-spectacular-sidecar==2025.8.1
 django-browser-reload==1.15.0
 mysqlclient==2.2.7
 typing_extensions==4.12.2
+whitenoise==6.5.0
