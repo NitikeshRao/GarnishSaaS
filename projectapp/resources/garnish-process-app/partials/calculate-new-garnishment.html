@@ -260,7 +260,7 @@
         ee_id: generateRandomId('EE'),
         work_state: formData.get('work_state').toLowerCase(),
         no_of_exemption_including_self: parseInt(formData.get('no__of_exemptions__including_self_') || 0),
-        is_multiple_garnishment_type: true,
+        is_multiple_garnishment_type: false,
         no_of_student_default_loan: garnishmentType == 'Student Default Loan' ? parseInt(formData.get('no_of_student_default_loan') || 0) : 1,
         pay_period: formData.get('pay_period'),
         home_state: "California",

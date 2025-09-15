@@ -1,10 +1,11 @@
+
 {% include 'inc/header.html' %}
 {% load static %}
 <div class="container-fuild">
     <div class="w-100 overflow-hidden position-relative flex-wrap d-block vh-100">
         <div class="row">
-            <div class="col-lg-5">
-                <div class="login-background position-relative d-lg-flex align-items-center justify-content-center d-none flex-wrap vh-100">
+            <div class="col-lg-3">
+                <!-- <div class="login-background position-relative d-lg-flex align-items-center justify-content-center d-none flex-wrap vh-100">
                     <div class="bg-overlay-img">
                         <img src="{% static 'app-assets/img/bg/bg-01.png' %}" class="bg-1" alt="Img">
                         <img src="{% static 'app-assets/img/bg/bg-02.png' %}" class="bg-2" alt="Img">
@@ -21,9 +22,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
-            <div class="col-lg-7 col-md-12 col-sm-12">
+            <div class="col-lg-6 col-md-12 col-sm-12">
                 <div class="row justify-content-center align-items-center vh-100 overflow-auto flex-wrap">
                     <div class="col-md-7 mx-auto vh-100">
                         <form action="{% url 'secure-login' %}" class="vh-100" method="POST" enctype="multipart/form-data">
@@ -78,6 +79,7 @@
 
                 </div>
             </div>
+            <div class="col-lg-3"></div>
         </div>
     </div>
 </div>

@@ -1,3 +1,4 @@
+
 {% load static %}
 <!-- Sidebar -->
 
@@ -149,7 +150,7 @@
                 </li>
 
                 </li>
-                <li class="menu-title"><span>Configurations</span></li>
+                <!-- <li class="menu-title"><span>Configurations</span></li>
                 <li>
                     <ul>
                         <li class="submenu">
@@ -199,11 +200,11 @@
                             </ul>
                         </li>
                     </ul>
-                </li>
+                </li> -->
                 <li class="menu-title"><span>Account</span></li>
                 <li>
                     <ul>
-                        <li class="submenu">
+                        <!--<li class="submenu">
                             <a href="javascript:void(0);">
                                 <i class="ti ti-user-star"></i><span>User Management</span>
                                 <span class="menu-arrow"></span>
@@ -212,7 +213,7 @@
                                 <li><a href="users.html">Users</a></li>
                                 <li><a href="roles-permissions.html">Roles & Permissions</a></li>
                             </ul>
-                        </li>
+                        </li>-->
                         <li class="{% if request.resolver_match.url_name == 'change-password' %} active {% endif %}">
                             <a href="{% url 'change-password' %}">
                                 <i class="ti ti-key"></i><span>Change Password</span>
