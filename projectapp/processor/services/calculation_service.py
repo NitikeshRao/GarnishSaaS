@@ -684,7 +684,8 @@ class CalculationDataView:
             
         except Exception as e:
             import traceback as t
-            logger.error(f"Error calculating multiple garnishment: {e}")
+            
+            logger.error(f"Error calculating multiple garnishment: {t.print_exc()}")
             enhanced_record = record.copy()
             enhanced_record['calculation_status'] = 'error'
             enhanced_record['error'] = f"Error calculating multiple garnishment: {e}"

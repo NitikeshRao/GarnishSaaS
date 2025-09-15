@@ -173,6 +173,7 @@
     </div>
 </div>
 
+
 <!-- Z-index fix for Flatpickr -->
 <style>
   .flatpickr-calendar {
@@ -236,6 +237,8 @@
     });
   }
 
+  let selectedTypes = [];
+
   // Generate random values for ee_id and batch_id
   function generateRandomId(prefix, length = 6) {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -252,7 +255,7 @@
   return `${month}/${day}/${year}`;
 }
 
-  // Map form data to API payload for Child Support and Student Default Loan
+  // Map form data to API payload 
   function mapFormDataToPayload(formData, garnishmentType) {
     const payload = {
       batch_id: generateRandomId('B'),
@@ -305,15 +308,21 @@
                   if (garnishmentType === "State Tax Levy") return "state_tax_levy";
                   if (garnishmentType === "Franchise Tax Board") return "franchise_tax_board";
                   if (garnishmentType === "Federal Tax Levy") return "federal_tax_levy";
-                  if (garnishmentType === "Multiple Garnishment") return "multiple_garnishment";
+                  if (garnishmentType === "Multiple Garnishment") return selectedTypes[0].toLowerCase().replace(/\s+/g, "_");
 
                   return garnishmentType.toLowerCase().replace(/\s+/g, "_"); // fallback
                 })(),
             data: [
               {
                 case_id: generateRandomId('C'),
-                ordered_amount: garnishmentType === 'Child Support' ? parseFloat(formData.get('ordered_amount') || 0) : 0,
-                arrear_amount: garnishmentType === 'Child Support' ? parseFloat(formData.get('arrear_amount') || 0) : 0
+                ordered_amount: (
+                  garnishmentType === 'Child Support' ||
+                  garnishmentType === 'Multiple Garnishment'
+                ) ? parseFloat(formData.get('ordered_amount') || 0) : 0,
+                arrear_amount: (
+                  garnishmentType === 'Child Support' ||
+                  garnishmentType === 'Multiple Garnishment'
+                ) ? parseFloat(formData.get('arrear_amount') || 0) : 0
               }
             ]
           },
@@ -325,15 +334,15 @@
                   if (garnishmentType === "State Tax Levy") return "state_tax_levy";
                   if (garnishmentType === "Franchise Tax Board") return "franchise_tax_board";
                   if (garnishmentType === "Federal Tax Levy") return "federal_tax_levy";
-                  if (garnishmentType === "Multiple Garnishment") return "multiple_garnishment";
+                  if (garnishmentType === "Multiple Garnishment") return selectedTypes[1].toLowerCase().replace(/\s+/g, "_");
 
                   return garnishmentType.toLowerCase().replace(/\s+/g, "_"); // fallback
                 })(),
             data: [
               {
                 case_id: generateRandomId('C'),
-                ordered_amount: garnishmentType === 0,
-                arrear_amount: garnishmentType === 0
+                ordered_amount: garnishmentType = 0,
+                arrear_amount: garnishmentType = 0
               }
             ]
           }
@@ -341,11 +350,13 @@
         ],
     garnishment_orders: [
     garnishmentType === 'Multiple Garnishment'
-      ? selectedTypes        
+      ? selectedTypes.map(type => type.toLowerCase().replace(/\s+/g, "_"))  
       : [garnishmentType],  
         ] 
       }]
     };
+    console.log(selectedTypes)      
+
     return payload;
   }
 
@@ -617,10 +628,9 @@
 // Listener for Multiple Garnishment checkboxes
 document.addEventListener('change', function (e) {
   if (e.target && e.target.name === 'garnishment_types') {
-    const selectedTypes = Array.from(
+    selectedTypes = Array.from(
       document.querySelectorAll('input[name="garnishment_types"]:checked')
     ).map(cb => cb.value);
-
     const mgContainer = document.getElementById('multiple-garnishment-fields');
     mgContainer.innerHTML = ''; // clear previous
 
@@ -749,7 +759,7 @@ document.addEventListener('change', function (e) {
   });
 
 function renderField(label, type) {
-          let name = label.toLowerCase();
+        let name = label.toLowerCase();
         
         // Handle specific field names to ensure consistency
         if (label === 'No. of Student Default Loan') {
