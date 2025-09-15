@@ -260,7 +260,7 @@
         ee_id: generateRandomId('EE'),
         work_state: formData.get('work_state').toLowerCase(),
         no_of_exemption_including_self: parseInt(formData.get('no__of_exemptions__including_self_') || 0),
-        is_multiple_garnishment_type: false,
+        is_multiple_garnishment_type: garnishmentType === 'Multiple Garnishment' ? true : false,
         no_of_student_default_loan: garnishmentType == 'Student Default Loan' ? parseInt(formData.get('no_of_student_default_loan') || 0) : 1,
         pay_period: formData.get('pay_period'),
         home_state: "California",
@@ -304,6 +304,7 @@
                   if (garnishmentType === "Creditor Debt") return "creditor_debt";
                   if (garnishmentType === "State Tax Levy") return "state_tax_levy";
                   if (garnishmentType === "Franchise Tax Board") return "franchise_tax_board";
+                  if (garnishmentType === "Federal Tax Levy") return "federal_tax_levy";
                   if (garnishmentType === "Multiple Garnishment") return "multiple_garnishment";
 
                   return garnishmentType.toLowerCase().replace(/\s+/g, "_"); // fallback
@@ -323,6 +324,7 @@
                   if (garnishmentType === "Creditor Debt") return "creditor_debt";
                   if (garnishmentType === "State Tax Levy") return "state_tax_levy";
                   if (garnishmentType === "Franchise Tax Board") return "franchise_tax_board";
+                  if (garnishmentType === "Federal Tax Levy") return "federal_tax_levy";
                   if (garnishmentType === "Multiple Garnishment") return "multiple_garnishment";
 
                   return garnishmentType.toLowerCase().replace(/\s+/g, "_"); // fallback
@@ -337,10 +339,11 @@
           }
 
         ],
-        garnishment_orders: [
-
-          "franchise_tax_board"
-        ]
+    garnishment_orders: [
+    garnishmentType === 'Multiple Garnishment'
+      ? selectedTypes        
+      : [garnishmentType],  
+        ] 
       }]
     };
     return payload;
@@ -378,9 +381,11 @@
     
     if (garnishmentType === 'Child Support' || garnishmentType === 'Student Default Loan' || 
         garnishmentType === 'Creditor Debt' || garnishmentType === 'State Tax Levy'  || 
-        garnishmentType === 'Franchise Tax Board'|| garnishmentType === 'Multiple Garnishment') {
+        garnishmentType === 'Franchise Tax Board'|| garnishmentType === 'Federal Tax Levy'|| 
+        garnishmentType === 'Multiple Garnishment') {
       const submitBtn = form.querySelector('button[type="submit"]');
       const originalText = submitBtn.textContent;
+      console.log("garnishmentType",garnishmentType)
 
       try {
         submitBtn.textContent = 'Calculating...';
@@ -554,6 +559,8 @@
         
       } catch (error) {
         console.error('Calculation failed:', error);
+
+        console.log("garnishmentType",garnishmentType)
         
         // Display error
         const resultsContainer = document.getElementById('calculation-results');
