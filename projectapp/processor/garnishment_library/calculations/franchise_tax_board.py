@@ -54,7 +54,6 @@ class StateWiseFTBStateTaxLevyFormulas():
          )
     def cal_california(self, ftb_type, config_data, disposable_earning):
         try:
-            print("config_data",config_data)
             if ftb_type.lower() == GT.STATE_TAX_LEVY.lower():
                 return CreditorDebtHelper()._general_debt_logic(disposable_earning, config_data)
             else:

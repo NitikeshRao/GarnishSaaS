@@ -97,7 +97,7 @@
                                     <option value="Weekly">Weekly</option>
                                     <option value="Biweekly">Biweekly</option>
                                     <option value="Monthly">Monthly</option>
-                                    <option value="Semi-Monthly">Semi-Monthly</option>
+                                    <option value="Semi-Monthly">Semimonthly</option>
 
                                 </select>
                             </div>
@@ -129,23 +129,31 @@
                                     </div>
                                 </div>
 
+                                <!-- Garnishment Types Summary -->
+                                <div class="row mb-3" id="garnishment-types-summary">
+                                    <!-- Garnishment types will be displayed here -->
+                                </div>
+
                                 <!-- Main Results Table -->
                                 <div class="table-responsive">
-                                    <table class="table table-dark table-striped table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>DISPOSABLE EARNINGS</th>
-                                                <th>ALLOWABLE DISPOSABLE EARNINGS</th>
-                                                <th>TOTAL MANDATORY DEDUCTION</th>
-                                                <th>WITHHOLDING AMOUNT</th>
-                                                <th>WITHHOLDING ARREAR</th>
-                                                <th>GARNISHMENT FEES</th>
-                                            </tr>
+                                    <table class="table table-striped table-bordered">
+                                        <thead class="table-light" id="results-table-header">
+                                            <!-- Table headers will be populated dynamically -->
                                         </thead>
                                         <tbody id="results-table-body">
                                             <!-- Table rows will be populated here -->
                                         </tbody>
                                     </table>
+                                </div>
+
+                                <!-- Calculation Summary -->
+                                <div class="row mt-3" id="calculation-summary-section">
+                                    <!-- Calculation summary will be displayed here -->
+                                </div>
+
+                                <!-- Employer Deduction -->
+                                <div class="row mt-3" id="employer-deduction-section">
+                                    <!-- Employer deduction will be displayed here -->
                                 </div>
 
                                 <!-- Additional Details -->
@@ -196,36 +204,182 @@
     font-weight: bold;
     color: #0d6efd !important;
   }
+  
+  /* Garnishment type specific styling - Professional colors */
+  .garnishment-type-child-support {
+    border-left: 4px solid #2c5aa0 !important;
+  }
+  
+  .garnishment-type-student-default-loan {
+    border-left: 4px solid #4a5568 !important;
+  }
+  
+  .garnishment-type-creditor-debt {
+    border-left: 4px solid #744210 !important;
+  }
+  
+  .garnishment-type-federal-tax-levy {
+    border-left: 4px solid #742a2a !important;
+  }
+  
+  .garnishment-type-state-tax-levy {
+    border-left: 4px solid #553c9a !important;
+  }
+  
+  .garnishment-type-franchise-tax-board {
+    border-left: 4px solid #7c2d12 !important;
+  }
+  
+  /* Summary card styling */
+  .summary-card {
+    transition: transform 0.2s ease-in-out;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    background: #ffffff;
+  }
+  
+  .summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-color: #dee2e6;
+  }
+  
+  /* Calculation summary specific styling */
+  .calculation-summary-card {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  
+  .calculation-summary-card .card-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    border-radius: 12px 12px 0 0;
+    padding: 1rem 1.5rem;
+  }
+  
+  .calculation-summary-card .card-body {
+    padding: 1.5rem;
+  }
+  
+  .calculation-metric-card {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 120px;
+  }
+  
+  .calculation-metric-card:hover {
+    border-color: #dee2e6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  
+  .calculation-metric-card .metric-label {
+    color: #6c757d;
+    font-size: 0.875rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center;
+    line-height: 1.2;
+  }
+  
+  .calculation-metric-card .metric-value {
+    color: #212529;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    text-align: center;
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+  }
+  
+  /* Employer deduction specific styling */
+  .employer-deduction-card {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  
+  .employer-deduction-card .card-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    border-radius: 12px 12px 0 0;
+    padding: 1rem 1.5rem;
+  }
+  
+  .employer-deduction-card .card-body {
+    padding: 1.5rem;
+  }
+  
+  .deduction-item {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+  }
+  
+  .deduction-item .deduction-label {
+    color: #495057;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  
+  .deduction-item .deduction-value {
+    color: #212529;
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin: 0;
+  }
 </style>
 
 <!-- Script -->
 <script>
   const fieldSets = {
     'Child Support': [
-      'Gross Pay', 'Total Mandatory Deductions', 'Support Second Family', 'Arrears Greater Than 12 Weeks',
+      'Support Second Family', 'Arrears Greater Than 12 Weeks',
       'Ordered Amount', 'Arrear Amount'
     ],
     'Student Default Loan': [
-      'No. of Student Default Loan', 'Gross Pay', 'Total Mandatory Deductions'
+      'No. of Student Default Loan'
     ],
     'Creditor Debt': [
-      'Filing Status', 'No. of Dependent Child', 'Gross Pay', 'Consumer Debt', 'Non-Consumer Debt',
-      'Garn-Start Date', 'Total Mandatory Deductions', 'Net Pay', 'No. of Exemptions (Including Self)'
+      'Filing Status', 'No. of Dependent Child', 'Consumer Debt', 'Non-Consumer Debt',
+      'Garn-Start Date', 'Net Pay', 'No. of Exemptions (Including Self)'
     ],
     'Federal Tax Levy': [
       'Filing Status', 'Age', 'Net Pay', 'Is Blind', 'Statement of Exemption Received Date',
       'No. of Exemptions (Including Self)', 'Has Spouse', 'Is Spouse Blind', 'Spouse Age'
     ],
     'State Tax Levy': [
-      'Garn Start Date', 'Gross Pay', 'Total Mandatory Deductions', 'Net Pay', 'No. of Exemptions (Including Self)'
+      'Garn Start Date', 'Net Pay', 'No. of Exemptions (Including Self)'
     ],
     'Franchise Tax Board': [
-    'FTB Type', 'Gross Pay', 'Total Mandatory Deductions'
+    'FTB Type'
     ],
     'Multiple Garnishment' : [
     'Checkbox'
     ],
   };
+
+  // Common fields that should be shared across all garnishment types
+  const commonFields = [
+    'Gross Pay', 'Total Mandatory Deductions', 'Net Pay'
+  ];
 
   const garnishmentTypeSelect = document.querySelector('[name="garnishment_type"]');
   const container = document.getElementById('dynamic-fields');
@@ -257,14 +411,16 @@
 
   // Map form data to API payload 
   function mapFormDataToPayload(formData, garnishmentType) {
+    console.log("garnishmentType",garnishmentType)
     const payload = {
       batch_id: generateRandomId('B'),
       cases: [{
         ee_id: generateRandomId('EE'),
         work_state: formData.get('work_state').toLowerCase(),
         no_of_exemption_including_self: parseInt(formData.get('no__of_exemptions__including_self_') || 0),
+        
         is_multiple_garnishment_type: garnishmentType === 'Multiple Garnishment' ? true : false,
-        no_of_student_default_loan: garnishmentType == 'Student Default Loan' ? parseInt(formData.get('no_of_student_default_loan') || 0) : 1,
+        no_of_student_default_loan: parseInt(formData.get('no_of_student_default_loan') || 0),
         pay_period: formData.get('pay_period'),
         home_state: "California",
         filing_status: formData.get('filing_status'),
@@ -341,20 +497,22 @@
             data: [
               {
                 case_id: generateRandomId('C'),
-                ordered_amount: garnishmentType = 0,
-                arrear_amount: garnishmentType = 0
+                // pass numeric zeros (do not assign to garnishmentType)
+                ordered_amount: 0,
+                arrear_amount: 0
               }
             ]
           }
 
         ],
-    garnishment_orders: [
-    garnishmentType === 'Multiple Garnishment'
-      ? selectedTypes.map(type => type.toLowerCase().replace(/\s+/g, "_"))  
-      : [garnishmentType],  
-        ] 
+    // ensure a flat array of normalized type identifiers (no nested arrays)
+    garnishment_orders: garnishmentType === 'Multiple Garnishment'
+      ? selectedTypes.map(type => type.toLowerCase().replace(/\s+/g, "_"))
+      : [garnishmentType.toLowerCase().replace(/\s+/g, "_")]
       }]
     };
+    console.log("payload",payload)
+    console.log("no_of_student_default_loan",formData.get('no_of_student_default_loan'))
     console.log(selectedTypes)      
 
     return payload;
@@ -424,138 +582,346 @@
 
         resultsTableBody.innerHTML = ''; // Clear previous table rows
         additionalDetails.innerHTML = ''; // Clear previous additional details
+        
+        // Clear all sections
+        document.getElementById('garnishment-types-summary').innerHTML = '';
+        document.getElementById('calculation-summary-section').innerHTML = '';
+        document.getElementById('employer-deduction-section').innerHTML = '';
+        
+        // Clear and set up table headers based on garnishment type
+        const resultsTableHeader = document.getElementById('results-table-header');
+        resultsTableHeader.innerHTML = '';
+        
+        if (garnishmentType === 'Multiple Garnishment') {
+          // Multiple garnishment headers
+          resultsTableHeader.innerHTML = `
+            <tr>
+              <th>GARNISHMENT TYPE</th>
+              <th>CASE ID</th>
+              <th>ORDERED AMOUNT</th>
+              <th>ARREAR AMOUNT</th>
+              <th>WITHHOLDING AMOUNT</th>
+              <th>ARREAR WITHHELD</th>
+              <th>REMAINING BALANCE</th>
+              <th>STATUS</th>
+            </tr>
+          `;
+        } else {
+          // Single garnishment headers (without Remaining Balance and Status)
+          resultsTableHeader.innerHTML = `
+            <tr>
+              <th>DISPOSABLE EARNINGS</th>
+              <th>ALLOWABLE DISPOSABLE EARNINGS</th>
+              <th>TOTAL MANDATORY DEDUCTION</th>
+              <th>WITHHOLDING AMOUNT</th>
+              <th>WITHHOLDING ARREAR</th>
+              <th>GARNISHMENT FEES</th>
+            </tr>
+          `;
+        }
 
         if (result.results && result.results.length > 0) {
           result.results.forEach(caseResult => {
-            // Extract withholding amounts from agency array
-            let withholdingAmounts = [];
-            let withholdingArrear = 'N/A';
-            let garnishmentFees = 'N/A';
-
-            if (caseResult.agency && caseResult.agency.length > 0) {
-              // Extract withholding amounts - handle multiple student loans
-              if (caseResult.agency[0].withholding_amt && caseResult.agency[0].withholding_amt.length > 0) {
-                caseResult.agency[0].withholding_amt.forEach((amt, index) => {
-                  if (amt.student_default_loan !== undefined) {
-                    withholdingAmounts.push({
-                      amount: amt.student_default_loan,
-                      loanNumber: index + 1,
-                      type: 'student_default_loan'
-                    });
-                  } else if (amt.garnishment_amount !== undefined) {
-                    withholdingAmounts.push({
-                      amount: amt.garnishment_amount,
-                      loanNumber: index + 1,
-                      type: 'garnishment'
-                    });
-                  }
-                });
-              }
-              
-              // Extract withholding arrear
-              if (caseResult.agency[1] && caseResult.agency[1].arrear && caseResult.agency[1].arrear.length > 0) {
-                withholdingArrear = caseResult.agency[1].arrear[0].withholding_arrear || 'N/A';
-              }
-            }
-
-            // Extract garnishment fees from er_deduction
-            if (caseResult.er_deduction && caseResult.er_deduction.garnishment_fees) {
-              garnishmentFees = caseResult.er_deduction.garnishment_fees;
-            }
-
-            // If no withholding amounts found, create a default row
-            if (withholdingAmounts.length === 0) {
-              const row = document.createElement('tr');
-              row.innerHTML = `
-                <td>${caseResult.disposable_earning || 'N/A'}</td>
-                <td>${caseResult.allowable_disposable_earning || 'N/A'}</td>
-                <td>${caseResult.total_mandatory_deduction || 'N/A'}</td>
-                <td>N/A</td>
-                <td>${withholdingArrear}</td>
-                <td>${garnishmentFees}</td>
-              `;
-              resultsTableBody.appendChild(row);
-            } else {
-              // Create a row for each withholding amount
-              withholdingAmounts.forEach((withholding, index) => {
-                const row = document.createElement('tr');
-                
-                // For student default loans, show loan number in the first column
-                let firstColumn = caseResult.disposable_earning || 'N/A';
-                if (withholding.type === 'student_default_loan' && withholdingAmounts.length > 1) {
-                  firstColumn = `Loan ${withholding.loanNumber} - ${caseResult.disposable_earning || 'N/A'}`;
-                }
-                
-                row.innerHTML = `
-                  <td>${firstColumn}</td>
-                  <td>${caseResult.allowable_disposable_earning || 'N/A'}</td>
-                  <td>${caseResult.total_mandatory_deduction || 'N/A'}</td>
-                  <td>${withholding.amount}</td>
-                  <td>${withholdingArrear}</td>
-                  <td>${garnishmentFees}</td>
-                `;
-                
-                // Add visual distinction for multiple loans
-                if (withholdingAmounts.length > 1) {
-                  row.classList.add('table-warning');
-                }
-                
-                resultsTableBody.appendChild(row);
-              });
-              
-              // Add a summary row for multiple loans
-              if (withholdingAmounts.length > 1 && withholdingAmounts[0].type === 'student_default_loan') {
-                const totalAmount = withholdingAmounts.reduce((sum, withholding) => sum + withholding.amount, 0);
-                const summaryRow = document.createElement('tr');
-                summaryRow.classList.add('loan-header');
-                summaryRow.innerHTML = `
-                  <td><strong>Total (${withholdingAmounts.length} Loans)</strong></td>
-                  <td>${caseResult.allowable_disposable_earning || 'N/A'}</td>
-                  <td>${caseResult.total_mandatory_deduction || 'N/A'}</td>
-                  <td><strong>${totalAmount.toFixed(2)}</strong></td>
-                  <td>${withholdingArrear}</td>
-                  <td>${garnishmentFees}</td>
-                `;
-                resultsTableBody.appendChild(summaryRow);
-              }
-            }
-
-            // Add specific details for each case if available
-            if (caseResult.garnishment_data && caseResult.garnishment_data.length > 0) {
-              const caseDetails = document.createElement('div');
-              caseDetails.className = 'col-md-6 mb-3';
-              caseDetails.innerHTML = `
-                <div class="card">
-                  <div class="card-header">
-                    <h6 class="mb-0">Case Details for ${caseResult.ee_id || 'N/A'}</h6>
-                  </div>
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-md-6">
-                        <p><strong>Employee ID:</strong> ${caseResult.ee_id || 'N/A'}</p>
-                        <p><strong>Work State:</strong> ${caseResult.work_state || 'N/A'}</p>
-                        <p><strong>Pay Period:</strong> ${caseResult.pay_period || 'N/A'}</p>
-                        <p><strong>Filing Status:</strong> ${caseResult.filing_status || 'N/A'}</p>
-                        <p><strong>Gross Pay:</strong> ${caseResult.gross_pay || 'N/A'}</p>
-                        <p><strong>Net Pay:</strong> ${caseResult.net_pay || 'N/A'}</p>
-                        <p><strong>Age:</strong> ${caseResult.age || 'N/A'}</p>
-                        <p><strong>Spouse Age:</strong> ${caseResult.spouse_age || 'N/A'}</p>
-                      </div>
-                      <div class="col-md-6">
-                        <p><strong>Student Default Loan:</strong> ${caseResult.no_of_student_default_loan || 'N/A'}</p>
-                        <p><strong>Ordered Amount:</strong> ${caseResult.garnishment_data[0].data[0].ordered_amount || 'N/A'}</p>
-                        <p><strong>Arrear Amount:</strong> ${caseResult.garnishment_data[0].data[0].arrear_amount || 'N/A'}</p>
-                        <p><strong>Support Second Family:</strong> ${caseResult.support_second_family ? 'Yes' : 'No'}</p>
-                        <p><strong>Arrears > 12 Weeks:</strong> ${caseResult.arrears_greater_than_12_weeks ? 'Yes' : 'No'}</p>
-                        <p><strong>Is Blind:</strong> ${caseResult.is_blind ? 'Yes' : 'No'}</p>
-                        <p><strong>Is Spouse Blind:</strong> ${caseResult.is_spouse_blind ? 'Yes' : 'No'}</p>
-                        <p><strong>Dependent Children:</strong> ${caseResult.no_of_dependent_child || 'N/A'}</p>
+            if (garnishmentType === 'Multiple Garnishment') {
+              // Handle Multiple Garnishment Response Structure
+              // Display garnishment types summary
+              const garnishmentTypesSummary = document.getElementById('garnishment-types-summary');
+              if (caseResult.garnishment_types && caseResult.garnishment_types.length > 0) {
+                garnishmentTypesSummary.innerHTML = `
+                  <div class="col-12">
+                    <div class="alert alert-light border">
+                      <h6 class="mb-2 text-dark"><i class="bi bi-list-ul me-2"></i>Garnishment Types Processed:</h6>
+                      <div class="d-flex flex-wrap gap-2">
+                        ${caseResult.garnishment_types.map(type => 
+                          `<span class="badge bg-dark">${type.replace(/_/g, ' ').toUpperCase()}</span>`
+                        ).join('')}
                       </div>
                     </div>
                   </div>
-                </div>
-              `;
-              additionalDetails.appendChild(caseDetails);
+                `;
+              }
+
+              // Display garnishment data in table
+              if (caseResult.garnishment_data && caseResult.garnishment_data.length > 0) {
+                caseResult.garnishment_data.forEach(garnishmentType => {
+                  // Format garnishment type for display - moved outside inner loop
+                  const typeDisplay = garnishmentType.type.replace(/_/g, ' ').toUpperCase();
+                  
+                  if (garnishmentType.cases && garnishmentType.cases.length > 0) {
+                    garnishmentType.cases.forEach(caseItem => {
+                      const row = document.createElement('tr');
+                      
+                      // Add type-specific styling class
+                      row.classList.add(`garnishment-type-${garnishmentType.type}`);
+                      
+                      // Get badge color based on type - Professional colors
+                      let badgeClass = 'bg-secondary';
+                      switch(garnishmentType.type) {
+                        case 'child_support':
+                          badgeClass = 'bg-primary';
+                          break;
+                        case 'student_default_loan':
+                          badgeClass = 'bg-dark';
+                          break;
+                        case 'creditor_debt':
+                          badgeClass = 'bg-secondary';
+                          break;
+                        case 'federal_tax_levy':
+                          badgeClass = 'bg-dark';
+                          break;
+                        case 'state_tax_levy':
+                          badgeClass = 'bg-secondary';
+                          break;
+                        case 'franchise_tax_board':
+                          badgeClass = 'bg-dark';
+                          break;
+                      }
+                      
+                      // Build additional info for specific garnishment types
+                      let additionalInfo = '';
+                      if (caseItem.withholding_limit_rule) {
+                        additionalInfo += `<br><small class="text-muted">Limit Rule: ${caseItem.withholding_limit_rule}</small>`;
+                      }
+                      if (caseItem.withholding_basis && caseItem.withholding_basis !== 'NA') {
+                        additionalInfo += `<br><small class="text-muted">Basis: ${caseItem.withholding_basis}</small>`;
+                      }
+                      if (caseItem.withholding_cap && caseItem.withholding_cap !== 'NA') {
+                        additionalInfo += `<br><small class="text-muted">Cap: ${caseItem.withholding_cap}</small>`;
+                      }
+                      
+                      row.innerHTML = `
+                        <td><span class="badge ${badgeClass}">${typeDisplay}</span></td>
+                        <td><code>${caseItem.case_id || 'N/A'}</code></td>
+                        <td>$${caseItem.ordered_amount || 0}</td>
+                        <td>$${caseItem.arrear_amount || 0}</td>
+                        <td><strong class="text-dark">$${caseItem.withholding_amount || 0}${additionalInfo}</strong></td>
+                        <td>$${caseItem.arrear_withheld || 0}</td>
+                        <td>$${caseItem.remaining_balance || 0}</td>
+                        <td><span class="badge bg-dark">${caseItem.calculation_status || 'N/A'}</span></td>
+                      `;
+                      
+                      resultsTableBody.appendChild(row);
+                    });
+                    
+                    // Add type summary row
+                    if (garnishmentType.type_summary) {
+                      const summaryRow = document.createElement('tr');
+                      summaryRow.classList.add('table-warning');
+                      summaryRow.innerHTML = `
+                        <td colspan="4"><strong>${typeDisplay} Summary</strong></td>
+                        <td><strong>$${garnishmentType.type_summary.total_withheld || 0}</strong></td>
+                        <td colspan="3"><strong>Total Cases: ${garnishmentType.type_summary.total_cases || 0}</strong></td>
+                      `;
+                      resultsTableBody.appendChild(summaryRow);
+                    }
+                  }
+                });
+              }
+
+              // Display calculation summary for multiple garnishment
+              const calculationSummarySection = document.getElementById('calculation-summary-section');
+              if (caseResult.calculation_summary) {
+                calculationSummarySection.innerHTML = `
+                  <div class="col-12">
+                    <div class="card calculation-summary-card">
+                      <div class="card-header">
+                        <h6 class="mb-0 text-dark fw-bold"><i class="bi bi-calculator me-2"></i>Calculation Summary</h6>
+                      </div>
+                      <div class="card-body">
+                        <div class="row g-3">
+                          <div class="col-md-3">
+                            <div class="calculation-metric-card">
+                              <div class="metric-label">25% of Disposable Earnings</div>
+                              <div class="metric-value">$${caseResult.calculation_summary.twenty_five_percent_of_de || 0}</div>
+                            </div>
+                          </div>
+                          <div class="col-md-3">
+                            <div class="calculation-metric-card">
+                              <div class="metric-label">Disposable Earnings</div>
+                              <div class="metric-value">$${caseResult.calculation_summary.disposable_earnings || 0}</div>
+                            </div>
+                          </div>
+                          <div class="col-md-3">
+                            <div class="calculation-metric-card">
+                              <div class="metric-label">Allowable Disposable Earnings</div>
+                              <div class="metric-value">$${caseResult.calculation_summary.allowable_disposable_earnings || 0}</div>
+                            </div>
+                          </div>
+                          <div class="col-md-3">
+                            <div class="calculation-metric-card">
+                              <div class="metric-label">Total Mandatory Deduction</div>
+                              <div class="metric-value">$${caseResult.calculation_summary.total_mandatory_deduction || 0}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }
+
+              // Display employer deduction for multiple garnishment
+              const employerDeductionSection = document.getElementById('employer-deduction-section');
+              if (caseResult.er_deduction) {
+                employerDeductionSection.innerHTML = `
+                  <div class="col-12">
+                    <div class="card employer-deduction-card">
+                      <div class="card-header">
+                        <h6 class="mb-0 text-dark fw-bold"><i class="bi bi-building me-2"></i>Employer Deduction</h6>
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="deduction-item">
+                              <div class="deduction-label"><i class="bi bi-currency-dollar me-2"></i>Garnishment Fees</div>
+                              <div class="deduction-value">${caseResult.er_deduction.garnishment_fees || 'N/A'}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }
+            } else {
+              // Handle Single Garnishment Response Structure (Child Support, Student Default Loan, etc.)
+              // Extract withholding amounts from agency array
+              let withholdingAmounts = [];
+              let withholdingArrear = 'N/A';
+              let garnishmentFees = 'N/A';
+
+              if (caseResult.agency && caseResult.agency.length > 0) {
+                // Extract withholding amounts - handle multiple student loans
+                if (caseResult.agency[0].withholding_amt && caseResult.agency[0].withholding_amt.length > 0) {
+                  caseResult.agency[0].withholding_amt.forEach((amt, index) => {
+                    if (amt.student_default_loan !== undefined) {
+                      withholdingAmounts.push({
+                        amount: amt.student_default_loan,
+                        loanNumber: index + 1,
+                        type: 'student_default_loan'
+                      });
+                    } else if (amt.garnishment_amount !== undefined) {
+                      withholdingAmounts.push({
+                        amount: amt.garnishment_amount,
+                        loanNumber: index + 1,
+                        type: 'garnishment'
+                      });
+                    }
+                  });
+                }
+                
+                // Extract withholding arrear
+                if (caseResult.agency[1] && caseResult.agency[1].arrear && caseResult.agency[1].arrear.length > 0) {
+                  withholdingArrear = caseResult.agency[1].arrear[0].withholding_arrear || 'N/A';
+                }
+              }
+
+              // Extract garnishment fees from er_deduction
+              if (caseResult.er_deduction && caseResult.er_deduction.garnishment_fees) {
+                garnishmentFees = caseResult.er_deduction.garnishment_fees;
+              }
+
+              // Hide garnishment types summary for single calculation
+              const garnishmentTypesSummary = document.getElementById('garnishment-types-summary');
+              garnishmentTypesSummary.innerHTML = '';
+
+              // If no withholding amounts found, create a default row
+              if (withholdingAmounts.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                  <td>${caseResult.disposable_earning || 'N/A'}</td>
+                  <td>${caseResult.allowable_disposable_earning || 'N/A'}</td>
+                  <td>${caseResult.total_mandatory_deduction || 'N/A'}</td>
+                  <td>N/A</td>
+                  <td>${withholdingArrear}</td>
+                  <td>${garnishmentFees}</td>
+                `;
+                resultsTableBody.appendChild(row);
+              } else {
+                // Create a row for each withholding amount
+                withholdingAmounts.forEach((withholding, index) => {
+                  const row = document.createElement('tr');
+                  
+                  // For student default loans, show loan number in the first column
+                  let firstColumn = caseResult.disposable_earning || 'N/A';
+                  if (withholding.type === 'student_default_loan' && withholdingAmounts.length > 1) {
+                    firstColumn = `Loan ${withholding.loanNumber} - ${caseResult.disposable_earning || 'N/A'}`;
+                  }
+                  
+                  row.innerHTML = `
+                    <td>${firstColumn}</td>
+                    <td>${caseResult.allowable_disposable_earning || 'N/A'}</td>
+                    <td>${caseResult.total_mandatory_deduction || 'N/A'}</td>
+                    <td>${withholding.amount}</td>
+                    <td>${withholdingArrear}</td>
+                    <td>${garnishmentFees}</td>
+                  `;
+                  
+                  // Add visual distinction for multiple loans
+                  if (withholdingAmounts.length > 1) {
+                    row.classList.add('table-warning');
+                  }
+                  
+                  resultsTableBody.appendChild(row);
+                });
+                
+                // Add a summary row for multiple loans
+                if (withholdingAmounts.length > 1 && withholdingAmounts[0].type === 'student_default_loan') {
+                  const totalAmount = withholdingAmounts.reduce((sum, withholding) => {
+                    const amount = parseFloat(withholding.amount) || 0;
+                    return sum + amount;
+                  }, 0);
+                  const summaryRow = document.createElement('tr');
+                  summaryRow.classList.add('loan-header');
+                  summaryRow.innerHTML = `
+                    <td><strong>Total (${withholdingAmounts.length} Loans)</strong></td>
+                    <td>${caseResult.allowable_disposable_earning || 'N/A'}</td>
+                    <td>${caseResult.total_mandatory_deduction || 'N/A'}</td>
+                    <td><strong>$${totalAmount.toFixed(2)}</strong></td>
+                    <td>${withholdingArrear}</td>
+                    <td>${garnishmentFees}</td>
+                  `;
+                  resultsTableBody.appendChild(summaryRow);
+                }
+              }
+
+              // Add specific details for each case if available
+              if (caseResult.garnishment_data && caseResult.garnishment_data.length > 0) {
+                const caseDetails = document.createElement('div');
+                caseDetails.className = 'col-md-6 mb-3';
+                caseDetails.innerHTML = `
+                  <div class="card">
+                    <div class="card-header">
+                      <h6 class="mb-0">Case Details for ${caseResult.ee_id || 'N/A'}</h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <p><strong>Employee ID:</strong> ${caseResult.ee_id || 'N/A'}</p>
+                          <p><strong>Work State:</strong> ${caseResult.work_state || 'N/A'}</p>
+                          <p><strong>Pay Period:</strong> ${caseResult.pay_period || 'N/A'}</p>
+                          <p><strong>Filing Status:</strong> ${caseResult.filing_status || 'N/A'}</p>
+                          <p><strong>Gross Pay:</strong> ${caseResult.gross_pay || 'N/A'}</p>
+                          <p><strong>Net Pay:</strong> ${caseResult.net_pay || 'N/A'}</p>
+                          <p><strong>Age:</strong> ${caseResult.age || 'N/A'}</p>
+                          <p><strong>Spouse Age:</strong> ${caseResult.spouse_age || 'N/A'}</p>
+                        </div>
+                        <div class="col-md-6">
+                          <p><strong>Student Default Loan:</strong> ${caseResult.no_of_student_default_loan || 'N/A'}</p>
+                          <p><strong>Ordered Amount:</strong> ${(caseResult.garnishment_data?.[0]?.cases?.[0]?.ordered_amount) || 'N/A'}</p>
+                          <p><strong>Arrear Amount:</strong> ${(caseResult.garnishment_data?.[0]?.cases?.[0]?.arrear_amount) || 'N/A'}</p>
+                          <p><strong>Support Second Family:</strong> ${caseResult.support_second_family ? 'Yes' : 'No'}</p>
+                          <p><strong>Arrears > 12 Weeks:</strong> ${caseResult.arrears_greater_than_12_weeks ? 'Yes' : 'No'}</p>
+                          <p><strong>Is Blind:</strong> ${caseResult.is_blind ? 'Yes' : 'No'}</p>
+                          <p><strong>Is Spouse Blind:</strong> ${caseResult.is_spouse_blind ? 'Yes' : 'No'}</p>
+                          <p><strong>Dependent Children:</strong> ${caseResult.no_of_dependent_child || 'N/A'}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                `;
+                additionalDetails.appendChild(caseDetails);
+              }
             }
           });
         }
@@ -583,10 +949,16 @@
         resultsTableBody.innerHTML = '';
         additionalDetails.innerHTML = '';
         
+        // Clear all sections
+        document.getElementById('garnishment-types-summary').innerHTML = '';
+        document.getElementById('calculation-summary-section').innerHTML = '';
+        document.getElementById('employer-deduction-section').innerHTML = '';
+        
         // Show error in the table
         const errorRow = document.createElement('tr');
+        const errorColspan = garnishmentType === 'Multiple Garnishment' ? '8' : '6';
         errorRow.innerHTML = `
-          <td colspan="6" class="text-center text-danger">
+          <td colspan="${errorColspan}" class="text-center text-danger">
             <strong>Error:</strong> ${error.message || 'An error occurred during calculation'}
           </td>
         `;
@@ -634,6 +1006,71 @@ document.addEventListener('change', function (e) {
     const mgContainer = document.getElementById('multiple-garnishment-fields');
     mgContainer.innerHTML = ''; // clear previous
 
+    // Add Common Fields Section first
+    mgContainer.innerHTML += `
+      <div class="col-12 mb-4">
+        <div class="p-3 rounded shadow-sm"
+            style="background-color: #e3f2fd; color: #1565c0; 
+                    cursor: pointer;"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapse_common_fields">
+          
+          <!-- Header + Subtext grouped -->
+          <div class="d-flex flex-column">
+            <div class="d-flex align-items-center mb-1"
+                style="font-size: 1.1rem; font-weight: 600;">
+              <span>Employee Information</span>
+            </div>
+            <small style="color: #1565c0; font-weight: 400; opacity: 0.65; margin-left: 0.7rem;">
+              Enter employee details that apply to all garnishment types.
+            </small>
+          </div>
+        </div>
+
+        <!-- Collapsible content area for common fields -->
+        <div id="collapse_common_fields" class="collapse show mt-2">
+          <div id="body_common_fields" 
+              class="row p-3 border rounded bg-light">
+            <!-- Common fields will be injected here -->
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Add common fields
+    const commonFieldsBody = document.getElementById('body_common_fields');
+    commonFields.forEach(label => {
+      const fieldWrapper = document.createElement('div');
+      fieldWrapper.className = 'col-md-4 mb-3';
+        
+      // Handle specific field names
+      let name = label.toLowerCase();
+      
+      if (label === 'Total Mandatory Deductions') {
+        name = 'total_mandatory_deductions';
+      } else if (label === 'Gross Pay') {
+        name = 'gross_pay';
+      } else if (label === 'Net Pay') {
+        name = 'net_pay';
+      } else {
+        name = label.toLowerCase().replace(/[^a-z0-9]/gi, '_');
+      }
+
+      if (/amount|deductions/i.test(label)) {
+        fieldWrapper.innerHTML = `
+          <label class="form-label">${label}</label>
+          <input type="number" class="form-control" name="${name}" placeholder="Enter ${label}">
+        `;
+      } else {
+        fieldWrapper.innerHTML = `
+          <label class="form-label">${label}</label>
+          <input type="text" class="form-control" name="${name}" placeholder="Enter ${label}">
+        `;
+      }
+      commonFieldsBody.appendChild(fieldWrapper);
+    });
+
+    // Add individual garnishment type sections
     selectedTypes.forEach(type => {
       if (fieldSets[type]) {
            const garnishmentThemes = {
@@ -665,17 +1102,17 @@ document.addEventListener('change', function (e) {
                   <span>${type} Details</span>
                 </div>
                 <small style="color: ${theme.text}; font-weight: 400; opacity: 0.65; margin-left: 0.7rem;">
-                  Configure ${type.toLowerCase()} garnishment settings below.
+                  Configure ${type.toLowerCase()} specific garnishment settings below.
                 </small>
               </div>
             </div>
 
             <!-- Collapsible content area for fields -->
-            <div id="collapse_${type.replace(/\s+/g, '_')}" class="collapse mt-2">
+            <div id="collapse_${type.replace(/\s+/g, '_')}" class="collapse show mt-2">
               <div id="body_${type.replace(/\s+/g, '_')}" 
                   class="row p-3 border rounded bg-light">
 
-                <!-- 👉 Inject ${type} input fields here -->
+                <!-- 👉 Inject ${type} specific input fields here -->
 
               </div>
             </div>
@@ -685,11 +1122,38 @@ document.addEventListener('change', function (e) {
         // Find the collapse body for this type
         const collapseBody = document.getElementById(`body_${type.replace(/\s+/g, '_')}`);
 
-        fieldSets[type].forEach(label => {
+        // Filter out common fields from individual garnishment types
+        const specificFields = fieldSets[type].filter(label => !commonFields.includes(label));
+
+        specificFields.forEach(label => {
           const fieldWrapper = document.createElement('div');
           fieldWrapper.className = 'col-md-4 mb-3';
             
-          const name = label.toLowerCase().replace(/\s+/g, '_');
+          // Handle specific field names to ensure consistency with single garnishment
+          let name = label.toLowerCase();
+          
+          if (label === 'No. of Student Default Loan') {
+            name = 'no_of_student_default_loan';
+          } else if (label === 'Support Second Family') {
+            name = 'support_second_family';
+          } else if (label === 'Arrears Greater Than 12 Weeks') {
+            name = 'arrears_greater_than_12_weeks';
+          } else if (label === 'Ordered Amount') {
+            name = 'ordered_amount';
+          } else if (label === 'Arrear Amount') {
+            name = 'arrear_amount';
+          } else if (label === 'No. of Exemptions (Including Self)') {
+            name = 'no__of_exemptions__including_self_';
+          } else if (label === 'No. of Dependent Child') {
+            name = 'no__of_dependent_child';
+          } else if (label === 'Garn-Start Date') {
+            name = 'garn_start_date';
+          } else if (label === 'Statement of Exemption Received Date') {
+            name = 'statement_of_exemption_received_date';
+          } else {
+            // Fallback to regex conversion for other fields
+            name = label.toLowerCase().replace(/[^a-z0-9]/gi, '_');
+          }
 
           if (
             /is |has |support|arrears/i.test(label) || 
@@ -701,6 +1165,18 @@ document.addEventListener('change', function (e) {
                 <input class="form-check-input" type="checkbox" id="${name}" name="${name}">
                 <label class="form-check-label" for="${name}">${label}</label>
               </div>
+            `;
+          } else if (label === 'Filing Status') {
+            fieldWrapper.innerHTML = `
+              <label class="form-label">${label}</label>
+              <select class="form-control" name="${name}">
+                <option value="">Select Filing Status</option>
+                <option value="single">Single</option>
+                <option value="married_joint">Married Filing Jointly</option>
+                <option value="married_separate">Married Filing Separately</option>
+                <option value="head">Head of Household</option>
+                <option value="widow">Qualifying Widow(er)</option>
+              </select>
             `;
           } else if (/date/i.test(label)) {
             fieldWrapper.innerHTML = `

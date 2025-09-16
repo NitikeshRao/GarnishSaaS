@@ -263,7 +263,7 @@ class MultipleGarnishmentPriorityOrder:
 
             except Exception as e:
                 import traceback as t
-                # print(t.print_exc())
+                print(t.print_exc())
                 logger.exception(f"Error calculating garnishment '{g_type}' for state '{self.work_state}'.")
                 garnishment_results[g_type] = {"withholding_amt": 0, "calculation_status": "calculation_error", "error_details": str(e)}
 

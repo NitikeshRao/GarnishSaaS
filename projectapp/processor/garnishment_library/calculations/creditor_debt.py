@@ -28,9 +28,7 @@ class CreditorDebtHelper():
         date = datetime(2022, 12, 5).date()
         
         garn_start_date = garn_start_date.replace("-", "/")
-        print("garn_start_date",garn_start_date)
         filed_date = datetime.strptime(garn_start_date, "%m/%d/%Y").date()
-        print("filed_date",filed_date)
         if filed_date > date :
             return True
         elif filed_date < date:
@@ -72,7 +70,6 @@ class CreditorDebtHelper():
         using the general formula (used by multiple states).
         """
         try:
-            print("config_data",config_data)
             lower_threshold_amount = float(
                 config_data[EC.LOWER_THRESHOLD_AMOUNT])
             upper_threshold_amount = float(

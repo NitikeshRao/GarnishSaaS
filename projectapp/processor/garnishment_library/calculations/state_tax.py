@@ -54,8 +54,7 @@ class StateTaxViewHelper:
         """
         try:
             state = state.strip()
-            obj = StateTaxLevyConfig.objects.filter(state__iexact=state)
-            obj = StateTaxLevyConfig.objects.filter(state__iexact=state)
+            obj = StateTaxLevyConfig.objects.filter(state__state__iexact=state)
             if obj.exists():
                 return {
                     "wl_percent": obj[0].withholding_limit,
