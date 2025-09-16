@@ -1061,42 +1061,67 @@
 // Listener for Multiple Garnishment checkboxes
 document.addEventListener('change', function (e) {
   if (e.target && e.target.name === 'garnishment_types') {
+    const allCheckboxes = document.querySelectorAll('input[name="garnishment_types"]');
     selectedTypes = Array.from(
       document.querySelectorAll('input[name="garnishment_types"]:checked')
     ).map(cb => cb.value);
+    
     const mgContainer = document.getElementById('multiple-garnishment-fields');
     mgContainer.innerHTML = ''; // clear previous
 
-    // Add Common Fields Section first
-    mgContainer.innerHTML += `
-      <div class="col-12 mb-4">
-        <div class="p-3 rounded shadow-sm"
-            style="background-color: #e3f2fd; color: #1565c0; 
-                    cursor: pointer;"
-            data-bs-toggle="collapse"
-            data-bs-target="#collapse_common_fields">
-          
-          <!-- Header + Subtext grouped -->
-          <div class="d-flex flex-column">
-            <div class="d-flex align-items-center mb-1"
-                style="font-size: 1.1rem; font-weight: 600;">
-              <span>Employee Information</span>
-            </div>
-            <small style="color: #1565c0; font-weight: 400; opacity: 0.65; margin-left: 0.7rem;">
-              Enter employee details that apply to all garnishment types.
-            </small>
-          </div>
+    // --- Restriction Logic ---
+    if (selectedTypes.length === 1) {
+      mgContainer.innerHTML = `
+        <div class="alert alert-danger">
+          Please select <strong>one more garnishment type</strong> to continue.
         </div>
+      `;
+    }
 
-        <!-- Collapsible content area for common fields -->
-        <div id="collapse_common_fields" class="collapse show mt-2">
-          <div id="body_common_fields" 
-              class="row p-3 border rounded bg-light">
-            <!-- Common fields will be injected here -->
+    else if (selectedTypes.length === 2) {
+      // Disable all unchecked (except initially disabled)
+      allCheckboxes.forEach(cb => {
+        if (!cb.checked && !cb.dataset.initiallyDisabled) {
+          cb.disabled = true;
+        }
+      });
+
+      // Clear warning once 2 are chosen
+      mgContainer.innerHTML = '';
+    }
+
+    if (selectedTypes.length === 2) {
+      
+      // Add Common Fields Section first
+      mgContainer.innerHTML += `
+        <div class="col-12 mb-4">
+          <div class="p-3 rounded shadow-sm"
+              style="background-color: #e3f2fd; color: #1565c0; 
+                      cursor: pointer;"
+              data-bs-toggle="collapse"
+              data-bs-target="#collapse_common_fields">
+            
+            <!-- Header + Subtext grouped -->
+            <div class="d-flex flex-column">
+              <div class="d-flex align-items-center mb-1"
+                  style="font-size: 1.1rem; font-weight: 600;">
+                <span>Employee Information</span>
+              </div>
+              <small style="color: #1565c0; font-weight: 400; opacity: 0.65; margin-left: 0.7rem;">
+                Enter employee details that apply to all garnishment types.
+              </small>
+            </div>
+          </div>
+
+          <!-- Collapsible content area for common fields -->
+          <div id="collapse_common_fields" class="collapse show mt-2">
+            <div id="body_common_fields" 
+                class="row p-3 border rounded bg-light">
+              <!-- Common fields will be injected here -->
+            </div>
           </div>
         </div>
-      </div>
-    `;
+      `;
 
     // Add common fields
     const commonFieldsBody = document.getElementById('body_common_fields');
@@ -1261,6 +1286,7 @@ document.addEventListener('change', function (e) {
     });
 
     initializeFlatpickr(); // re-init for date fields
+    }
   }
 });
 
@@ -1453,32 +1479,6 @@ function renderField(label, type) {
           }
 
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-  const checkboxes = [
-    document.getElementById("mg_child_support"),
-    document.getElementById("mg_creditor"),
-    document.getElementById("mg_student"),
-  ];
-
-  function updateRestrictions() {
-    // Find which ones are checked
-    const checked = checkboxes.filter(cb => cb.checked);
-
-    if (checked.length >= 2) {
-      // Disable any that are not checked
-      checkboxes.forEach(cb => {
-        if (!cb.checked) cb.disabled = true;
-      });
-    } else {
-      // Re-enable all if less than 2 selected
-      checkboxes.forEach(cb => cb.disabled = false);
-    }
-  }
-
-  // Attach listener
-  checkboxes.forEach(cb => cb.addEventListener("change", updateRestrictions));
-});
 
 </script>
 
