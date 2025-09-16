@@ -517,6 +517,7 @@
           }
 
         ],
+
     // ensure a flat array of normalized type identifiers (no nested arrays)
     garnishment_orders: garnishmentType === 'Multiple Garnishment'
       ? selectedTypes.map(type => type.toLowerCase().replace(/\s+/g, "_"))
@@ -605,6 +606,7 @@
         resultsTableHeader.innerHTML = '';
         
         if (garnishmentType === 'Multiple Garnishment') {
+          
           // Multiple garnishment headers
           resultsTableHeader.innerHTML = `
             <tr>
@@ -992,17 +994,24 @@
     }
   });
 
-  garnishmentTypeSelect.addEventListener('change', function () {
-    const type = this.value;
+  const workStateSelect = document.querySelector('[name="work_state"]');
+  const payPeriodSelect = document.querySelector('[name="pay_period"]');
+
+  function renderDynamicSection() {
+    const type = garnishmentTypeSelect.value;
+    const workState = workStateSelect.value;
+    const payPeriod = payPeriodSelect.value;
     container.innerHTML = '';
-    
-    // Hide results when changing garnishment type
     document.getElementById('calculation-results').style.display = 'none';
 
+    // Only continue if all three have values
+    if (!type || !workState || !payPeriod) {
+      return; // stop here until all are chosen
+    }
+
     if (fieldSets[type]) {
-      // First, render common fields for all garnishment types (except Multiple Garnishment)
       if (type !== 'Multiple Garnishment') {
-        // Add section header for common fields
+        // Common fields header
         container.innerHTML += `
           <div class="col-12 mb-3">
             <div class="alert alert-info border-0" style="background-color: #e3f2fd; border-left: 4px solid #2196f3 !important;">
@@ -1011,21 +1020,20 @@
             </div>
           </div>
         `;
-        
+
         // Filter common fields based on garnishment type
         const filteredCommonFields = commonFields.filter(label => {
-          // Exclude Net Pay for Child Support and Student Default Loan
           if (label === 'Net Pay' && (type === 'Child Support' || type === 'Student Default Loan')) {
             return false;
           }
           return true;
         });
-        
+
         filteredCommonFields.forEach(label => {
           renderField(label, type);
         });
-        
-        // Add section header for specific fields
+
+        // Section header for specific fields
         container.innerHTML += `
           <div class="col-12 mb-3 mt-4">
             <div class="alert alert-light border-0" style="background-color: #f8f9fa; border-left: 4px solid #6c757d !important;">
@@ -1035,16 +1043,20 @@
           </div>
         `;
       }
-      
-      // Then render specific fields for the garnishment type
+
+      // Specific fields for the type
       fieldSets[type].forEach(label => {
-        // Improved field name generation to handle special cases
-        renderField(label, type)
-        
+        renderField(label, type);
       });
-      initializeFlatpickr(); // Re-initialize after rendering fields
+
+      initializeFlatpickr();
     }
-  });
+  }
+
+  garnishmentTypeSelect.addEventListener('change', renderDynamicSection);
+  workStateSelect.addEventListener('change', renderDynamicSection);
+  payPeriodSelect.addEventListener('change', renderDynamicSection);
+
 
 // Listener for Multiple Garnishment checkboxes
 document.addEventListener('change', function (e) {
@@ -1441,5 +1453,32 @@ function renderField(label, type) {
           }
 
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  const checkboxes = [
+    document.getElementById("mg_child_support"),
+    document.getElementById("mg_creditor"),
+    document.getElementById("mg_student"),
+  ];
+
+  function updateRestrictions() {
+    // Find which ones are checked
+    const checked = checkboxes.filter(cb => cb.checked);
+
+    if (checked.length >= 2) {
+      // Disable any that are not checked
+      checkboxes.forEach(cb => {
+        if (!cb.checked) cb.disabled = true;
+      });
+    } else {
+      // Re-enable all if less than 2 selected
+      checkboxes.forEach(cb => cb.disabled = false);
+    }
+  }
+
+  // Attach listener
+  checkboxes.forEach(cb => cb.addEventListener("change", updateRestrictions));
+});
+
 </script>
 
