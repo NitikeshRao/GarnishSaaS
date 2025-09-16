@@ -1,0 +1,127 @@
+<!-- Calculate Garnishment Modal -->
+<div class="modal fade" id="calculate_garnishment" tabindex="-1" aria-labelledby="calculateGarnishmentLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="calculateGarnishmentLabel">
+                    <i class="ti ti-calculator me-2"></i>Calculate Garnishment
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="garnishment_calculation_form">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="batch_id" class="form-label">Batch ID <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="batch_id" name="batch_id" 
+                                       placeholder="Enter batch ID" required>
+                                <div class="form-text">Unique identifier for this calculation batch</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="garnishment_type" class="form-label">Garnishment Type</label>
+                                <select class="form-select" id="garnishment_type" name="garnishment_type">
+                                    <option value="">Select type (optional)</option>
+                                    <option value="child_support">Child Support</option>
+                                    <option value="creditor_debt">Creditor Debt</option>
+                                    <option value="federal_tax">Federal Tax Levy</option>
+                                    <option value="state_tax">State Tax Levy</option>
+                                    <option value="student_loan">Student Loan</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="cases_data" class="form-label">Cases Data (JSON) <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="cases_data" name="cases_data" rows="8" 
+                                  placeholder='Enter cases data in JSON format, e.g.:
+[
+  {
+    "employee_id": "EMP001",
+    "gross_pay": 5000.00,
+    "pay_frequency": "biweekly",
+    "garnishment_type": "child_support",
+    "case_amount": 500.00
+  }
+]' required></textarea>
+                        <div class="form-text">
+                            <strong>Required fields for each case:</strong><br>
+                            • employee_id: Employee identifier<br>
+                            • gross_pay: Employee's gross pay amount<br>
+                            • pay_frequency: "weekly", "biweekly", "monthly", etc.<br>
+                            • garnishment_type: Type of garnishment<br>
+                            • case_amount: Amount to be garnished
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="validate_data" checked>
+                            <label class="form-check-label" for="validate_data">
+                                Validate data before calculation
+                            </label>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Results Display Area -->
+                <div id="calculation_results" style="display: none;" class="mt-4">
+                    <!-- Results will be displayed here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="calculate_btn" onclick="handleGarnishmentCalculation()">
+                    <i class="ti ti-calculator me-2"></i>Calculate Garnishment
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Add some helper functions for the modal
+document.addEventListener('DOMContentLoaded', function() {
+    // Clear form when modal is closed
+    document.getElementById('calculate_garnishment').addEventListener('hidden.bs.modal', function() {
+        document.getElementById('garnishment_calculation_form').reset();
+        document.getElementById('calculation_results').style.display = 'none';
+        document.getElementById('calculation_results').innerHTML = '';
+    });
+
+    // Add sample data button
+    const casesDataTextarea = document.getElementById('cases_data');
+    const sampleDataBtn = document.createElement('button');
+    sampleDataBtn.type = 'button';
+    sampleDataBtn.className = 'btn btn-outline-info btn-sm mt-2';
+    sampleDataBtn.innerHTML = '<i class="ti ti-file-text me-1"></i>Load Sample Data';
+    sampleDataBtn.onclick = function() {
+        const sampleData = [
+            {
+                "employee_id": "EMP001",
+                "gross_pay": 5000.00,
+                "pay_frequency": "biweekly",
+                "garnishment_type": "child_support",
+                "case_amount": 500.00,
+                "exemptions": 2,
+                "state": "CA"
+            },
+            {
+                "employee_id": "EMP002", 
+                "gross_pay": 3500.00,
+                "pay_frequency": "monthly",
+                "garnishment_type": "creditor_debt",
+                "case_amount": 200.00,
+                "exemptions": 1,
+                "state": "NY"
+            }
+        ];
+        casesDataTextarea.value = JSON.stringify(sampleData, null, 2);
+    };
+    
+    casesDataTextarea.parentNode.appendChild(sampleDataBtn);
+});
+</script>

@@ -8,6 +8,7 @@
         border-color: #000;
     }
 </style>
+
 <div class="content">
     <div class="card mt-3">
         <div class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
@@ -18,14 +19,14 @@
                         class="btn btn-sm btn-secondary d-flex align-items-center"><i class="ti ti-search me-2"></i>
                         Search</a>
                     <a href="#" style="margin-left: 10px;" data-bs-toggle="modal" data-bs-target="#add"
-                        class="btn btn-sm btn-primary d-flex align-items-center"><i
-                            class="ti ti-circle-plus me-2"></i>Add Client</a>
+                        class="btn btn-sm btn-primary d-flex align-items-center">
+                        <i class="ti ti-circle-plus me-2"></i>Add Client</a>
                 </div>
             </div>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover" id="clientsTable">
                     <thead class="thead-light">
                         <tr>
                             <th class="no-sort">#</th>
@@ -35,25 +36,78 @@
                             <th>STATUS</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>CLT1000</td>
-                            <td>NextGen Retailers Inc.</td>
-                            <td>NextGen</td>
-                            <td><a href="#" class="badge badge-success me-2" data-bs-toggle="tooltip"
-                                    data-bs-original-title="View Details"><i
-                                        class="ti ti-check text-success"></i> Active</a></td>
-                        </tr>
+                    <tbody id="clientsTableBody">
+                        <!-- Data will be injected here -->
                     </tbody>
                 </table>
                 {% include 'partials/pagination.html' %}
             </div>
         </div>
-
     </div>
 </div>
+
 {% include 'modules/clients/partials/add.html' %}
 {% include 'modules/clients/partials/search.html' %}
 <!-- /Page Content -->
 {% include 'inc/footer.html' %}
+
+<script>
+    const API_URL = "http://127.0.0.1:8000/client/details/";
+
+  async function calculateGarnishment(payload) {
+    try {
+      const response = await fetch('/processor/calculate/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error('Error calculating garnishment:', error);
+      throw error;
+    }
+  }
+
+    async function loadClients() {
+        try {
+            const response = await fetch(API_URL);
+            const result = await response.json();
+
+            // Access the "data" array inside the response
+            const clients = result.data || [];
+
+            const tbody = document.getElementById("clientsTableBody");
+            tbody.innerHTML = ""; // Clear old rows
+
+            clients.forEach((client, index) => {
+                const tr = document.createElement("tr");
+
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${client.client_id}</td>
+                    <td>${client.legal_name}</td>
+                    <td>${client.dba || "-"}</td>
+                    <td>
+                        <span class="badge ${client.is_active ? "bg-success" : "bg-danger"}">
+                            ${client.is_active ? "Active" : "Inactive"}
+                        </span>
+                    </td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+        } catch (error) {
+            console.error("Error loading clients:", error);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadClients);
+</script>
