@@ -359,14 +359,14 @@
     ],
     'Creditor Debt': [
       'Filing Status', 'No. of Dependent Child', 'Consumer Debt', 'Non-Consumer Debt',
-      'Garn-Start Date', 'Net Pay', 'No. of Exemptions (Including Self)'
+      'Garn-Start Date', 'No. of Exemptions (Including Self)'
     ],
     'Federal Tax Levy': [
-      'Filing Status', 'Age', 'Net Pay', 'Is Blind', 'Statement of Exemption Received Date',
+      'Filing Status', 'Age', 'Is Blind', 'Statement of Exemption Received Date',
       'No. of Exemptions (Including Self)', 'Has Spouse', 'Is Spouse Blind', 'Spouse Age'
     ],
     'State Tax Levy': [
-      'Garn Start Date', 'Net Pay', 'No. of Exemptions (Including Self)'
+      'Garn Start Date', 'No. of Exemptions (Including Self)'
     ],
     'Franchise Tax Board': [
     'FTB Type'
@@ -442,7 +442,19 @@
           california_sdi: 0,
           famli_tax: 0
         },
-        net_pay: parseFloat(formData.get('net_pay') || 0),
+        net_pay: (() => {
+          const netPayValue = formData.get('net_pay');
+          if (netPayValue) {
+            return parseFloat(netPayValue);
+          }
+          // For Child Support and Student Default Loan, calculate net pay if not provided
+          if (garnishmentType === 'Child Support' || garnishmentType === 'Student Default Loan') {
+            const grossPay = parseFloat(formData.get('gross_pay') || 0);
+            const totalDeductions = parseFloat(formData.get('total_mandatory_deductions') || 0);
+            return grossPay - totalDeductions;
+          }
+          return 0;
+        })(),
         is_blind: false,
         statement_of_exemption_received_date: "06-07-2025",
         garn_start_date: toMMDDYYYY(formData.get('garn_start_date'))|| "08-07-2025",
@@ -988,6 +1000,43 @@
     document.getElementById('calculation-results').style.display = 'none';
 
     if (fieldSets[type]) {
+      // First, render common fields for all garnishment types (except Multiple Garnishment)
+      if (type !== 'Multiple Garnishment') {
+        // Add section header for common fields
+        container.innerHTML += `
+          <div class="col-12 mb-3">
+            <div class="alert alert-info border-0" style="background-color: #e3f2fd; border-left: 4px solid #2196f3 !important;">
+              <h6 class="mb-1 text-dark fw-bold"><i class="bi bi-person me-2"></i>Employee Information</h6>
+              <small class="text-muted">Enter basic employee details required for garnishment calculations.</small>
+            </div>
+          </div>
+        `;
+        
+        // Filter common fields based on garnishment type
+        const filteredCommonFields = commonFields.filter(label => {
+          // Exclude Net Pay for Child Support and Student Default Loan
+          if (label === 'Net Pay' && (type === 'Child Support' || type === 'Student Default Loan')) {
+            return false;
+          }
+          return true;
+        });
+        
+        filteredCommonFields.forEach(label => {
+          renderField(label, type);
+        });
+        
+        // Add section header for specific fields
+        container.innerHTML += `
+          <div class="col-12 mb-3 mt-4">
+            <div class="alert alert-light border-0" style="background-color: #f8f9fa; border-left: 4px solid #6c757d !important;">
+              <h6 class="mb-1 text-dark fw-bold"><i class="bi bi-gear me-2"></i>${type} Specific Information</h6>
+              <small class="text-muted">Enter ${type.toLowerCase()} specific details for calculation.</small>
+            </div>
+          </div>
+        `;
+      }
+      
+      // Then render specific fields for the garnishment type
       fieldSets[type].forEach(label => {
         // Improved field name generation to handle special cases
         renderField(label, type)
@@ -1378,11 +1427,15 @@ function renderField(label, type) {
           `;
 
         } else {
+          // Special handling for common fields to ensure they appear as numeric inputs
+          const isCommonField = commonFields.includes(label);
+          const fieldType = (isNumeric || isCommonField) ? 'number' : 'text';
+          
           container.innerHTML += `
             <div class="col-md-4">
               <div class="mb-3">
-                <label class="form-label">${label}</label>
-                <input type="${isNumeric ? 'number' : 'text'}" class="form-control" name="${name}" placeholder="Enter ${label}" />
+                <label class="form-label">${label} <span class="text-danger">*</span></label>
+                <input type="${fieldType}" class="form-control" name="${name}" placeholder="Enter ${label}" required />
               </div>
             </div>`;
           }
