@@ -1,0 +1,617 @@
+{% include 'inc/header.html' %}
+{% load static %}
+{% include 'inc/topbar.html' %}
+{% include 'inc/sidebar.html' %}
+<!-- Page Content -->
+<style>
+    .form-control-sm.hover {
+        border-color: #000;
+    }
+    
+    .table-container {
+        position: relative;
+        min-height: 200px;
+    }
+    
+    .loading-spinner {
+        display: none;
+        text-align: center;
+        padding: 40px;
+    }
+    
+    .loading-spinner.show {
+        display: block;
+    }
+    
+    .spinner-border {
+        width: 3rem;
+        height: 3rem;
+    }
+    
+    .table-responsive {
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        overflow-x: hidden;
+    }
+    
+    .table {
+        margin-bottom: 0;
+        width: 100%;
+        table-layout: fixed;
+    }
+    
+    .table thead th {
+        background: #f8f9fa;
+        color: #495057;
+        border: none;
+        font-weight: 600;
+        text-transform: none;
+        font-size: 0.9rem;
+        letter-spacing: normal;
+        padding: 12px 8px;
+        border-bottom: 2px solid #dee2e6;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .table tbody tr {
+        transition: all 0.2s ease;
+    }
+    
+    .table tbody tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+    
+    .table tbody tr:hover {
+        background-color: #e9ecef;
+    }
+    
+    .table tbody td {
+        padding: 12px 8px;
+        vertical-align: middle;
+        border-color: #dee2e6;
+        color: #495057;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* Column widths */
+    .table th:nth-child(1), .table td:nth-child(1) { width: 5%; }  /* # */
+    .table th:nth-child(2), .table td:nth-child(2) { width: 15%; } /* State */
+    .table th:nth-child(3), .table td:nth-child(3) { width: 20%; } /* Deduction Basis */
+    .table th:nth-child(4), .table td:nth-child(4) { width: 15%; } /* Withholding Limit */
+    .table th:nth-child(5), .table td:nth-child(5) { width: 35%; } /* Rule */
+    .table th:nth-child(6), .table td:nth-child(6) { width: 10%; } /* Action */
+    
+    .action-buttons {
+        text-align: center;
+        white-space: nowrap;
+    }
+    
+    .action-buttons a {
+        transition: all 0.2s ease;
+        display: inline-block;
+        margin: 0 2px;
+        font-size: 0.9rem;
+    }
+    
+    .action-buttons a:hover {
+        transform: scale(1.1);
+    }
+    
+
+    
+    .no-data {
+        text-align: center;
+        padding: 40px;
+        color: #6c757d;
+    }
+    
+    .no-data i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        opacity: 0.5;
+    }
+    
+    .error-message {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 20px 0;
+        border: 1px solid #f5c6cb;
+    }
+</style>
+
+<div class="content">
+    <div class="card mt-3">
+        <div class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
+            <h5><i class="ti ti-shield-check me-2"></i>Exempt Amount Rules</h5>
+            <div class="d-flex my-xl-auto right-content align-items-center flex-wrap row-gap-3">
+                <div class="d-flex my-xl-auto right-content align-items-center flex-wrap " style="margin-left: 10px;">
+                    <a href="#" style="margin-left: 10px;" data-bs-toggle="modal" data-bs-target="#search_rule"
+                        class="btn btn-sm btn-secondary d-flex align-items-center"><i class="ti ti-search me-2"></i>
+                        Search</a>
+                    <a href="#" style="margin-left: 10px;" onclick="showAddModal()"
+                        class="btn btn-sm btn-primary d-flex align-items-center"><i
+                            class="ti ti-circle-plus me-2"></i>Add
+                        New
+                        Rule</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-container">
+                <!-- Loading Spinner -->
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3 text-muted">Loading rules...</p>
+                </div>
+                
+                <!-- Error Message -->
+                <div class="error-message" id="errorMessage" style="display: none;">
+                    <i class="ti ti-alert-circle me-2"></i>
+                    <span id="errorText"></span>
+                </div>
+                
+                <!-- No Data Message -->
+                <div class="no-data" id="noDataMessage" style="display: none;">
+                    <i class="ti ti-database-off"></i>
+                    <h5>No Rules Found</h5>
+                    <p>There are no exempt amount rules configured yet.</p>
+                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add_rule">
+                        <i class="ti ti-circle-plus me-2"></i>Add First Rule
+                    </a>
+                </div>
+                
+                <!-- Table -->
+                <div class="table-responsive" id="tableContainer" style="display: none;">
+                    <table class="table table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>#</th>
+                                <th>State</th>
+                                <th>Deduction Basis</th>
+                                <th>Withholding Limit</th>
+                                <th>Rule</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rulesTableBody">
+                            <!-- Data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadExemptRules();
+});
+
+function loadExemptRules() {
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const tableContainer = document.getElementById('tableContainer');
+    const noDataMessage = document.getElementById('noDataMessage');
+    const errorMessage = document.getElementById('errorMessage');
+    const errorText = document.getElementById('errorText');
+    const tableBody = document.getElementById('rulesTableBody');
+    
+    // Show loading spinner
+    loadingSpinner.classList.add('show');
+    tableContainer.style.display = 'none';
+    noDataMessage.style.display = 'none';
+    errorMessage.style.display = 'none';
+    
+    // Fetch data from API
+    fetch('/exempt_amt/rules/', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        loadingSpinner.classList.remove('show');
+        
+        if (data.success && data.results && data.results.length > 0) {
+            displayRules(data.results);
+            tableContainer.style.display = 'block';
+        } else {
+            noDataMessage.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        loadingSpinner.classList.remove('show');
+        errorText.textContent = `Failed to load rules: ${error.message}`;
+        errorMessage.style.display = 'block';
+        console.error('Error:', error);
+    });
+}
+
+function displayRules(rules) {
+    const tableBody = document.getElementById('rulesTableBody');
+    tableBody.innerHTML = '';
+    
+    rules.forEach((rule, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td><span style="text-transform:capitalize;">${rule.state}</span></td>
+            <td><span style="text-transform:capitalize;">${rule.deduction_basis}</span></td>
+            <td>${rule.withholding_limit}%</td>
+            <td>${rule.rule}</td>
+            <td class="action-buttons">
+                <a href="#" class="me-2" data-bs-toggle="tooltip" title="View Details" onclick="viewRule(${rule.id})">
+                    <i class="ti ti-info-circle text-primary"></i>
+                </a>
+                <a href="#" class="me-2" data-bs-toggle="tooltip" title="Edit" onclick="editRule(${rule.id})">
+                    <i class="ti ti-edit text-dark"></i>
+                </a>
+                <a href="#" class="me-2" data-bs-toggle="tooltip" title="Delete" onclick="deleteRule(${rule.id})">
+                    <i class="ti ti-trash text-danger"></i>
+                </a>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+    
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+}
+
+function viewRule(id) {
+    // Fetch rule details for viewing
+    fetch(`/exempt_amt/rules/${id}/`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showViewModal(data.results);
+        } else {
+            alert('Error loading rule details: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error loading rule details');
+    });
+}
+
+function editRule(id) {
+    // Fetch rule details for editing
+    fetch(`/exempt_amt/rules/${id}/`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showEditModal(data.results);
+        } else {
+            alert('Error loading rule details: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error loading rule details');
+    });
+}
+
+// Get CSRF token from cookies
+function getCSRFToken() {
+    const name = 'csrftoken';
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function updateRule(id) {
+    const formData = {
+        state: document.getElementById('editState').value ,
+        deduction_basis: document.getElementById('editDeductionBasis').value,
+        withholding_limit: document.getElementById('editWithholdingLimit').value,
+        rule: document.getElementById('editRule').value
+    };
+    
+    fetch(`/exempt_amt/rules/${id}/`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': getCSRFToken()
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Rule updated successfully!');
+            bootstrap.Modal.getInstance(document.getElementById('editRuleModal')).hide();
+            refreshRules(); // Refresh the table
+        } else {
+            alert('Error updating rule: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error updating rule');
+    });
+}
+
+function showAddModal() {
+    // Create and show add modal
+    const modalHtml = `
+        <div class="modal fade" id="addRuleModal" tabindex="-1" aria-labelledby="addRuleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addRuleModalLabel">Add New Rule</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addRuleForm">
+                            <div class="mb-3">
+                                <label for="addState" class="form-label">State</label>
+                                <input type="text" class="form-control" id="addState" placeholder="Enter state name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="addDeductionBasis" class="form-label">Deduction Basis</label>
+                                <select class="form-control" id="addDeductionBasis" required>
+                                    <option value="">Select deduction basis</option>
+                                    <option value="disposable earning">Disposable Earning</option>
+                                    <option value="gross income">Gross Income</option>
+                                    <option value="net income">Net Income</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="addWithholdingLimit" class="form-label">Withholding Limit (%)</label>
+                                <input type="number" class="form-control" id="addWithholdingLimit" placeholder="Enter percentage" min="0" max="100" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="addRule" class="form-label">Rule Description</label>
+                                <textarea class="form-control" id="addRule" rows="3" placeholder="Enter rule description" required></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="createRule()">Create Rule</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    const existingModal = document.getElementById('addRuleModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Add modal to body
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('addRuleModal'));
+    modal.show();
+}
+
+function createRule() {
+    const formData = {
+        state: document.getElementById('addState').value ,
+        deduction_basis: document.getElementById('addDeductionBasis').value,
+        withholding_limit: document.getElementById('addWithholdingLimit').value,
+        rule: document.getElementById('addRule').value
+    };
+    
+    fetch('/exempt_amt/rules/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': getCSRFToken()
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Rule created successfully!');
+            bootstrap.Modal.getInstance(document.getElementById('addRuleModal')).hide();
+            refreshRules(); // Refresh the table
+        } else {
+            alert('Error creating rule: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error creating rule');
+    });
+}
+
+function deleteRule(id) {
+    if (confirm('Are you sure you want to delete this rule? This action cannot be undone.')) {
+        fetch(`/exempt_amt/rules/${id}/`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCSRFToken()
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Rule deleted successfully!');
+                refreshRules(); // Refresh the table
+            } else {
+                alert('Error deleting rule: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error deleting rule');
+        });
+    }
+}
+
+function showViewModal(rule) {
+    // Create and show view modal
+    const modalHtml = `
+        <div class="modal fade" id="viewRuleModal" tabindex="-1" aria-labelledby="viewRuleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="viewRuleModalLabel">Rule Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col-4"><strong>State:</strong></div>
+                            <div class="col-8">${rule.state}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-4"><strong>Deduction Basis:</strong></div>
+                            <div class="col-8">${rule.deduction_basis}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-4"><strong>Withholding Limit:</strong></div>
+                            <div class="col-8">${rule.withholding_limit}%</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-4"><strong>Rule:</strong></div>
+                            <div class="col-8">${rule.rule}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-4"><strong>Created:</strong></div>
+                            <div class="col-8">${new Date(rule.created_at).toLocaleString()}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-4"><strong>Updated:</strong></div>
+                            <div class="col-8">${new Date(rule.updated_at).toLocaleString()}</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="editRule(${rule.id})" data-bs-dismiss="modal">Edit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    const existingModal = document.getElementById('viewRuleModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Add modal to body
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('viewRuleModal'));
+    modal.show();
+}
+
+function showEditModal(rule) {
+    // Create and show edit modal
+    const modalHtml = `
+        <div class="modal fade" id="editRuleModal" tabindex="-1" aria-labelledby="editRuleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editRuleModalLabel">Edit Rule</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editRuleForm">
+                            <div class="mb-3">
+                                <label for="editState" class="form-label">State</label>
+                                <input type="text" class="form-control" id="editState" value="${rule.state}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editDeductionBasis" class="form-label">Deduction Basis</label>
+                                <select class="form-control" id="editDeductionBasis" required>
+                                    <option value="disposable earning" ${rule.deduction_basis === 'disposable earning' ? 'selected' : ''}>Disposable Earning</option>
+                                    <option value="gross income" ${rule.deduction_basis === 'gross income' ? 'selected' : ''}>Gross Income</option>
+                                    <option value="net income" ${rule.deduction_basis === 'net income' ? 'selected' : ''}>Net Income</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editWithholdingLimit" class="form-label">Withholding Limit (%)</label>
+                                <input type="number" class="form-control" id="editWithholdingLimit" value="${rule.withholding_limit}" min="0" max="100" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editRule" class="form-label">Rule Description</label>
+                                <textarea class="form-control" id="editRule" rows="3" required>${rule.rule}</textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="updateRule(${rule.id})">Update Rule</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    const existingModal = document.getElementById('editRuleModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Add modal to body
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('editRuleModal'));
+    modal.show();
+}
+
+// Refresh data function (can be called after CRUD operations)
+function refreshRules() {
+    loadExemptRules();
+}
+</script>
+
+{% include 'garnish-process-app/garnish-rules/creditor-dept/partials/add-rule.html' %}
+{% include 'garnish-process-app/garnish-rules/creditor-dept/partials/search.html' %}
+<!-- /Page Content -->
+{% include 'inc/footer.html' %}

@@ -1,0 +1,116 @@
+{% load static %}
+<!-- Add Client Modal -->
+<div class="modal fade" id="add">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="fa fa-layer-plus"></i> Add Client</h4>
+                <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="ti ti-x"></i>
+                </button>
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="peo" value="PEO45678">
+
+                <div class="modal-body pb-0">
+
+                    <!-- Basic Information Section -->
+                    <h5 class="mb-3">Basic Information</h5>
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-md-4">
+                            <label class="form-label">Client ID</label>
+                            <input type="text" name="client_id" disabled
+                                class="form-control bg-light font-semibold cursor-not-allowed" value="3878AKI">
+                            <small class="text-muted">Auto-generated 7 alphanumeric characters</small>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">State <span class="text-danger">*</span></label>
+                            <select class="form-select" name="state" required>
+                                <option value="">Select State</option>
+                                <option value="AL">Alabama</option>
+                                <option value="CA">California</option>
+                                <option value="TX">Texas</option>
+                                <!-- Add other states as needed -->
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Pay Period <span class="text-danger">*</span></label>
+                            <select class="form-select" name="pay_period" required>
+                                <option value="">Select Pay Period</option>
+                                <option value="Weekly">Weekly</option>
+                                <option value="Biweekly">Biweekly</option>
+                                <option value="SemiMonthly">Semi-Monthly</option>
+                                <option value="Monthly">Monthly</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <!-- Company Information Section -->
+                    <h5 class="mb-3">Company Information</h5>
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-md-4">
+                            <label class="form-label">Legal Name <span class="text-danger">*</span></label>
+                            <input type="text" name="legal_name" class="form-control" required>
+                            <small class="text-muted">Official legal name of the company</small>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">DBA</label>
+                            <input type="text" name="dba" class="form-control">
+                            <small class="text-muted">Doing Business As (optional)</small>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Industry Type</label>
+                            <input type="text" name="industry_type" class="form-control">
+                            <small class="text-muted">Type of industry or business sector</small>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Tax ID <span class="text-danger">*</span></label>
+                            <input type="text" name="tax_id" class="form-control" required>
+                            <small class="text-muted">Federal Tax Identification Number</small>
+                        </div>
+
+                    </div>
+
+                    <!-- Client Status Section -->
+                    <div class="mb-3">
+                        <label class="form-label">Client Status</label>
+
+                        <div class="d-flex gap-4">
+                            <div class="form-check form-check-md">
+                                <input class="form-check-input" type="radio" name="is_active" id="status_active"
+                                    value="true" checked>
+                                <label class="form-check-label" for="status_active">
+                                    Active
+                                </label>
+                            </div>
+
+                            <div class="form-check form-check-md">
+                                <input class="form-check-input" type="radio" name="is_active" id="status_inactive"
+                                    value="false">
+                                <label class="form-check-label" for="status_inactive">
+                                    Inactive
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Client</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

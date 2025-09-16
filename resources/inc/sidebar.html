@@ -1,0 +1,192 @@
+
+{% load static %}
+<!-- Sidebar -->
+
+<div class="sidebar" id="sidebar">
+    <!-- Logo -->
+    <div class="sidebar-logo">
+        <a href="{% url 'dashboard' %}" class="">
+            <img src="{% get_media_prefix %}{{ general_settings.white_logo }}"
+                alt="{{ general_settings.company_name }}">
+        </a>
+        <a href="{% url 'dashboard' %}" class="logo-small">
+            <img src="{% get_media_prefix %}{{ general_settings.mini_logo }}" alt="{{ general_settings.company_name }}">
+        </a>
+        <a href="{% url 'dashboard' %}" class="dark-logo">
+            <img src="{% get_media_prefix %}{{ general_settings.dark_logo }}" alt="{{ general_settings.company_name }}">
+        </a>
+    </div>
+    <!-- /Logo -->
+
+    <div class="sidebar-inner slimscroll">
+        <div id="sidebar-menu" class="sidebar-menu" style="margin-top: 22%;">
+            <ul>
+                <li class="menu-title"><span>MAIN MENU</span></li>
+                
+                <li>
+                    <ul>
+                        <li>
+                            <a href="{% url 'dashboard' %}"
+                                class="{% if request.resolver_match.url_name == 'dashboard' %} active subdrop {% endif %} ">
+                                <i class="ti ti-smart-home"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'clients' %}"
+                                class="{% if request.resolver_match.url_name == 'clients' %} active subdrop {% endif %} ">
+                                <i class="ti ti-users-group"></i>
+                                <span>Clients</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'employee' %}"
+                                class="{% if request.resolver_match.url_name == 'employee' %} active subdrop {% endif %} ">
+                                <i class="ti ti-users"></i>
+                                <span>Employee</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'orders' %}"
+                                class="{% if request.resolver_match.url_name == 'orders' %} active subdrop {% endif %} ">
+                                <i class="ti ti-file-dollar"></i>
+                                <span>Order</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="menu-title"><span>Modules</span></li>
+
+                <!-- <li style="margin-bottom: -18px !important;">
+                    <ul>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"
+                                class="{% if request.resolver_match.url_name == 'companies' %} active subdrop {% endif %}">
+                                <i class="ti ti-layout-grid-add"></i><span>Management Modules</span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <ul>
+                                <li><a href="{% url 'companies' 'list' %}"
+                                        class="{% if request.resolver_match.url_name == 'companies' %} active {% endif %}">Companies
+                                        / Firms</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li> -->
+                <li>
+                    <ul>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"
+                                class="{% if request.resolver_match.url_name == 'garnishment-calculator' or request.resolver_match.url_name == 'batch-processing' or request.resolver_match.url_name == 'child-support-rules' or request.resolver_match.url_name == 'state-tax-levy-rules' or request.resolver_match.url_name == 'creditor-dept-rules' %} active subdrop {% endif %}">
+                                <i class="ti ti-server"></i><span>Garnish
+                                    Processing</span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <ul>
+                                <li><a href="{% url 'garnishment-calculator' %}"
+                                        class="{% if request.resolver_match.url_name == 'garnishment-calculator' %} active {% endif %}">Garnishment
+                                        Calculator</a></li>
+                                <li><a href="{% url 'batch-processing' %}"
+                                        class="{% if request.resolver_match.url_name == 'batch-processing' %} active {% endif %}">Batch
+                                        Processing</a></li>
+                                <li class="submenu submenu-two">
+                                    <a href="javascript:void(0);" class="{% if request.resolver_match.url_name == 'child-support-rules' or request.resolver_match.url_name == 'state-tax-levy-rules' or request.resolver_match.url_name == 'creditor-dept-rules' %} active subdrop {% endif %}">Garnish Rules<span
+                                            class="menu-arrow inside-submenu"></span></a>
+                                    <ul>
+                                        <!-- <li><a href="{% url 'child-support-rules' %}" class="{% if request.resolver_match.url_name == 'child-support-rules' %} active {% endif %}">Child Support Rules</a></li>
+                                        <li><a href="{% url 'state-tax-levy-rules' %}" class="{% if request.resolver_match.url_name == 'state-tax-levy-rules' %} active {% endif %}">State Tax Levy Rules</a></li> -->
+                                        <li><a href="{% url 'creditor-dept-rules' %}" class="{% if request.resolver_match.url_name == 'creditor-dept-rules' %} active {% endif %}">Creditor Debt Rules</a></li>
+                                        <li><a href="javascript:void(0);">Fees Rules</a></li>
+                                    </ul>
+                                </li>
+
+                            </ul>
+                        </li>
+
+                    </ul>
+                </li>
+
+                </li>
+                <!-- <li class="menu-title"><span>Configurations</span></li>
+                <li>
+                    <ul>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"
+                                class="{% if request.resolver_match.url_name == 'general-settings' or request.resolver_match.url_name == 'social-pages-settings' or request.resolver_match.url_name == 'maintenance-settings' or request.resolver_match.url_name == 'system-settings' or request.resolver_match.url_name == 'google-settings'%} active subdrop {% endif %}">
+                                <i class="ti ti-settings"></i><span>Settings</span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <ul>
+                                <li class="submenu submenu-two">
+                                    <a href="javascript:void(0);"
+                                        class="{% if request.resolver_match.url_name == 'general-settings' or request.resolver_match.url_name == 'social-pages-settings' or request.resolver_match.url_name == 'maintenance-settings' %} active subdrop {% endif %}">General
+                                        Settings<span class="menu-arrow inside-submenu"></span></a>
+                                    <ul>
+                                        <li><a href="{% url 'general-settings' %}"
+                                                class="{% if request.resolver_match.url_name == 'general-settings' %} active {% endif %}">Base
+                                                Settings</a></li>
+                                        <li><a href="{% url 'social-pages-settings' %}"
+                                                class="{% if request.resolver_match.url_name == 'social-pages-settings' %} active {% endif %}">Social
+                                                Pages Setting</a></li>
+                                        <li><a href="{% url 'maintenance-settings' %}"
+                                                class="{% if request.resolver_match.url_name == 'maintenance-settings' %} active {% endif %}">Maintenance
+                                                Setting</a></li>
+                                    </ul>
+                                </li>
+                                <li class="submenu submenu-two">
+                                    <a href="javascript:void(0);"
+                                        class="{% if request.resolver_match.url_name == 'system-settings' %} active subdrop {% endif %} ">System
+                                        Settings<span class="menu-arrow inside-submenu"></span></a>
+                                    <ul>
+                                        <li><a href="{% url 'system-settings' %}"
+                                                class="{% if request.resolver_match.url_name == 'system-settings' %} active {% endif %}">Email
+                                                Setting</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="submenu submenu-two">
+                                    <a href="javascript:void(0);"
+                                        class="{% if request.resolver_match.url_name == 'google-settings' %} active subdrop {% endif %} ">Google
+                                        Settings<span class="menu-arrow inside-submenu"></span></a>
+                                    <ul>
+                                        <li><a href="{% url 'google-settings' %}"
+                                                class="{% if request.resolver_match.url_name == 'google-settings' %} active {% endif %}">ReCaptcha
+                                                Setting</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li> -->
+                <li class="menu-title"><span>Account</span></li>
+                <li>
+                    <ul>
+                        <!--<li class="submenu">
+                            <a href="javascript:void(0);">
+                                <i class="ti ti-user-star"></i><span>User Management</span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <ul>
+                                <li><a href="users.html">Users</a></li>
+                                <li><a href="roles-permissions.html">Roles & Permissions</a></li>
+                            </ul>
+                        </li>
+                        <li class="{% if request.resolver_match.url_name == 'change-password' %} active {% endif %}">
+                            <a href="{% url 'change-password' %}">
+                                <i class="ti ti-key"></i><span>Change Password</span>
+                            </a>
+                        </li>-->
+                        <li>
+                            <a href="{% url 'secure-logout' %}">
+                                <i class="ti ti-login"></i><span>Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- /Sidebar -->
+<div class="page-wrapper">
