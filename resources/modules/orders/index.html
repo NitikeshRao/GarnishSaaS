@@ -1,0 +1,75 @@
+{% include 'inc/header.html' %}
+{% load static %}
+{% include 'inc/topbar.html' %}
+{% include 'inc/sidebar.html' %}
+<!-- Page Content -->
+<style>
+    .form-control-sm.hover {
+        border-color: #000;
+    }
+</style>
+<div class="content">
+    <div class="card mt-3">
+        <div class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
+            <h5>Orders</h5>
+            <div class="d-flex my-xl-auto right-content align-items-center flex-wrap row-gap-3">
+                <div class="d-flex my-xl-auto right-content align-items-center flex-wrap " style="margin-left: 10px;">
+                    <a href="#" style="margin-left: 10px;" data-bs-toggle="modal" data-bs-target="#search_rule"
+                        class="btn btn-sm btn-secondary d-flex align-items-center"><i class="ti ti-search me-2"></i>
+                        Search</a>
+                    <a href="#" style="margin-left: 10px;" data-bs-toggle="modal" data-bs-target="#add"
+                        class="btn btn-sm btn-primary d-flex align-items-center"><i
+                            class="ti ti-circle-plus me-2"></i>Add New Order</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Employee SSN</th>
+                            <th>Case ID</th>
+                            <th>Work State</th>
+                            <th>Garnishment Type</th>
+                            <th>Payee</th>
+                            <th>Start Date</th>
+                            <th>Issuing State</th>
+                            <th>Stop Date</th>
+                            <th>Garnishment Fees</th>
+                            <th>Override Amount</th>
+                            <th>Ordered Amount</th>
+                            <th>Withholding Amount</th>
+                            <th>Arrears 12 Weeks</th>
+                            <th>Arrear Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>***-**-9012</td>
+                            <td>C0015</td>
+                            <td>alabama</td>
+                            <td>Child_Support</td>
+                            <td>SDU</td>
+                            <td>09/09/2025</td>
+                            <td>alabama</td>
+                            <td>09/09/2025</td>
+                            <td>2</td>
+                            <td>123</td>
+                            <td>100</td>
+                            <td>99.98</td>
+                            <td>False</td>
+                            <td>100</td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% include 'partials/pagination.html' %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% include 'modules/orders/partials/add.html' %}
+{% include 'modules/orders/partials/search.html' %}
+<!-- /Page Content -->
+{% include 'inc/footer.html' %}

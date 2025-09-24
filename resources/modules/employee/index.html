@@ -1,0 +1,108 @@
+{% include 'inc/header.html' %}
+{% load static %}
+{% include 'inc/topbar.html' %}
+{% include 'inc/sidebar.html' %}
+<!-- Page Content -->
+<style>
+    .form-control-sm.hover {
+        border-color: #000;
+    }
+
+</style>
+<div class="content">
+    <div class="card mt-3">
+        <div class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
+            <h5>Employee</h5>
+            <div class="d-flex my-xl-auto right-content align-items-center flex-wrap row-gap-3">
+                <div class="d-flex my-xl-auto right-content align-items-center flex-wrap " style="margin-left: 10px;">
+                    <a href="#" style="margin-left: 10px;" data-bs-toggle="modal" data-bs-target="#search_rule"
+                        class="btn btn-sm btn-secondary d-flex align-items-center"><i class="ti ti-search me-2"></i>
+                        Search</a>
+                    <a href="#" style="margin-left: 10px;" data-bs-toggle="modal" data-bs-target="#add"
+                        class="btn btn-sm btn-primary d-flex align-items-center"><i
+                            class="ti ti-circle-plus me-2"></i>Add New Employee</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th class="no-sort">#</th>
+                            <th>Employee ID</th>
+                            <th>Client ID</th>
+                            <th>SSN</th>
+                            <th>Age</th>
+                            <th>Blind</th>
+                            <th>Home State</th>
+                            <th>Work State</th>
+                            <th>Gender</th>
+                            <th>No. of Exemptions</th>
+                            <th>Filing Status</th>
+                            <th>Marital Status</th>
+                            <th>No. of Default Loans</th>
+                            <th>No. of Dependent Children</th>
+                            <th>Support Second Family</th>
+                            <th>Spouse Age</th>
+                            <th>Spouse Blind</th>
+                            <th>Garnishment Status</th>
+                            <th>Garnishment Suspended Till</th>
+                            <th>Active Garnishment</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for employee in employees %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ employee.ee_id }}</td>
+                            <td>{{ employee.client }}</td>
+                            <td>{{ employee.ssn }}</td>
+                            <td>{{ employee.age }}</td>
+                            <td>{% if employee.is_blind %}Yes{% else %}No{% endif %}</td>
+                            <td>{{ employee.home_state|title }}</td>
+                            <td>{{ employee.work_state|title }}</td>
+                            <td>{{ employee.gender }}</td>
+                            <td>{{ employee.number_of_exemptions }}</td>
+                            <td>{{ employee.filing_status|title }}</td>
+                            <td>{{ employee.marital_status }}</td>
+                            <td>{{ employee.number_of_student_default_loan }}</td>
+                            <td>{{ employee.number_of_dependent_child }}</td>
+                            <td>{% if employee.support_second_family %}Yes{% else %}No{% endif %}</td>
+                            <td>{{ employee.spouse_age }}</td>
+                            <td>{% if employee.is_spouse_blind %}Yes{% else %}No{% endif %}</td>
+                            <td>{% if employee.garnishment_fees_status %}Active{% else %}Inactive{% endif %}</td>
+                            <td>
+                                {% if employee.garnishment_fees_suspended_till %}
+                                    {{ employee.garnishment_fees_suspended_till|date:"m/d/Y" }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td>{{ employee.number_of_active_garnishment }}</td>
+                            <td>
+                                {% if employee.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Inactive</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="21" class="text-center">No employee data available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% include 'partials/pagination.html' %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% include 'modules/employee/partials/add.html' %}
+{% include 'modules/employee/partials/search.html' %}
+<!-- /Page Content -->
+{% include 'inc/footer.html' %}

@@ -1,0 +1,79 @@
+<div class="row">
+
+    <!-- Total Companies -->
+    <div class="col-lg-3 col-md-6 d-flex">
+        <div class="card flex-fill">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center overflow-hidden">
+                    <span class="avatar avatar-lg bg-primary flex-shrink-0">
+                        <i class="ti ti-building fs-16"></i>
+                    </span>
+                    <div class="ms-2 overflow-hidden">
+                        <p class="fs-12 fw-medium mb-1 text-truncate">Total Companies</p>
+                        <h4>{{data_count.count}}</h4>
+                    </div>
+                </div>
+                <div id="total-chart"></div>
+            </div>
+        </div>
+    </div>
+    <!-- /Total Companies -->
+
+    <!-- Total Companies -->
+    <div class="col-lg-3 col-md-6 d-flex">
+        <div class="card flex-fill">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center overflow-hidden">
+                    <span class="avatar avatar-lg bg-success flex-shrink-0">
+                        <i class="ti ti-building fs-16"></i>
+                    </span>
+                    <div class="ms-2 overflow-hidden">
+                        <p class="fs-12 fw-medium mb-1 text-truncate">Active Companies</p>
+                        <h4>{{active_firms}}</h4>
+                    </div>
+                </div>
+                <div id="active-chart"></div>
+            </div>
+        </div>
+    </div>
+    <!-- /Total Companies -->
+
+    <!-- Inactive Companies -->
+    <div class="col-lg-3 col-md-6 d-flex">
+        <div class="card flex-fill">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center overflow-hidden">
+                    <span class="avatar avatar-lg bg-danger flex-shrink-0">
+                        <i class="ti ti-building fs-16"></i>
+                    </span>
+                    <div class="ms-2 overflow-hidden">
+                        <p class="fs-12 fw-medium mb-1 text-truncate">Inactive Companies</p>
+                        <h4>{{inactive_firms}}</h4>
+                    </div>
+                </div>
+                <div id="inactive-chart"></div>
+            </div>
+        </div>
+    </div>
+    <!-- /Inactive Companies -->
+
+    <!-- Company Location -->
+    <div class="col-lg-3 col-md-6 d-flex">
+        <div class="card flex-fill">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center overflow-hidden">
+                    <span class="avatar avatar-lg bg-skyblue flex-shrink-0">
+                        <i class="ti ti-map-pin-check fs-16"></i>
+                    </span>
+                    <div class="ms-2 overflow-hidden">
+                        <p class="fs-12 fw-medium mb-1 text-truncate">Today's Register</p>
+                        <h4>{{todays_firms}}</h4>
+                    </div>
+                </div>
+                <div id="location-chart"></div>
+            </div>
+        </div>
+    </div>
+    <!-- /Company Location -->
+
+</div>

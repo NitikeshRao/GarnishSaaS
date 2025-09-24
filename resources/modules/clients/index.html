@@ -1,0 +1,355 @@
+
+{% include 'inc/header.html' %}
+{% load static %}
+{% include 'inc/topbar.html' %}
+{% include 'inc/sidebar.html' %}
+<!-- Page Content -->
+<style>
+    .form-control-sm.hover {
+        border-color: #000;
+    }
+</style>
+
+<div class="content">
+    <div class="card mt-3">
+        <div class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
+            <h5>Clients</h5>
+            <div class="d-flex my-xl-auto right-content align-items-center flex-wrap row-gap-3">
+                <div class="d-flex my-xl-auto right-content align-items-center flex-wrap " style="margin-left: 10px;">
+                    <a href="#" style="margin-left: 10px;" data-bs-toggle="modal" data-bs-target="#search_rule"
+                        class="btn btn-sm btn-secondary d-flex align-items-center"><i class="ti ti-search me-2"></i>
+                        Search</a>
+                    <a href="#" style="margin-left: 10px;" data-bs-toggle="modal" data-bs-target="#add"
+                        class="btn btn-sm btn-primary d-flex align-items-center">
+                        <i class="ti ti-circle-plus me-2"></i>Add Client</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover" id="clientsTable">
+                    <thead class="thead-light">
+                        <tr>
+                            <th class="no-sort">#</th>
+                            <th>CLIENT ID</th>
+                            <th>LEGAL NAME</th>
+                            <th>DBA</th>
+                            <th>STATUS</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clientsTableBody">
+                        <!-- Data will be injected here -->
+                    </tbody>
+                </table>
+                {% include 'partials/pagination.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'modules/clients/partials/add.html' %}
+{% include 'modules/clients/partials/search.html' %}
+<!-- /Page Content -->
+{% include 'inc/footer.html' %}
+<!-- Edit Client Modal -->
+<div class="modal fade" id="editClientModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Client</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <form id="editClientForm">
+        <div class="modal-body">
+
+          <input type="hidden" name="id"> <!-- hidden field for client ID -->
+
+          <div class="row g-3 mb-4">
+            <!-- Client ID -->
+            <div class="col-md-4">
+              <label class="form-label">Client ID <span class="text-danger">*</span></label>
+              <input type="text" name="client_id" class="form-control" required
+                pattern="[A-Za-z0-9]+" title="Only alphanumeric characters allowed"
+                placeholder="Enter client ID">
+              <small class="text-muted">Enter alphanumeric client ID (letters and numbers only)</small>
+            </div>
+
+            <!-- PEO -->
+            <div class="col-md-4">
+            <label class="form-label">PEO <span class="text-danger">*</span></label>
+            <input type="text" name="peo" class="form-control" required
+                pattern="[A-Za-z0-9]+" title="Only alphanumeric characters allowed"
+                placeholder="Enter PEO code">
+            <small class="text-muted">Enter valid PEO identifier (letters and numbers only)</small>
+            </div>
+
+            <!-- State -->
+            <div class="col-md-4">
+              <label class="form-label">State <span class="text-danger">*</span></label>
+              <select class="form-select" name="state" required>
+                <option value="">Select State</option>
+                <option value="AL">Alabama</option>
+                <option value="AK">Alaska</option>
+                <option value="AZ">Arizona</option>
+                <option value="AR">Arkansas</option>
+                <option value="CA">California</option>
+                <option value="CO">Colorado</option>
+                <!-- … all states … -->
+                <option value="WA">Washington</option>
+                <option value="WI">Wisconsin</option>
+                <option value="WY">Wyoming</option>
+              </select>
+            </div>
+
+            <!-- Pay Period -->
+            <div class="col-md-4">
+              <label class="form-label">Pay Period <span class="text-danger">*</span></label>
+              <select class="form-select" name="pay_period" required>
+                <option value="">Select Pay Period</option>
+                <option value="weekly">Weekly</option>
+                <option value="biweekly">Biweekly</option>
+                <option value="semiMonthly">Semi-Monthly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Company Info -->
+          <h5 class="mb-3">Company Information</h5>
+          <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <label class="form-label">Legal Name <span class="text-danger">*</span></label>
+              <input type="text" name="legal_name" class="form-control" required>
+              <small class="text-muted">Official legal name of the company</small>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">DBA</label>
+              <input type="text" name="dba" class="form-control">
+              <small class="text-muted">Doing Business As (optional)</small>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Industry Type</label>
+              <input type="text" name="industry_type" class="form-control">
+              <small class="text-muted">Type of industry or business sector</small>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Tax ID <span class="text-danger">*</span></label>
+              <input type="text" name="tax_id" class="form-control" required>
+              <small class="text-muted">Federal Tax Identification Number</small>
+            </div>
+          </div>
+
+          <!-- Status -->
+          <div class="mb-3">
+            <label class="form-label">Client Status</label>
+            <div class="d-flex gap-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="is_active" id="edit_status_active" value="true">
+                <label class="form-check-label" for="edit_status_active">Active</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="is_active" id="edit_status_inactive" value="false">
+                <label class="form-check-label" for="edit_status_inactive">Inactive</label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Update Client</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<script>
+    // Function to load clients from API
+    async function loadClients() {
+        try {
+            // Show loading state
+            const tbody = document.getElementById("clientsTableBody");
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center py-4">
+                        <i class="ti ti-loader me-2"></i>Loading clients...
+                    </td>
+                </tr>
+            `;
+
+            // Make API request
+            const response = await fetch('/client/details/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            // Check if request was successful
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // Parse response
+            const result = await response.json();
+
+            // Check if API returned success
+            if (!result.success) {
+                throw new Error(result.message || 'API request failed');
+            }
+
+            // Get clients data
+            const clients = result.data || [];
+
+            // Clear loading state
+            tbody.innerHTML = "";
+
+            // Check if we have clients
+            if (clients.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            <i class="ti ti-database-off me-2"></i>No clients found
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            // Display clients in table
+            clients.forEach((client, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${client.client_id}</td>
+                    <td>${client.legal_name}</td>
+                    <td>${client.dba}</td>
+                    <td>
+                        <span class="badge ${client.is_active ? 'bg-success' : 'bg-danger'}">
+                            ${client.is_active ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-warning edit-btn" 
+                            data-id="${client.id}" 
+                            data-client='${JSON.stringify(client)}'>
+                            <i class="fa fa-edit"></i> Edit
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+        } catch (error) {
+            console.error('Error loading clients:', error);
+            
+            // Show error message
+            const tbody = document.getElementById("clientsTableBody");
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center text-danger py-4">
+                        <i class="ti ti-alert-circle me-2"></i>Error: ${error.message}
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    // Load clients when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        loadClients();
+    });
+
+document.getElementById("editClientForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const clientId = form.elements["id"].value;
+
+  const payload = {
+    client_id: form.elements["client_id"].value,
+    peo: form.elements["peo"].value,
+    state: form.elements["state"].value,
+    pay_period: form.elements["pay_period"].value,
+    legal_name: form.elements["legal_name"].value,
+    dba: form.elements["dba"].value,
+    industry_type: form.elements["industry_type"].value,
+    tax_id: form.elements["tax_id"].value,
+    is_active: form.elements["is_active"].value === "true"
+  };
+
+  try {
+    const response = await fetch(`/client/details/${clientId}/`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie("csrftoken")
+      },
+      body: JSON.stringify(payload)
+  });
+
+
+    if (response.ok) {
+      alert("✅ Client updated successfully!");
+      location.reload();
+    } else {
+      const errorData = await response.json();
+      alert("❌ Error: " + JSON.stringify(errorData));
+    }
+  } catch (error) {
+    console.error(error);
+    alert("⚠️ Failed to update client");
+  }
+});
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+document.addEventListener("click", function(e) {
+    if (e.target.closest(".edit-btn")) {
+        const button = e.target.closest(".edit-btn");
+        const client = JSON.parse(button.getAttribute("data-client"));
+
+        const form = document.getElementById("editClientForm");
+        form.elements["id"].value = client.id;
+        form.elements["client_id"].value = client.client_id;
+        form.elements["peo"].value = client.peo;
+        form.elements["state"].value = client.state;
+        form.elements["pay_period"].value = client.pay_period;
+        form.elements["legal_name"].value = client.legal_name;
+        form.elements["dba"].value = client.dba || "";
+        form.elements["industry_type"].value = client.industry_type || "";
+        form.elements["tax_id"].value = client.tax_id;
+
+        if (client.is_active) {
+            document.getElementById("edit_status_active").checked = true;
+        } else {
+            document.getElementById("edit_status_inactive").checked = true;
+        }
+
+        // Show modal
+        new bootstrap.Modal(document.getElementById("editClientModal")).show();
+    }
+});
+
+</script>

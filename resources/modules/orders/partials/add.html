@@ -1,0 +1,179 @@
+{% load static %}
+<!-- Add Client Modal -->
+<div class="modal fade" id="add">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="fa fa-layer-plus"></i> Add New Order</h4>
+                <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="ti ti-x"></i>
+                </button>
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="peo" value="PEO45678">
+
+                <div class="modal-body pb-0">
+
+                    <!-- Basic Information Section -->
+                    <h5 class="mb-3">Basic Information</h5>
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-md-4">
+                            <label class="form-label">Employee ID <span class="text-danger">*</span></label>
+                            <input type="text" name="eeid" class="form-control" required>
+                            <small class="text-muted">Enter a unique alphanumeric employee ID</small>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Case ID <span class="text-danger">*</span></label>
+                            <input type="text" name="case_id" class="form-control" required>
+                            <small class="text-muted">Must be unique in the system</small>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Social Security Number <span class="text-danger">*</span></label>
+                            <select name="ssn" class="form-select" required>
+                                <option value="">Select SSN</option>
+                                <option value="450-78-9012">450-78-9012</option>
+                                <option value="123-45-6789">123-45-6789</option>
+                                <option value="987-65-4321">987-65-4321</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label">Work State <span class="text-danger">*</span></label>
+                            <select name="work_state" class="form-select" required>
+                                <option value="">Select State</option>
+                                <option>Alabama</option>
+                                <option>Alaska</option>
+                                <option>California</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Issuing State <span class="text-danger">*</span></label>
+                            <select name="issuing_state" class="form-select" required>
+                                <option value="">Select State</option>
+                                <option>Alabama</option>
+                                <option>Texas</option>
+                                <option>New York</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Garnishment Type <span class="text-danger">*</span></label>
+                            <select name="garnishment_type" class="form-select" required>
+                                <option value="">Select Type</option>
+                                <option value="Child_Support">Child Support</option>
+                                <option value="Tax_Levy">Federal Tax Levy</option>
+                                <option value="Student_Loan">Student Loan</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Payee <span class="text-danger">*</span></label>
+                            <input type="text" name="payee" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Garnishing Authority <span class="text-danger">*</span></label>
+                            <input type="text" name="garnishing_authority" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <!-- Financial Information -->
+                    <h5 class="mb-3">Financial Information</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label">Ordered Amount <span class="text-danger">*</span></label>
+                            <input type="number" name="ordered_amount" class="form-control" min="0" step="0.01"
+                                required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Withholding Amount <span class="text-danger">*</span></label>
+                            <input type="number" name="withholding_amount" class="form-control" min="0" step="0.01"
+                                required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Arrear Amount</label>
+                            <input type="number" name="arrear_amount" class="form-control" min="0" step="0.01">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Garnishment Fees <span class="text-danger">*</span></label>
+                            <input type="number" name="garnishment_fees" class="form-control" min="0" step="0.01"
+                                required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Override Amount <span class="text-danger">*</span></label>
+                            <input type="number" name="override_amount" class="form-control" min="0" step="0.01"
+                                required>
+                        </div>
+                    </div>
+
+                    <!-- Dates Section -->
+                    <h5 class="mb-3">Date Information</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label">Start Date <span class="text-danger">*</span></label>
+                            <input type="date" name="start_date" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Stop Date <span class="text-danger">*</span></label>
+                            <input type="date" name="stop_date" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Issued Date <span class="text-danger">*</span></label>
+                            <input type="date" name="issued_date" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <!-- Status Section -->
+                    <h5 class="mb-3">Status & Priority</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Status <span class="text-danger">*</span></label>
+                            <select name="status" class="form-select" required>
+                                <option value="">Select Status</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="pending">Pending</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Priority</label>
+                            <select name="priority" class="form-select">
+                                <option value="">Select Priority</option>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <h5 class="mb-3">Notes</h5>
+                    <div class="mb-4">
+                        <label class="form-label">Additional Notes</label>
+                        <textarea name="notes" rows="4" class="form-control"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

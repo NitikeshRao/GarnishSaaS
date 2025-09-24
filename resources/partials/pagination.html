@@ -1,0 +1,26 @@
+{% if totalPageNumber > 1 %}
+<nav aria-label="Page navigation" class="pagination-style-3">
+    <ul class="pagination mb-0 flex-wrap justify-content-end">
+        {% if data_paginate.has_previous %}
+        <li class="page-item disabled">
+            <a class="page-link" href="?page={{data_paginate.previous_page_number}}">
+                Prev
+            </a>
+        </li>
+        {% endif %}
+        {% for n in totalPageList %}
+        <li class="page-item {% if n == current_page %} active {% endif %}"><a class="page-link"
+                href="?page={{n}}">{{n}}</a></li>
+        {% endfor %}
+        {% if data_paginate.has_next %}
+        <li class="page-item">
+            <a class="page-link text-primary" href="?page={{data_paginate.next_page_number}}">
+                Next
+            </a>
+        </li>
+        {% endif %}
+        <li class="page-item"><a class="page-link" href="?page={{totalPageNumber}}">Last</a>
+        </li>
+    </ul>
+</nav>
+{% endif %}
