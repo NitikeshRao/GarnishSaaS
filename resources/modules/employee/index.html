@@ -138,6 +138,7 @@
           <h5 class="modal-title">Edit Employee</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <input type="hidden" id="edit-id" name="id">
 
         <div class="modal-body">
           <!-- Basic Information Section -->
@@ -457,6 +458,7 @@ document.querySelectorAll('.edit-btn').forEach(button => {
       .then(response => response.json())
       .then(emp => {
         // Fill hidden ID and name fields
+        document.getElementById('edit-id').value = emp.data.id || '';
         document.getElementById('edit-first_name').value = emp.data.first_name || '';
         document.getElementById('edit-middle_name').value = emp.data.middle_name || '';
         document.getElementById('edit-last_name').value = emp.data.last_name || '';
@@ -496,56 +498,66 @@ document.querySelectorAll('.edit-btn').forEach(button => {
 });
 
 // Update Employee Form
-document.getElementById('editEmployeeForm').addEventListener('submit', function(e) {
-  e.preventDefault();
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('editEmployeeForm');
+  if (!form) return console.error('❌ Edit form not found');
 
-  const eeId = document.getElementById('edit-ee_id').value;
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
 
-  const formData = {
-    ee_id: document.getElementById('edit-ee_id').value,
-    first_name: document.getElementById('edit-first_name').value,
-    middle_name: document.getElementById('edit-middle_name').value,
-    last_name: document.getElementById('edit-last_name').value,
-    client: document.getElementById('edit-client').value,
-    ssn: document.getElementById('edit-ssn').value,
-    age: document.getElementById('edit-age').value,
-    gender: document.getElementById('edit-gender').value,
-    marital_status: document.getElementById('edit-marital_status').value,
-    spouse_age: document.getElementById('edit-spouse_age').value,
-    home_state: document.getElementById('edit-home_state').value,
-    work_state: document.getElementById('edit-work_state').value,
-    number_of_student_default_loan: document.getElementById('edit-number_of_student_default_loan').value,
-    number_of_exemptions: document.getElementById('edit-number_of_exemptions').value,
-    number_of_dependent_child: document.getElementById('edit-number_of_dependent_child').value,
-    number_of_active_garnishment: document.getElementById('edit-number_of_active_garnishment').value,
-    garnishment_fees_suspended_till: document.getElementById('edit-garnishment_fees_suspended_till').value,
-    filing_status: document.getElementById('edit-filing_status').value,
-    is_active: document.getElementById('edit-status-active').checked,
-    garnishment_fees_status: document.querySelector('[name="garnishment_fees_status"]:checked').value === 'true',
-    support_second_family: document.querySelector('[name="support_second_family"]:checked').value === 'true',
-    is_blind: document.querySelector('[name="is_blind"]:checked').value === 'true',
-    is_spouse_blind: document.querySelector('[name="is_spouse_blind"]:checked').value === 'true'
-  };
+    const id = document.getElementById('edit-id').value; // ← use database ID
+   
 
-  fetch(`/employee/details/${eeId}/`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-    },
-    credentials: 'same-origin',
-    body: JSON.stringify(formData)
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      alert('Employee updated successfully!');
-      location.reload();
-    } else {
-      alert('Error updating employee: ' + JSON.stringify(data.message));
-    }
-  })
-  .catch(err => console.error('Error updating employee:', err));
+    const formData = {
+      id: id,
+      ee_id: document.getElementById('edit-ee_id').value,
+      first_name: document.getElementById('edit-first_name').value,
+      middle_name: document.getElementById('edit-middle_name').value,
+      last_name: document.getElementById('edit-last_name').value,
+      client: document.getElementById('edit-client').value,
+      ssn: document.getElementById('edit-ssn').value,
+      age: document.getElementById('edit-age').value,
+      gender: document.getElementById('edit-gender').value,
+      marital_status: document.getElementById('edit-marital_status').value,
+      spouse_age: document.getElementById('edit-spouse_age').value,
+      home_state: document.getElementById('edit_home_state').value,
+      work_state: document.getElementById('edit_work_state').value,
+      number_of_student_default_loan: document.getElementById('edit-number_of_student_default_loan').value,
+      number_of_exemptions: document.getElementById('edit-number_of_exemptions').value,
+      number_of_dependent_child: document.getElementById('edit-number_of_dependent_child').value,
+      number_of_active_garnishment: document.getElementById('edit-number_of_active_garnishment').value,
+      garnishment_fees_suspended_till: document.getElementById('edit-garnishment_fees_suspended_till').value,
+      filing_status: document.getElementById('edit-filing_status').value,
+      is_active: document.querySelector('[name="is_active"]:checked')?.value === 'true',
+      garnishment_fees_status: document.querySelector('[name="garnishment_fees_status"]:checked')?.value === 'true',
+      support_second_family: document.querySelector('[name="support_second_family"]:checked')?.value === 'true',
+      is_blind: document.querySelector('[name="is_blind"]:checked')?.value === 'true',
+      is_spouse_blind: document.querySelector('[name="is_spouse_blind"]:checked')?.value === 'true'
+    };
+
+     console.log('🔹 Submitting update for ID:', id);
+   
+
+    fetch(`/employee/details/${id}/`, {
+      method: 'PUT', // or 'PUT' if DRF handles it
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify(formData)
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert('✅ Employee updated successfully!');
+          location.reload();
+        } else {
+          alert('❌ Error updating employee: ' + JSON.stringify(data.message));
+        }
+      })
+      .catch(err => console.error('Error updating employee:', err));
+  });
 });
 
 // --- Modal backdrop cleanup to prevent unresponsive dark overlay ---
