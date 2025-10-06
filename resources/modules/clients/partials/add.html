@@ -1,6 +1,6 @@
 {% load static %}
 <!-- Add Client Modal -->
-<div class="modal fade" id="add">
+<div class="modal fade" id="addClientModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -196,7 +196,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const formData = new FormData(form);
 
-        // Build payload as required by API
+        // Build payload
         const payload = {
             client_id: formData.get("client_id"),
             peo: formData.get("peo"),
@@ -206,19 +206,30 @@ document.addEventListener("DOMContentLoaded", function () {
             dba: formData.get("dba") || null,
             industry_type: formData.get("industry_type") || null,
             tax_id: formData.get("tax_id"),
+            is_active: formData.get("is_active") === "true"
         };
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/client/details/", {
+            // Use relative URL to avoid redirect issues
+            const response = await fetch("/client/details/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRFToken": csrftoken // Django CSRF token
+                    "X-CSRFToken": csrftoken
                 },
                 body: JSON.stringify(payload)
             });
 
-            const data = await response.json();
+            // Safely parse JSON only if content-type is correct
+            let data;
+            if (response.headers.get("content-type")?.includes("application/json")) {
+                data = await response.json();
+            } else {
+                const text = await response.text();
+                console.error("Expected JSON but got:", text);
+                alert("⚠️ Unexpected response from server");
+                return; // stop further execution
+            }
 
             if (response.ok) {
                 alert("✅ Client added successfully!");

@@ -17,7 +17,7 @@ class EmployeeField(serializers.Field):
 
     def to_internal_value(self, data):
         try:
-            return EmployeeDetail.objects.get(ssn=data)
+            return EmployeeDetail.objects.get(id=data)
         except EmployeeDetail.DoesNotExist:
             raise serializers.ValidationError({self.field_name: f"Employee with SSN '{data}' not found"})
 
@@ -66,7 +66,7 @@ class GarnishmentOrderSerializer(serializers.ModelSerializer):
             "override_amount", "override_start_date", "override_stop_date", "paid_till_date",
             "is_consumer_debt",
             "issued_date", "received_date", "start_date", "stop_date",
-            "ordered_amount", "arrear_gt_12_weeks",
+            "ordered_amount",
             "fein", "garnishing_authority", "withholding_amount",
             "arrear_greater_than_12_weeks", "arrear_amount",
             "created_at", "updated_at",

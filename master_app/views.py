@@ -1,68 +1,102 @@
-from django.shortcuts import render, HttpResponse, HttpResponseRedirect
-from django.core.mail import BadHeaderError, send_mail
-from django.core.mail import EmailMultiAlternatives
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.core.mail import BadHeaderError, send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-from .models import *
 from django.db import connection
 from django.contrib import messages
-from django.shortcuts import redirect
 from django.forms.models import model_to_dict
-from django.http import JsonResponse
 from django.core import serializers
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth import get_user_model
-User = get_user_model()
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.utils.datastructures import MultiValueDictKeyError
 from django.core.paginator import Paginator
-from django.shortcuts import render
 from django.urls import reverse
 from django.conf import settings
 from django.core.files.storage import default_storage
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics, status
+
 import time
 import os
-from user_app.models import EmployeeDetail
+import json
+
+from .models import *
+from user_app.models import EmployeeDetail, GarnishmentOrder, Client
+from user_app.serializers import EmployeeDetailSerializer, GarnishmentOrderSerializer, ClientSerializer
+from processor.models.garnishment_fees import GarnishmentFees
+from processor.serializers.garnishment_fees_serializers import GarnishmentFeesSerializer
+
+
+User = get_user_model()
 
 # Create your views here.
 def index(request):    
     if request.user.is_authenticated:           
-        return render(request,'master-app/index.html')
+        return render(request,'modules/clients/index.html')
     else:
         return HttpResponseRedirect(reverse('secure-login'))
 
-def manageClients(request):    
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            return HttpResponse('i am post method of child-support-rules')
-        else:
-            return render(request,'modules/clients/index.html')
-    else:
-        return HttpResponseRedirect(reverse('secure-login'))
+class ManageClientView(APIView):
+    renderer_classes = [JSONRenderer, TemplateHTMLRenderer]
+
+    def get(self, request, *args, **kwargs):
+        clients = Client.objects.all() 
+        return render(request, 'modules/clients/index.html', {"clients": clients})
     
-def manageEmployee(request):    
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            return HttpResponse('i am post method of child-support-rules')
-        else:
-            employees = EmployeeDetail.objects.all().values()
-            data = {
-                'employees':employees,
-            }
-
-
-            return render(request,'modules/employee/index.html', data)
-    else:
-        return HttpResponseRedirect(reverse('secure-login'))
+    def post(self, request, *args, **kwargs):
+        serializer = ClientSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            # After saving, re-fetch employees
+            clients = Client.objects.all()
+            serializer = ClientSerializer(clients, many=True)
+            return render(request, 'modules/clients/index.html', {"clients": serializer.data})
+        return Response(serializer.errors)
     
-def manageOrders(request):    
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            return HttpResponse('i am post method of child-support-rules')
-        else:
-            return render(request,'modules/orders/index.html')
-    else:
-        return HttpResponseRedirect(reverse('secure-login'))
+class ManageEmployeeView(APIView):
+    renderer_classes = [JSONRenderer, TemplateHTMLRenderer]
+
+    def get(self, request, *args, **kwargs):
+        employees = EmployeeDetail.objects.all()
+        return render(request, 'modules/employee/index.html', {"employees": employees})
+
+    def post(self, request, *args, **kwargs):
+        serializer = EmployeeDetailSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            employees = EmployeeDetail.objects.all()
+            serializer = EmployeeDetailSerializer(employees, many=True)
+            return render(request, 'modules/employee/index.html', {"employees": employees})
+        return Response(serializer.errors)
+    
+
+class ManageOrderView(APIView):
+    renderer_classes = [JSONRenderer, TemplateHTMLRenderer]
+
+    def get(self, request, *args, **kwargs):
+        orders = GarnishmentOrder.objects.all()
+        return render(request, 'modules/orders/index.html', {"orders": orders})
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('secure-login'))
+
+        serializer = GarnishmentOrderSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            # After saving, re-fetch orders
+            orders = GarnishmentOrder.objects.all()
+            serializer = GarnishmentOrderSerializer(orders, many=True)
+            return render(request, 'modules/orders/index.html', {"orders": orders})
         
+        # If invalid, return errors as JSON (or you can render template with error messages)
+        return Response(serializer.errors) 
+    
+
 
 # ADDONS MANAGER
 
@@ -86,6 +120,37 @@ def getCities(request):
     # Return the cities as JSON
     return JsonResponse(list(cities), safe=False)
 
+class GarnishmentFeesCreateAPI(generics.CreateAPIView):
+    queryset = GarnishmentFees.objects.all()
+    serializer_class = GarnishmentFeesSerializer
+
+
+# -------- READ (by filters) --------
+class GarnishmentFeesListByFilterAPI(generics.GenericAPIView):
+    serializer_class = GarnishmentFeesSerializer
+
+    def get(self, request):
+        state = request.GET.get('state')
+        pay_period = request.GET.get('pay_period')
+        garnishment_type_name = request.GET.get('garnishment_type')
+
+        fees = GarnishmentFees.objects.filter(
+            state__state__iexact=state,
+            pay_period__name__iexact=pay_period,
+            garnishment_type__type__iexact=garnishment_type_name,
+        )
+        if not fees.exists():
+            return Response({"detail": "No matching record found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = self.get_serializer(fees, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+# -------- RETRIEVE / UPDATE / DELETE (by id) --------
+class GarnishmentFeesDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = GarnishmentFees.objects.all()
+    serializer_class = GarnishmentFeesSerializer
 
 # SETTINGS MANAGER
 

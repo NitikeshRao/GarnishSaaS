@@ -1,13 +1,21 @@
 from django.urls import path, include
 from master_app import views
+from .views import ManageEmployeeView, ManageOrderView, ManageClientView, GarnishmentFeesListByFilterAPI
 
 urlpatterns = [
     #======================== Home Manager ========================
     path('', views.index, name='dashboard'),
     
-    path('client-list', views.manageClients, name='client-list'),
-    path('employee-list', views.manageEmployee, name='employee-list'),
-    path('order-list', views.manageOrders, name='order-list'),
+    path('client-list', ManageClientView.as_view(), name='client-list'),
+    path('employee-list', ManageEmployeeView.as_view(), name='employee-list'),
+    path('order-list', ManageOrderView.as_view(), name='order-list'),
+
+    path(
+        "rules/filter/",
+        GarnishmentFeesListByFilterAPI.as_view(),
+        name="garnishment-fees-filter",
+    ),
+
 
     #======================== Company Manager ========================
 

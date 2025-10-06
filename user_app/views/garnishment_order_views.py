@@ -23,6 +23,7 @@ from user_app.constants import (
     PayrollTaxesFields as PT,
     CalculationResponseFields as CR
 )
+from django.views.generic import TemplateView
 from processor.garnishment_library import PaginationHelper
 
 class GarnishmentOrderImportView(APIView):
@@ -492,12 +493,11 @@ class GarnishmentOrderAPI(APIView):
     def get(self, request):
         try:
             orders = GarnishmentOrder.objects.all().order_by("-created_at")
-            result = PaginationHelper.paginate_queryset(
-                orders, request, GarnishmentOrderSerializer
-            )
+            result = GarnishmentOrderSerializer(orders,many=True)
+            
             return ResponseHelper.success_response(
                 message="Garnishment orders fetched successfully",
-                data=result,
+                data=result.data,
                 status_code=status.HTTP_200_OK
             )
         except Exception as e:
@@ -619,3 +619,4 @@ class GarnishmentOrderDetailAPI(APIView):
                 error=str(e),
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+

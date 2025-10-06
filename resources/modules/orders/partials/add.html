@@ -13,19 +13,12 @@
             <form method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="peo" value="PEO45678">
-
                 <div class="modal-body pb-0">
 
                     <!-- Basic Information Section -->
                     <h5 class="mb-3">Basic Information</h5>
                     <div class="row g-3 mb-4">
-
-                        <div class="col-md-4">
-                            <label class="form-label">Employee ID <span class="text-danger">*</span></label>
-                            <input type="text" name="eeid" class="form-control" required>
-                            <small class="text-muted">Enter a unique alphanumeric employee ID</small>
-                        </div>
-
+                        
                         <div class="col-md-4">
                             <label class="form-label">Case ID <span class="text-danger">*</span></label>
                             <input type="text" name="case_id" class="form-control" required>
@@ -34,12 +27,8 @@
 
                         <div class="col-md-4">
                             <label class="form-label">Social Security Number <span class="text-danger">*</span></label>
-                            <select name="ssn" class="form-select" required>
-                                <option value="">Select SSN</option>
-                                <option value="450-78-9012">450-78-9012</option>
-                                <option value="123-45-6789">123-45-6789</option>
-                                <option value="987-65-4321">987-65-4321</option>
-                            </select>
+                            <input type="text" name="employee" class="form-control" required>
+                            <small class="text-muted">SSN</small>
                         </div>
 
                     </div>
@@ -47,21 +36,115 @@
                     <div class="row g-3 mb-4">
                         <div class="col-md-4">
                             <label class="form-label">Work State <span class="text-danger">*</span></label>
-                            <select name="work_state" class="form-select" required>
-                                <option value="">Select State</option>
-                                <option>Alabama</option>
-                                <option>Alaska</option>
-                                <option>California</option>
-                            </select>
+                        <select name="work_state" class="form-select" required>
+                            <option value="">Select State</option>
+                            <option value="AL">Alabama</option>
+                            <option value="AK">Alaska</option>
+                            <option value="AZ">Arizona</option>
+                            <option value="AR">Arkansas</option>
+                            <option value="CA">California</option>
+                            <option value="CO">Colorado</option>
+                            <option value="CT">Connecticut</option>
+                            <option value="DE">Delaware</option>
+                            <option value="FL">Florida</option>
+                            <option value="GA">Georgia</option>
+                            <option value="HI">Hawaii</option>
+                            <option value="ID">Idaho</option>
+                            <option value="IL">Illinois</option>
+                            <option value="IN">Indiana</option>
+                            <option value="IA">Iowa</option>
+                            <option value="KS">Kansas</option>
+                            <option value="KY">Kentucky</option>
+                            <option value="LA">Louisiana</option>
+                            <option value="ME">Maine</option>
+                            <option value="MD">Maryland</option>
+                            <option value="MA">Massachusetts</option>
+                            <option value="MI">Michigan</option>
+                            <option value="MN">Minnesota</option>
+                            <option value="MS">Mississippi</option>
+                            <option value="MO">Missouri</option>
+                            <option value="MT">Montana</option>
+                            <option value="NE">Nebraska</option>
+                            <option value="NV">Nevada</option>
+                            <option value="NH">New Hampshire</option>
+                            <option value="NJ">New Jersey</option>
+                            <option value="NM">New Mexico</option>
+                            <option value="NY">New York</option>
+                            <option value="NC">North Carolina</option>
+                            <option value="ND">North Dakota</option>
+                            <option value="OH">Ohio</option>
+                            <option value="OK">Oklahoma</option>
+                            <option value="OR">Oregon</option>
+                            <option value="PA">Pennsylvania</option>
+                            <option value="RI">Rhode Island</option>
+                            <option value="SC">South Carolina</option>
+                            <option value="SD">South Dakota</option>
+                            <option value="TN">Tennessee</option>
+                            <option value="TX">Texas</option>
+                            <option value="UT">Utah</option>
+                            <option value="VT">Vermont</option>
+                            <option value="VA">Virginia</option>
+                            <option value="WA">Washington</option>
+                            <option value="WV">West Virginia</option>
+                            <option value="WI">Wisconsin</option>
+                            <option value="WY">Wyoming</option>
+                        </select>
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label">Issuing State <span class="text-danger">*</span></label>
                             <select name="issuing_state" class="form-select" required>
                                 <option value="">Select State</option>
-                                <option>Alabama</option>
-                                <option>Texas</option>
-                                <option>New York</option>
+                                <option value="AL">Alabama</option>
+                                <option value="AK">Alaska</option>
+                                <option value="AZ">Arizona</option>
+                                <option value="AR">Arkansas</option>
+                                <option value="CA">California</option>
+                                <option value="CO">Colorado</option>
+                                <option value="CT">Connecticut</option>
+                                <option value="DE">Delaware</option>
+                                <option value="FL">Florida</option>
+                                <option value="GA">Georgia</option>
+                                <option value="HI">Hawaii</option>
+                                <option value="ID">Idaho</option>
+                                <option value="IL">Illinois</option>
+                                <option value="IN">Indiana</option>
+                                <option value="IA">Iowa</option>
+                                <option value="KS">Kansas</option>
+                                <option value="KY">Kentucky</option>
+                                <option value="LA">Louisiana</option>
+                                <option value="ME">Maine</option>
+                                <option value="MD">Maryland</option>
+                                <option value="MA">Massachusetts</option>
+                                <option value="MI">Michigan</option>
+                                <option value="MN">Minnesota</option>
+                                <option value="MS">Mississippi</option>
+                                <option value="MO">Missouri</option>
+                                <option value="MT">Montana</option>
+                                <option value="NE">Nebraska</option>
+                                <option value="NV">Nevada</option>
+                                <option value="NH">New Hampshire</option>
+                                <option value="NJ">New Jersey</option>
+                                <option value="NM">New Mexico</option>
+                                <option value="NY">New York</option>
+                                <option value="NC">North Carolina</option>
+                                <option value="ND">North Dakota</option>
+                                <option value="OH">Ohio</option>
+                                <option value="OK">Oklahoma</option>
+                                <option value="OR">Oregon</option>
+                                <option value="PA">Pennsylvania</option>
+                                <option value="RI">Rhode Island</option>
+                                <option value="SC">South Carolina</option>
+                                <option value="SD">South Dakota</option>
+                                <option value="TN">Tennessee</option>
+                                <option value="TX">Texas</option>
+                                <option value="UT">Utah</option>
+                                <option value="VT">Vermont</option>
+                                <option value="VA">Virginia</option>
+                                <option value="WA">Washington</option>
+                                <option value="WV">West Virginia</option>
+                                <option value="WI">Wisconsin</option>
+                                <option value="WY">Wyoming</option>
                             </select>
                         </div>
 
@@ -70,16 +153,27 @@
                             <select name="garnishment_type" class="form-select" required>
                                 <option value="">Select Type</option>
                                 <option value="Child_Support">Child Support</option>
-                                <option value="Tax_Levy">Federal Tax Levy</option>
-                                <option value="Student_Loan">Student Loan</option>
+                                <option value="Federal_Tax_Levy">Federal Tax Levy</option>
+                                <option value="Student_Default_Loan">Student Default Loan</option>
+                                <option value="Creditor_Debt">Creditor Debt</option>
+                                <option value="Franchise_Tax_Board">Franchise Tax Board</option>
+                                <option value="State_Tax_Levy">State Tax Levy</option>
                             </select>
                         </div>
                     </div>
+
+    
 
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
                             <label class="form-label">Payee <span class="text-danger">*</span></label>
                             <input type="text" name="payee" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">FEIN <span class="text-danger">*</span></label>
+                            <input type="text" name="fein" class="form-control" required placeholder="XX-XXXXXXX">
+                            <small class="text-muted">Enter the employer's FEIN</small>
                         </div>
 
                         <div class="col-md-6">
@@ -134,30 +228,6 @@
                         <div class="col-md-4">
                             <label class="form-label">Issued Date <span class="text-danger">*</span></label>
                             <input type="date" name="issued_date" class="form-control" required>
-                        </div>
-                    </div>
-
-                    <!-- Status Section -->
-                    <h5 class="mb-3">Status & Priority</h5>
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label">Status <span class="text-danger">*</span></label>
-                            <select name="status" class="form-select" required>
-                                <option value="">Select Status</option>
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                                <option value="pending">Pending</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">Priority</label>
-                            <select name="priority" class="form-select">
-                                <option value="">Select Priority</option>
-                                <option value="low">Low</option>
-                                <option value="medium">Medium</option>
-                                <option value="high">High</option>
-                            </select>
                         </div>
                     </div>
 

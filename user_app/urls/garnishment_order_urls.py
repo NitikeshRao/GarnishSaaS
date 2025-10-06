@@ -1,13 +1,13 @@
 # app/urls/employer_urls.py
 from django.urls import path
-from user_app.views.garnishment_order_views import GarnishmentOrderDetails,UpsertGarnishmentOrderView,GarnishmentOrderAPI,GarnishmentOrderDetailAPI,ExportGarnishmentOrderDataView,GarnishmentOrderImportView
+from user_app.views.garnishment_order_views import GarnishmentOrderDetails,UpsertGarnishmentOrderView,GarnishmentOrderAPI,GarnishmentOrderDetailAPI,ExportGarnishmentOrderDataView,GarnishmentOrderImportView, GarnishmentOrderAPI
 
 app_name = 'order'
 
 urlpatterns = [
 
     path('details/', GarnishmentOrderAPI.as_view(), name='garnishment-order-list-create'),
-    path('details/<int:id>/', GarnishmentOrderDetailAPI.as_view(), name='garnishment-order-detail'),
+    path('details/<int:pk>/', GarnishmentOrderDetailAPI.as_view(), name='garnishment-order-detail'),
 
     # CRUD for the garnishment order
     path('order-details/', GarnishmentOrderDetails.as_view(), name='order_details'),
@@ -24,6 +24,6 @@ urlpatterns = [
     # Export garnishment order data in excel
     path('export/', ExportGarnishmentOrderDataView.as_view(),
          name='export_orders'),
-
+     
 ]
 

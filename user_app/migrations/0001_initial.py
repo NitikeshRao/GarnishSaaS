@@ -310,7 +310,6 @@ class Migration(migrations.Migration):
                     "ordered_amount",
                     models.DecimalField(decimal_places=2, default=0.0, max_digits=12),
                 ),
-                ("arrear_gt_12_weeks", models.BooleanField(default=False)),
                 ("fein", models.CharField(max_length=254)),
                 ("garnishing_authority", models.CharField(max_length=255)),
                 (

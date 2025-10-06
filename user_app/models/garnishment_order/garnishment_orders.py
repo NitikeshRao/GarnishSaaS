@@ -17,8 +17,7 @@ class GarnishmentOrder(models.Model):
     stop_date = models.DateField(blank=True, null=True)
     deduction_code = models.CharField(max_length=255)  
     ordered_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    arrear_gt_12_weeks = models.BooleanField(default=False)
-
+    
     fein = models.CharField(max_length=254)
     garnishing_authority = models.CharField(max_length=255)  
     withholding_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)

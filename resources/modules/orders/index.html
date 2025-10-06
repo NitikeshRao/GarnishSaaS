@@ -28,40 +28,64 @@
                 <table class="table table-hover">
                     <thead class="thead-light">
                         <tr>
+                            <th>ID</th>
                             <th>Employee SSN</th>
                             <th>Case ID</th>
                             <th>Work State</th>
                             <th>Garnishment Type</th>
+                            <th>Garnishment Fees</th>
                             <th>Payee</th>
                             <th>Start Date</th>
                             <th>Issuing State</th>
                             <th>Stop Date</th>
-                            <th>Garnishment Fees</th>
-                            <th>Override Amount</th>
+                            <th>Garnishment Authority</th>
+                            <th>Fein</th>
                             <th>Ordered Amount</th>
                             <th>Withholding Amount</th>
                             <th>Arrears 12 Weeks</th>
                             <th>Arrear Amount</th>
+                            <th>Actions</th>
+
                         </tr>
                     </thead>
-                    <tbody>
+                <tbody>
+                    {% for order in orders %}
                         <tr>
-                            <td>***-**-9012</td>
-                            <td>C0015</td>
-                            <td>alabama</td>
-                            <td>Child_Support</td>
-                            <td>SDU</td>
-                            <td>09/09/2025</td>
-                            <td>alabama</td>
-                            <td>09/09/2025</td>
-                            <td>2</td>
-                            <td>123</td>
-                            <td>100</td>
-                            <td>99.98</td>
-                            <td>False</td>
-                            <td>100</td>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.employee|slice:"-4"|add:"***-**-" }}</td> <!-- Mask SSN -->
+                            <td>{{ order.case_id }}</td>
+                            <td>{{ order.work_state }}</td>
+                            <td>{{ order.garnishment_type }}</td>
+                            <td>{{ order.garnishment_fees }}</td>
+                            <td>{{ order.payee }}</td>
+                            <td>{{ order.start_date }}</td>
+                            <td>{{ order.issuing_state|title }}</td>
+                            <td>{{ order.stop_date }}</td>
+                            <td>{{ order.garnishing_authority }}</td>
+                            <td>{{ order.fein }}</td>
+                            <td>{{ order.ordered_amount }}</td>
+                            <td>{{ order.withholding_amount }}</td>
+                            <td>{{ order.arrear_greater_than_12_weeks }}</td>
+                            <td>{{ order.arrear_amount }}</td>
+                            <td>
+                                <!-- Edit button -->
+                                <a href="#" class="btn btn-sm btn-primary edit-btn" data-id="{{ order.id }}" data-bs-toggle="modal" data-bs-target="#editOrderModal">
+                                    <i class="ti ti-edit"></i> Edit
+                                </a>
+
+                                <!-- Delete form -->
+                                <!--- <button type="button" class="btn btn-sm btn-danger delete-btn" 
+                                        data-id="{{ client.id }}">
+                                    <i class="ti ti-trash"></i> Delete
+                                </button> -->
+                            </td>
                         </tr>
-                    </tbody>
+                    {% empty %}
+                        <tr>
+                            <td colspan="17" class="text-center">No orders found</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
                 </table>
                 {% include 'partials/pagination.html' %}
             </div>
@@ -69,7 +93,409 @@
 
     </div>
 </div>
+
+<!-- Edit Order Modal -->
+<div class="modal fade" id="editOrderModal">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="fa fa-edit"></i> Edit Order</h4>
+                <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="ti ti-x"></i>
+                </button>
+            </div>
+
+            <form method="POST" id="editOrderForm">
+                {% csrf_token %}
+                <input type="hidden" name="peo" value="PEO45678">
+                <input type="hidden" name="order_id" value="">
+
+                <div class="modal-body pb-0">
+
+                    <!-- Basic Information Section -->
+                    <h5 class="mb-3">Basic Information</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label">Case ID <span class="text-danger">*</span></label>
+                            <input type="text" name="case_id" class="form-control" required readonly>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Social Security Number <span class="text-danger">*</span></label>
+                            <input type="text" name="employee" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">FEIN <span class="text-danger">*</span></label>
+                            <input type="text" name="fein" class="form-control" required placeholder="XX-XXXXXXX">
+                        </div>
+
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label">Work State <span class="text-danger">*</span></label>
+                            <select name="work_state" class="form-select" required>
+                                <option value="">Select State</option>
+                                <option value="AL">Alabama</option>
+                                <option value="AK">Alaska</option>
+                                <option value="AZ">Arizona</option>
+                                <option value="AR">Arkansas</option>
+                                <option value="CA">California</option>
+                                <option value="CO">Colorado</option>
+                                <option value="CT">Connecticut</option>
+                                <option value="DE">Delaware</option>
+                                <option value="FL">Florida</option>
+                                <option value="GA">Georgia</option>
+                                <option value="HI">Hawaii</option>
+                                <option value="ID">Idaho</option>
+                                <option value="IL">Illinois</option>
+                                <option value="IN">Indiana</option>
+                                <option value="IA">Iowa</option>
+                                <option value="KS">Kansas</option>
+                                <option value="KY">Kentucky</option>
+                                <option value="LA">Louisiana</option>
+                                <option value="ME">Maine</option>
+                                <option value="MD">Maryland</option>
+                                <option value="MA">Massachusetts</option>
+                                <option value="MI">Michigan</option>
+                                <option value="MN">Minnesota</option>
+                                <option value="MS">Mississippi</option>
+                                <option value="MO">Missouri</option>
+                                <option value="MT">Montana</option>
+                                <option value="NE">Nebraska</option>
+                                <option value="NV">Nevada</option>
+                                <option value="NH">New Hampshire</option>
+                                <option value="NJ">New Jersey</option>
+                                <option value="NM">New Mexico</option>
+                                <option value="NY">New York</option>
+                                <option value="NC">North Carolina</option>
+                                <option value="ND">North Dakota</option>
+                                <option value="OH">Ohio</option>
+                                <option value="OK">Oklahoma</option>
+                                <option value="OR">Oregon</option>
+                                <option value="PA">Pennsylvania</option>
+                                <option value="RI">Rhode Island</option>
+                                <option value="SC">South Carolina</option>
+                                <option value="SD">South Dakota</option>
+                                <option value="TN">Tennessee</option>
+                                <option value="TX">Texas</option>
+                                <option value="UT">Utah</option>
+                                <option value="VT">Vermont</option>
+                                <option value="VA">Virginia</option>
+                                <option value="WA">Washington</option>
+                                <option value="WV">West Virginia</option>
+                                <option value="WI">Wisconsin</option>
+                                <option value="WY">Wyoming</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Issuing State <span class="text-danger">*</span></label>
+                            <select name="issuing_state" class="form-select" required>
+                                <option value="">Select State</option>
+                                <option value="AL">Alabama</option>
+                                <option value="AK">Alaska</option>
+                                <option value="AZ">Arizona</option>
+                                <option value="AR">Arkansas</option>
+                                <option value="CA">California</option>
+                                <option value="CO">Colorado</option>
+                                <option value="CT">Connecticut</option>
+                                <option value="DE">Delaware</option>
+                                <option value="FL">Florida</option>
+                                <option value="GA">Georgia</option>
+                                <option value="HI">Hawaii</option>
+                                <option value="ID">Idaho</option>
+                                <option value="IL">Illinois</option>
+                                <option value="IN">Indiana</option>
+                                <option value="IA">Iowa</option>
+                                <option value="KS">Kansas</option>
+                                <option value="KY">Kentucky</option>
+                                <option value="LA">Louisiana</option>
+                                <option value="ME">Maine</option>
+                                <option value="MD">Maryland</option>
+                                <option value="MA">Massachusetts</option>
+                                <option value="MI">Michigan</option>
+                                <option value="MN">Minnesota</option>
+                                <option value="MS">Mississippi</option>
+                                <option value="MO">Missouri</option>
+                                <option value="MT">Montana</option>
+                                <option value="NE">Nebraska</option>
+                                <option value="NV">Nevada</option>
+                                <option value="NH">New Hampshire</option>
+                                <option value="NJ">New Jersey</option>
+                                <option value="NM">New Mexico</option>
+                                <option value="NY">New York</option>
+                                <option value="NC">North Carolina</option>
+                                <option value="ND">North Dakota</option>
+                                <option value="OH">Ohio</option>
+                                <option value="OK">Oklahoma</option>
+                                <option value="OR">Oregon</option>
+                                <option value="PA">Pennsylvania</option>
+                                <option value="RI">Rhode Island</option>
+                                <option value="SC">South Carolina</option>
+                                <option value="SD">South Dakota</option>
+                                <option value="TN">Tennessee</option>
+                                <option value="TX">Texas</option>
+                                <option value="UT">Utah</option>
+                                <option value="VT">Vermont</option>
+                                <option value="VA">Virginia</option>
+                                <option value="WA">Washington</option>
+                                <option value="WV">West Virginia</option>
+                                <option value="WI">Wisconsin</option>
+                                <option value="WY">Wyoming</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Garnishment Type <span class="text-danger">*</span></label>
+                            <select name="garnishment_type" class="form-select" required>
+                                <option value="">Select Type</option>
+                                <option value="Child_Support">Child Support</option>
+                                <option value="Federal_Tax_Levy">Federal Tax Levy</option>
+                                <option value="Student_Default_Loan">Student Default Loan</option>
+                                <option value="Creditor_Debt">Creditor Debt</option>
+                                <option value="Franchise_Tax_Board">Franchise Tax Board</option>
+                                <option value="State_Tax_Levy">State Tax Levy</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Payee <span class="text-danger">*</span></label>
+                            <input type="text" name="payee" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Garnishing Authority <span class="text-danger">*</span></label>
+                            <input type="text" name="garnishing_authority" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <!-- Financial Information -->
+                    <h5 class="mb-3">Financial Information</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label">Ordered Amount <span class="text-danger">*</span></label>
+                            <input type="number" name="ordered_amount" class="form-control" min="0" step="0.01" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Withholding Amount <span class="text-danger">*</span></label>
+                            <input type="number" name="withholding_amount" class="form-control" min="0" step="0.01" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Arrear Amount</label>
+                            <input type="number" name="arrear_amount" class="form-control" min="0" step="0.01">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Garnishment Fees <span class="text-danger">*</span></label>
+                            <input type="number" name="garnishment_fees" class="form-control" min="0" step="0.01" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Override Amount <span class="text-danger">*</span></label>
+                            <input type="number" name="override_amount" class="form-control" min="0" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <!-- Dates Section -->
+                    <h5 class="mb-3">Date Information</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label">Start Date <span class="text-danger">*</span></label>
+                            <input type="date" name="start_date" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Stop Date <span class="text-danger">*</span></label>
+                            <input type="date" name="stop_date" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Issued Date <span class="text-danger">*</span></label>
+                            <input type="date" name="issued_date" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <h5 class="mb-3">Notes</h5>
+                    <div class="mb-4">
+                        <label class="form-label">Additional Notes</label>
+                        <textarea name="notes" rows="4" class="form-control"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {% include 'modules/orders/partials/add.html' %}
 {% include 'modules/orders/partials/search.html' %}
 <!-- /Page Content -->
 {% include 'inc/footer.html' %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // === 1. Open modal and fetch order by case_id ===
+    document.querySelectorAll(".edit-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            let orderId = this.getAttribute("data-id");
+
+            // Fetch order details from API
+            fetch(`/garnishment-order/details/${orderId}/`)
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    console.log("API Response:", data); // Debug log
+                    
+                    if (!data.success) {
+                        throw new Error(data.message || 'API returned error');
+                    }
+                    
+                    const orderData = data.data;
+                    console.log("Order Data:", orderData); // Debug log
+                    
+                    // Fill modal form fields with response
+                    let form = document.querySelector("#editOrderForm");
+                    
+                    // Set the hidden order_id field
+                    form.querySelector("input[name='order_id']").value = orderData.id;
+                    
+                    // Fill form fields safely
+                    const setFieldValue = (selector, value) => {
+                        const field = form.querySelector(selector);
+                        if (field && value !== undefined && value !== null) {
+                            field.value = value;
+                            console.log(`Set ${selector}:`, value); // Debug log
+                        } else {
+                            console.log(`Field not found or value is null: ${selector}`, value); // Debug log
+                        }
+                    };
+                    
+                     // Populate form fields based on current form structure
+                     setFieldValue("input[name='case_id']", orderData.case_id);
+                     setFieldValue("input[name='employee']", orderData.employee);
+                     setFieldValue("input[name='fein']", orderData.fein);
+                     setFieldValue("select[name='work_state']", orderData.work_state);
+                     setFieldValue("select[name='issuing_state']", orderData.issuing_state);
+                     setFieldValue("select[name='garnishment_type']", orderData.garnishment_type);
+                     setFieldValue("input[name='payee']", orderData.payee);
+                     setFieldValue("input[name='garnishing_authority']", orderData.garnishing_authority);
+                     setFieldValue("input[name='ordered_amount']", orderData.ordered_amount);
+                     setFieldValue("input[name='withholding_amount']", orderData.withholding_amount);
+                     setFieldValue("input[name='arrear_amount']", orderData.arrear_amount);
+                     setFieldValue("input[name='garnishment_fees']", orderData.garnishment_fees);
+                     setFieldValue("input[name='override_amount']", orderData.override_amount);
+                     setFieldValue("input[name='start_date']", orderData.start_date);
+                     setFieldValue("input[name='stop_date']", orderData.stop_date);
+                     setFieldValue("input[name='issued_date']", orderData.issued_date);
+                     setFieldValue("textarea[name='notes']", orderData.notes || '');
+
+                // Show the modal
+                const editModal = new bootstrap.Modal(document.getElementById('editOrderModal'));
+                editModal.show();
+            })
+                .catch(err => {
+                    console.error("Error loading order:", err);
+                    alert('Error loading order details. Please try again.');
+                });
+    });
+});
+
+    // Reset form and cleanup modal when closed
+    const editModal = document.getElementById('editOrderModal');
+    if (editModal) {
+        editModal.addEventListener('hidden.bs.modal', function() {
+            const form = document.getElementById('editOrderForm');
+            if (form) {
+                form.reset();
+                console.log("Form reset on modal close");
+            }
+            
+            // Clean up any remaining modal backdrop
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+                console.log("Removed modal backdrop");
+            }
+            
+            // Remove modal-open class from body
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        });
+        
+        // Also handle modal show event to prevent backdrop issues
+        editModal.addEventListener('show.bs.modal', function() {
+            // Remove any existing backdrops
+            const existingBackdrops = document.querySelectorAll('.modal-backdrop');
+            existingBackdrops.forEach(backdrop => backdrop.remove());
+        });
+    }
+
+    // Handle form submission
+    document.querySelector("#editOrderForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const form = this;
+        const orderId = form.querySelector("input[name='order_id']").value;
+        console.log("Submitting order ID:", orderId); // Debug log
+
+        // Create payload from form data
+        const payload = Object.fromEntries(new FormData(form));
+        console.log("Form payload:", payload); // Debug log
+        
+        // Validate required fields
+        if (!payload.case_id || !payload.employee || !payload.work_state || !payload.issuing_state) {
+            alert('Please fill in all required fields');
+            return;
+        }
+
+        fetch(`/garnishment-order/details/${orderId}/`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(payload)
+        })
+        .then(response => {
+            console.log("Response status:", response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Update response:", data);
+            if (data.success) {
+            alert('Order updated successfully!');
+                // Close modal before reloading
+                const modal = bootstrap.Modal.getInstance(document.getElementById('editOrderModal'));
+                if (modal) {
+                    modal.hide();
+                }
+                setTimeout(() => location.reload(), 500);
+        } else {
+                alert('Error updating order: ' + JSON.stringify(data.message || data.errors));
+            }
+        })
+        .catch(err => {
+            console.error('Error updating order:', err);
+            alert('Error updating order. Please try again.');
+        });
+    });
+});
+</script>

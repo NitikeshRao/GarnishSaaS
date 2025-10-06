@@ -1,6 +1,6 @@
 {% load static %}
 <!-- Add Client Modal -->
-<div class="modal fade" id="add">
+<div class="modal fade" id="addEmployeeModal">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -28,32 +28,7 @@
 
                         <div class="col-md-4">
                             <label class="form-label">Client ID <span class="text-danger">*</span></label>
-                            <select class="form-select" name="client" required>
-                                <option value="">Select Client</option>
-                                <option value="CLT900765">CLT900765 - TechWave Solutions Inc.</option>
-                                <option value="CLT10097">CLT10097 - NextGen Retailers Inc.</option>
-                                <option value="CLT1000">CLT1000 - NextGen Retailers Inc.</option>
-                                <option value="CLT10007">CLT10007 - NextGen Retailers Inc.</option>
-                                <option value="CLT10008">CLT10008 - NextGen Retailers LLC</option>
-                                <option value="CLT10009">CLT10009 - GlobalEdge Logistics LLC</option>
-                                <option value="CLT98765">CLT98765 - TechWave Solutions Inc.</option>
-                                <option value="OPC4FPX">OPC4FPX - NextGen Retailers LLC</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="form-label">First Name <span class="text-danger">*</span></label>
-                            <input type="text" name="first_name" class="form-control" required>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="form-label">Middle Name</label>
-                            <input type="text" name="middle_name" class="form-control">
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="form-label">Last Name <span class="text-danger">*</span></label>
-                            <input type="text" name="last_name" class="form-control" required>
+                            <input type="text" name="client" class="form-control" required>
                         </div>
 
                         <div class="col-md-4">
@@ -88,6 +63,11 @@
                             </select>
                         </div>
 
+                        
+                        <div class="col-md-4">
+                            <label class="form-label">Spouse Age</label>
+                            <input type="number" name="spouse_age" class="form-control" min="0" placeholder="Enter Spouse Age">
+                        </div>
                     </div>
 
                     <!-- Location & Employment Section -->
@@ -99,8 +79,55 @@
                             <select class="form-select" name="home_state" required>
                                 <option value="">Select Home State</option>
                                 <option value="Alabama">Alabama</option>
+                                <option value="Alaska">Alaska</option>
+                                <option value="Arizona">Arizona</option>
+                                <option value="Arkansas">Arkansas</option>
                                 <option value="California">California</option>
+                                <option value="Colorado">Colorado</option>
+                                <option value="Connecticut">Connecticut</option>
+                                <option value="Delaware">Delaware</option>
+                                <option value="Florida">Florida</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Hawaii">Hawaii</option>
+                                <option value="Idaho">Idaho</option>
+                                <option value="Illinois">Illinois</option>
+                                <option value="Indiana">Indiana</option>
+                                <option value="Iowa">Iowa</option>
+                                <option value="Kansas">Kansas</option>
+                                <option value="Kentucky">Kentucky</option>
+                                <option value="Louisiana">Louisiana</option>
+                                <option value="Maine">Maine</option>
+                                <option value="Maryland">Maryland</option>
+                                <option value="Massachusetts">Massachusetts</option>
+                                <option value="Michigan">Michigan</option>
+                                <option value="Minnesota">Minnesota</option>
+                                <option value="Mississippi">Mississippi</option>
+                                <option value="Missouri">Missouri</option>
+                                <option value="Montana">Montana</option>
+                                <option value="Nebraska">Nebraska</option>
+                                <option value="Nevada">Nevada</option>
+                                <option value="New Hampshire">New Hampshire</option>
+                                <option value="New Jersey">New Jersey</option>
+                                <option value="New Mexico">New Mexico</option>
+                                <option value="New York">New York</option>
+                                <option value="North Carolina">North Carolina</option>
+                                <option value="North Dakota">North Dakota</option>
+                                <option value="Ohio">Ohio</option>
+                                <option value="Oklahoma">Oklahoma</option>
+                                <option value="Oregon">Oregon</option>
+                                <option value="Pennsylvania">Pennsylvania</option>
+                                <option value="Rhode Island">Rhode Island</option>
+                                <option value="South Carolina">South Carolina</option>
+                                <option value="South Dakota">South Dakota</option>
+                                <option value="Tennessee">Tennessee</option>
                                 <option value="Texas">Texas</option>
+                                <option value="Utah">Utah</option>
+                                <option value="Vermont">Vermont</option>
+                                <option value="Virginia">Virginia</option>
+                                <option value="Washington">Washington</option>
+                                <option value="West Virginia">West Virginia</option>
+                                <option value="Wisconsin">Wisconsin</option>
+                                <option value="Wyoming">Wyoming</option>
                                 <!-- Add other states as needed -->
                             </select>
                         </div>
@@ -110,20 +137,74 @@
                             <select class="form-select" name="work_state" required>
                                 <option value="">Select Work State</option>
                                 <option value="Alabama">Alabama</option>
+                                <option value="Alaska">Alaska</option>
+                                <option value="Arizona">Arizona</option>
+                                <option value="Arkansas">Arkansas</option>
                                 <option value="California">California</option>
+                                <option value="Colorado">Colorado</option>
+                                <option value="Connecticut">Connecticut</option>
+                                <option value="Delaware">Delaware</option>
+                                <option value="Florida">Florida</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Hawaii">Hawaii</option>
+                                <option value="Idaho">Idaho</option>
+                                <option value="Illinois">Illinois</option>
+                                <option value="Indiana">Indiana</option>
+                                <option value="Iowa">Iowa</option>
+                                <option value="Kansas">Kansas</option>
+                                <option value="Kentucky">Kentucky</option>
+                                <option value="Louisiana">Louisiana</option>
+                                <option value="Maine">Maine</option>
+                                <option value="Maryland">Maryland</option>
+                                <option value="Massachusetts">Massachusetts</option>
+                                <option value="Michigan">Michigan</option>
+                                <option value="Minnesota">Minnesota</option>
+                                <option value="Mississippi">Mississippi</option>
+                                <option value="Missouri">Missouri</option>
+                                <option value="Montana">Montana</option>
+                                <option value="Nebraska">Nebraska</option>
+                                <option value="Nevada">Nevada</option>
+                                <option value="New Hampshire">New Hampshire</option>
+                                <option value="New Jersey">New Jersey</option>
+                                <option value="New Mexico">New Mexico</option>
+                                <option value="New York">New York</option>
+                                <option value="North Carolina">North Carolina</option>
+                                <option value="North Dakota">North Dakota</option>
+                                <option value="Ohio">Ohio</option>
+                                <option value="Oklahoma">Oklahoma</option>
+                                <option value="Oregon">Oregon</option>
+                                <option value="Pennsylvania">Pennsylvania</option>
+                                <option value="Rhode Island">Rhode Island</option>
+                                <option value="South Carolina">South Carolina</option>
+                                <option value="South Dakota">South Dakota</option>
+                                <option value="Tennessee">Tennessee</option>
                                 <option value="Texas">Texas</option>
+                                <option value="Utah">Utah</option>
+                                <option value="Vermont">Vermont</option>
+                                <option value="Virginia">Virginia</option>
+                                <option value="Washington">Washington</option>
+                                <option value="West Virginia">West Virginia</option>
+                                <option value="Wisconsin">Wisconsin</option>
+                                <option value="Wyoming">Wyoming</option>
                             </select>
                         </div>
 
+                        <!-- Filing Status -->
                         <div class="col-md-4">
-                            <label class="form-label">Pay Period <span class="text-danger">*</span></label>
-                            <select class="form-select" name="pay_period" required>
-                                <option value="">Select Pay Period</option>
-                                <option value="Weekly">Weekly</option>
-                                <option value="Biweekly">Biweekly</option>
-                                <option value="SemiMonthly">Semi-Monthly</option>
-                                <option value="Monthly">Monthly</option>
+                            <label class="form-label">Filing Status <span class="text-danger">*</span></label>
+                            <select class="form-select" name="filing_status" required>
+                                <option value="">Select Filing Status</option>
+                                <option value="single">Single</option>
+                                <option value="married_filing_joint_return">Married Filing Jointly</option>
+                                <option value="married_filing_separate_return">Married Filing Separately</option>
+                                <option value="head_of_household">Head of Household</option>
                             </select>
+                        </div>
+
+                        <!-- Student Default Loan -->
+                        <div class="col-md-4">
+                            <label class="form-label">Number of Student Default Loans <span class="text-danger">*</span></label>
+                            <input type="number" name="number_of_student_default_loan" class="form-control" value="0" required>
                         </div>
 
                         <div class="col-md-4">
@@ -138,9 +219,14 @@
 
                         <div class="col-md-4">
                             <label class="form-label">Active Garnishments</label>
-                            <input type="number" name="number_of_active_garnishment" class="form-control">
+                            <input type="number" name="number_of_active_garnishment" class="form-control" value="0">
+
                         </div>
 
+                        <div class="col-md-4">
+                            <label class="form-label">Garnishment Suspended Till</label>
+                            <input type="date" name="garnishment_fees_suspended_till" class="form-control">
+                        </div>
                     </div>
 
                     <!-- Status & Conditions Section -->
@@ -216,8 +302,7 @@
                     <button type="submit" class="btn btn-primary">Add Employee</button>
                 </div>
             </form>
-
-
         </div>
     </div>
 </div>
+

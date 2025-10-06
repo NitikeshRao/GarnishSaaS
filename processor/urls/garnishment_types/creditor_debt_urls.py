@@ -6,7 +6,6 @@ from processor.views.garnishment_types.creditor_debt_views import (
 app_name = 'garnishment_creditor'
 
 urlpatterns = [
-
     # API for returning the rule of creditor debt based on case id
     path('applied-rule/<str:case_id>/',
          CreditorDebtAppliedRuleAPIView.as_view(), name='rule'),

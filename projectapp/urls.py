@@ -16,7 +16,7 @@ urlpatterns = [
     ),
     path('client/', include('user_app.urls.client_urls','client')),
     path('employee/', include('user_app.urls.employee_urls','employee')),
-    # path('garnishment-order/', include('user_app.urls.garnishment_order_urls','garnishment-order')),
+    path('garnishment-order/', include('user_app.urls.garnishment_order_urls','garnishment-order')),
     path('processor/', include('processor.urls.garnishment_types.calculation_urls','processor')),
     # # path('exempt_amt/', include('processor.urls.configs.exempt_urls','exempt_amt')),
     

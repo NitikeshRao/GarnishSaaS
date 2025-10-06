@@ -12,6 +12,8 @@ import math
 import csv
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from user_app.models import EmployeeDetail, GarnishmentOrder
 from processor.models import GarnishmentFees
 from user_app.serializers import EmployeeDetailSerializer
@@ -619,7 +621,7 @@ class EmployeeDetailByIdAPI(APIView):
 
     def get_object(self, pk):
         try:
-            return EmployeeDetail.objects.get(pk=pk, is_active=True)
+            return EmployeeDetail.objects.get(pk=pk)
         except EmployeeDetail.DoesNotExist:
             return None
 

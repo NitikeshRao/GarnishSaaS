@@ -1,7 +1,6 @@
 from django.db import models
 from .fees_rule import GarnishmentFeesRules
 
-
 class GarnishmentFees(models.Model):
     state = models.ForeignKey('processor.GarnishmentState', on_delete=models.CASCADE, db_index=True,related_name="fees")
     garnishment_type = models.ForeignKey('processor.GarnishmentType', on_delete=models.CASCADE,related_name="fees", db_index=True)

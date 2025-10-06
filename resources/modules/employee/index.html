@@ -9,6 +9,7 @@
     }
 
 </style>
+
 <div class="content">
     <div class="card mt-3">
         <div class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
@@ -18,76 +19,100 @@
                     <a href="#" style="margin-left: 10px;" data-bs-toggle="modal" data-bs-target="#search_rule"
                         class="btn btn-sm btn-secondary d-flex align-items-center"><i class="ti ti-search me-2"></i>
                         Search</a>
-                    <a href="#" style="margin-left: 10px;" data-bs-toggle="modal" data-bs-target="#add"
+                    <a href="#" style="margin-left: 10px;" data-bs-toggle="modal" data-bs-target="#addEmployeeModal"
                         class="btn btn-sm btn-primary d-flex align-items-center"><i
                             class="ti ti-circle-plus me-2"></i>Add New Employee</a>
                 </div>
             </div>
         </div>
         <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="thead-light">
-                        <tr>
-                            <th class="no-sort">#</th>
-                            <th>Employee ID</th>
-                            <th>Client ID</th>
-                            <th>SSN</th>
-                            <th>Age</th>
-                            <th>Blind</th>
-                            <th>Home State</th>
-                            <th>Work State</th>
-                            <th>Gender</th>
-                            <th>No. of Exemptions</th>
-                            <th>Filing Status</th>
-                            <th>Marital Status</th>
-                            <th>No. of Default Loans</th>
-                            <th>No. of Dependent Children</th>
-                            <th>Support Second Family</th>
-                            <th>Spouse Age</th>
-                            <th>Spouse Blind</th>
-                            <th>Garnishment Status</th>
-                            <th>Garnishment Suspended Till</th>
-                            <th>Active Garnishment</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for employee in employees %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{ employee.ee_id }}</td>
-                            <td>{{ employee.client }}</td>
-                            <td>{{ employee.ssn }}</td>
-                            <td>{{ employee.age }}</td>
-                            <td>{% if employee.is_blind %}Yes{% else %}No{% endif %}</td>
-                            <td>{{ employee.home_state|title }}</td>
-                            <td>{{ employee.work_state|title }}</td>
-                            <td>{{ employee.gender }}</td>
-                            <td>{{ employee.number_of_exemptions }}</td>
-                            <td>{{ employee.filing_status|title }}</td>
-                            <td>{{ employee.marital_status }}</td>
-                            <td>{{ employee.number_of_student_default_loan }}</td>
-                            <td>{{ employee.number_of_dependent_child }}</td>
-                            <td>{% if employee.support_second_family %}Yes{% else %}No{% endif %}</td>
-                            <td>{{ employee.spouse_age }}</td>
-                            <td>{% if employee.is_spouse_blind %}Yes{% else %}No{% endif %}</td>
-                            <td>{% if employee.garnishment_fees_status %}Active{% else %}Inactive{% endif %}</td>
-                            <td>
-                                {% if employee.garnishment_fees_suspended_till %}
-                                    {{ employee.garnishment_fees_suspended_till|date:"m/d/Y" }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead class="thead-light">
+                    <tr>
+                        <th class="no-sort">#</th>
+                        <th>Employee ID</th>
+                        <th>First Name</th>
+                        <th>Middle Name</th>
+                        <th>Last Name</th>
+                        <th>Client ID</th>
+                        <th>SSN</th>
+                        <th>Age</th>
+                        <th>Blind</th>
+                        <th>Home State</th>
+                        <th>Work State</th>
+                        <th>Gender</th>
+                        <th>No. of Exemptions</th>
+                        <th>Filing Status</th>
+                        <th>Marital Status</th>
+                        <th>No. of Default Loans</th>
+                        <th>No. of Dependent Children</th>
+                        <th>Support Second Family</th>
+                        <th>Spouse Age</th>
+                        <th>Spouse Blind</th>
+                        <th>Garnishment Status</th>
+                        <th>Garnishment Suspended Till</th>
+                        <th>Active Garnishment</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for employee in employees %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ employee.ee_id }}</td>
+                        <td>{{ employee.first_name }}</td>
+                        <td>{{ employee.middle_name }}</td>
+                        <td>{{ employee.last_name }}</td>
+                        <td>{{ employee.client }}</td>
+                        <td>{{ employee.ssn }}</td>
+                        <td>{{ employee.age }}</td>
+                        <td>{% if employee.is_blind %}Yes{% else %}No{% endif %}</td>
+                        <td>{{ employee.home_state|upper }}</td>
+                        <td>{{ employee.work_state|upper }}</td>
+                        <td>{{ employee.gender }}</td>
+                        <td>{{ employee.number_of_exemptions }}</td>
+                        <td>{{ employee.filing_status|title }}</td>
+                        <td>{{ employee.marital_status }}</td>
+                        <td>{{ employee.number_of_student_default_loan }}</td>
+                        <td>{{ employee.number_of_dependent_child }}</td>
+                        <td>{% if employee.support_second_family %}Yes{% else %}No{% endif %}</td>
+                        <td>{{ employee.spouse_age }}</td>
+                        <td>{% if employee.is_spouse_blind %}Yes{% else %}No{% endif %}</td>
+                        <td>{% if employee.garnishment_fees_status %}Active{% else %}Inactive{% endif %}</td>
+                        <td>
+                            {% if employee.garnishment_fees_suspended_till %}
+                                {{ employee.garnishment_fees_suspended_till|date:"m/d/Y" }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>{{ employee.number_of_active_garnishment }}</td>
+                        <td>
+                            {% if employee.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-danger">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <!-- Edit button -->
+                            <a href="#" 
+                               class="btn btn-sm btn-primary edit-btn" 
+                               data-id="{{ employee.id }}" 
+                               data-bs-toggle="modal" 
+                               data-bs-target="#editEmployeeModal">
+                                <i class="ti ti-edit"></i> Edit
+                            </a>
+   
+                                <!-- Delete form -->
+                                <!---<button type="button" class="btn btn-sm btn-danger delete-btn" 
+                                        data-id="{{ client.id }}">
+                                    <i class="ti ti-trash"></i> Delete
+                                </button> -->
                             </td>
-                            <td>{{ employee.number_of_active_garnishment }}</td>
-                            <td>
-                                {% if employee.is_active %}
-                                    <span class="badge bg-success">Active</span>
-                                {% else %}
-                                    <span class="badge bg-danger">Inactive</span>
-                                {% endif %}
-                            </td>
+
                         </tr>
                         {% empty %}
                         <tr>
@@ -102,6 +127,510 @@
 
     </div>
 </div>
+
+<!-- Edit Employee Modal -->
+<div class="modal fade" id="editEmployeeModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form id="editEmployeeForm">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Employee</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Basic Information Section -->
+          <h5 class="mb-3">Basic Information</h5>
+          <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <label class="form-label">Employee ID <span class="text-danger">*</span></label>
+              <input type="text" id="edit-ee_id" name="ee_id" class="form-control" required readonly>
+              <small class="text-muted">Unique alphanumeric employee ID</small>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Client ID <span class="text-danger">*</span></label>
+              <input type="text" id="edit-client" name="client" class="form-control" required>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">SSN <span class="text-danger">*</span></label>
+              <input type="text" id="edit-ssn" name="ssn" maxlength="11" class="form-control" required placeholder="XXX-XX-XXXX">
+            </div>
+            
+            <div class="col-md-4">
+              <label class="form-label">First Name <span class="text-danger">*</span></label>
+              <input type="text" id="edit-first_name" name="first_name" class="form-control" required>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Middle Name</label>
+              <input type="text" id="edit-middle_name" name="middle_name" class="form-control">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Last Name <span class="text-danger">*</span></label>
+              <input type="text" id="edit-last_name" name="last_name" class="form-control" required>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Age <span class="text-danger">*</span></label>
+              <input type="number" id="edit-age" name="age" class="form-control" required>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Gender <span class="text-danger">*</span></label>
+              <select id="edit-gender" name="gender" class="form-select" required>
+                <option value="">Select Gender</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <option value="O">Other</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Marital Status <span class="text-danger">*</span></label>
+              <select id="edit-marital_status" name="marital_status" class="form-select" required>
+                <option value="">Select Marital Status</option>
+                <option value="Unmarried">Unmarried</option>
+                <option value="Married">Married</option>
+                <option value="Divorced">Divorced</option>
+                <option value="Widowed">Widowed</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Spouse Age</label>
+              <input type="number" id="edit-spouse_age" name="spouse_age" class="form-control" min="0" placeholder="Enter Spouse Age">
+            </div>
+          </div>
+
+       <h5 class="mb-3">Location & Employment</h5>
+          <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <label class="form-label">Home State <span class="text-danger">*</span></label>
+              <select id="edit_home_state" name="home_state" class="form-select" required>
+                <option value="">Select Home State</option>
+                <option value="alabama">Alabama</option>
+                <option value="alaska">Alaska</option>
+                <option value="arizona">Arizona</option>
+                <option value="arkansas">Arkansas</option>
+                <option value="california">California</option>
+                <option value="colorado">Colorado</option>
+                <option value="connecticut">Connecticut</option>
+                <option value="delaware">Delaware</option>
+                <option value="florida">Florida</option>
+                <option value="georgia">Georgia</option>
+                <option value="hawaii">Hawaii</option>
+                <option value="idaho">Idaho</option>
+                <option value="illinois">Illinois</option>
+                <option value="indiana">Indiana</option>
+                <option value="iowa">Iowa</option>
+                <option value="kansas">Kansas</option>
+                <option value="kentucky">Kentucky</option>
+                <option value="louisiana">Louisiana</option>
+                <option value="maine">Maine</option>
+                <option value="maryland">Maryland</option>
+                <option value="massachusetts">Massachusetts</option>
+                <option value="michigan">Michigan</option>
+                <option value="minnesota">Minnesota</option>
+                <option value="mississippi">Mississippi</option>
+                <option value="missouri">Missouri</option>
+                <option value="montana">Montana</option>
+                <option value="nebraska">Nebraska</option>
+                <option value="nevada">Nevada</option>
+                <option value="new hampshire">New Hampshire</option>
+                <option value="new jersey">New Jersey</option>
+                <option value="new mexico">New Mexico</option>
+                <option value="new york">New York</option>
+                <option value="north carolina">North Carolina</option>
+                <option value="north dakota">North Dakota</option>
+                <option value="ohio">Ohio</option>
+                <option value="oklahoma">Oklahoma</option>
+                <option value="oregon">Oregon</option>
+                <option value="pennsylvania">Pennsylvania</option>
+                <option value="rhode island">Rhode Island</option>
+                <option value="south carolina">South Carolina</option>
+                <option value="south dakota">South Dakota</option>
+                <option value="tennessee">Tennessee</option>
+                <option value="texas">Texas</option>
+                <option value="utah">Utah</option>
+                <option value="vermont">Vermont</option>
+                <option value="virginia">Virginia</option>
+                <option value="washington">Washington</option>
+                <option value="west virginia">West Virginia</option>
+                <option value="wisconsin">Wisconsin</option>
+                <option value="wyoming">Wyoming</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Work State <span class="text-danger">*</span></label>
+              <select id="edit_work_state" name="work_state" class="form-select" required>
+                <option value="">Select Work State</option>
+                <!-- same lowercase options -->
+                <option value="alabama">Alabama</option>
+                <option value="alaska">Alaska</option>
+                <option value="arizona">Arizona</option>
+                <option value="arkansas">Arkansas</option>
+                <option value="california">California</option>
+                <option value="colorado">Colorado</option>
+                <option value="connecticut">Connecticut</option>
+                <option value="delaware">Delaware</option>
+                <option value="florida">Florida</option>
+                <option value="georgia">Georgia</option>
+                <option value="hawaii">Hawaii</option>
+                <option value="idaho">Idaho</option>
+                <option value="illinois">Illinois</option>
+                <option value="indiana">Indiana</option>
+                <option value="iowa">Iowa</option>
+                <option value="kansas">Kansas</option>
+                <option value="kentucky">Kentucky</option>
+                <option value="louisiana">Louisiana</option>
+                <option value="maine">Maine</option>
+                <option value="maryland">Maryland</option>
+                <option value="massachusetts">Massachusetts</option>
+                <option value="michigan">Michigan</option>
+                <option value="minnesota">Minnesota</option>
+                <option value="mississippi">Mississippi</option>
+                <option value="missouri">Missouri</option>
+                <option value="montana">Montana</option>
+                <option value="nebraska">Nebraska</option>
+                <option value="nevada">Nevada</option>
+                <option value="new hampshire">New Hampshire</option>
+                <option value="new jersey">New Jersey</option>
+                <option value="new mexico">New Mexico</option>
+                <option value="new york">New York</option>
+                <option value="north carolina">North Carolina</option>
+                <option value="north dakota">North Dakota</option>
+                <option value="ohio">Ohio</option>
+                <option value="oklahoma">Oklahoma</option>
+                <option value="oregon">Oregon</option>
+                <option value="pennsylvania">Pennsylvania</option>
+                <option value="rhode island">Rhode Island</option>
+                <option value="south carolina">South Carolina</option>
+                <option value="south dakota">South Dakota</option>
+                <option value="tennessee">Tennessee</option>
+                <option value="texas">Texas</option>
+                <option value="utah">Utah</option>
+                <option value="vermont">Vermont</option>
+                <option value="virginia">Virginia</option>
+                <option value="washington">Washington</option>
+                <option value="west virginia">West Virginia</option>
+                <option value="wisconsin">Wisconsin</option>
+                <option value="wyoming">Wyoming</option>
+              </select>
+            </div>            
+            
+            <div class="col-md-4">
+              <label class="form-label">Number of Student Default Loans <span class="text-danger">*</span></label>
+              <input type="number" id="edit-number_of_student_default_loan" name="number_of_student_default_loan" class="form-control" value="0" required>
+            </div>
+
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <label class="form-label">Filing Status <span class="text-danger">*</span></label>
+              <select id="edit-filing_status" name="filing_status" class="form-select" required>
+                <option value="">Select Filing Status</option>
+                <option value="single">Single</option>
+                <option value="married_filing_joint_return">Married Filing Jointly</option>
+                <option value="married_filing_separate_return">Married Filing Separately</option>
+                <option value="head_of_household">Head of Household</option>
+                <option value="any_other_filing_status">Any Other Filing Status</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Number of Exemptions <span class="text-danger">*</span></label>
+              <input type="number" id="edit-number_of_exemptions" name="number_of_exemptions" class="form-control" required>
+            </div>
+            
+            <div class="col-md-4">
+              <label class="form-label">Dependent Children</label>
+              <input type="number" id="edit-number_of_dependent_child" name="number_of_dependent_child" class="form-control" value="0">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Active Garnishments</label>
+              <input type="number" id="edit-number_of_active_garnishment" name="number_of_active_garnishment" class="form-control" value="0">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Garnishment Suspended Till</label>
+              <input type="date" id="edit-garnishment_fees_suspended_till" name="garnishment_fees_suspended_till" class="form-control">
+            </div>
+          </div>
+
+          <!-- Status & Conditions Section -->
+      <!-- Status & Conditions Section -->
+      <div class="col-md-4">
+        <h5 class="mb-3">Status & Conditions</h5>
+      
+        <!-- Is Active -->
+        <div class="mb-3">
+          <label class="form-label">Is Active</label>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="is_active" id="edit-status-active" value="true">
+            <label class="form-check-label" for="edit-status-active">Active</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="is_active" id="edit-status-inactive" value="false">
+            <label class="form-check-label" for="edit-status-inactive">Inactive</label>
+          </div>
+        </div>
+      
+        <!-- Garnishment Fees Status -->
+        <div class="mb-3">
+          <label class="form-label">Garnishment Fees Status</label>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="garnishment_fees_status" id="garnishment-status-active" value="true">
+            <label class="form-check-label" for="garnishment-status-active">Active</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="garnishment_fees_status" id="garnishment-status-suspended" value="false" checked>
+            <label class="form-check-label" for="garnishment-status-suspended">Suspended</label>
+          </div>
+        </div>
+      
+        <!-- Support Second Family -->
+        <div class="mb-3">
+          <label class="form-label">Support Second Family</label>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="support_second_family" id="support-second-yes" value="true">
+            <label class="form-check-label" for="support-second-yes">Yes</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="support_second_family" id="support-second-no" value="false" checked>
+            <label class="form-check-label" for="support-second-no">No</label>
+          </div>
+        </div>
+      
+        <!-- Is Blind -->
+        <div class="mb-3">
+          <label class="form-label">Is Blind</label>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="is_blind" id="is-blind-yes" value="true">
+            <label class="form-check-label" for="is-blind-yes">Yes</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="is_blind" id="is-blind-no" value="false" checked>
+            <label class="form-check-label" for="is-blind-no">No</label>
+          </div>
+        </div>
+      
+        <!-- Is Spouse Blind -->
+        <div class="mb-3">
+          <label class="form-label">Is Spouse Blind</label>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="is_spouse_blind" id="is-spouse-blind-yes" value="true">
+            <label class="form-check-label" for="is-spouse-blind-yes">Yes</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="is_spouse_blind" id="is-spouse-blind-no" value="false" checked>
+            <label class="form-check-label" for="is-spouse-blind-no">No</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Update Employee</button>
+      </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+// Edit Employee Button Click
+document.querySelectorAll('.edit-btn').forEach(button => {
+  button.addEventListener('click', function() {
+    const eeId = this.getAttribute('data-id');
+
+    fetch(`/employee/details/${eeId}/`, {
+      credentials: 'same-origin'
+    })
+      .then(response => response.json())
+      .then(emp => {
+        // Fill hidden ID and name fields
+        document.getElementById('edit-first_name').value = emp.data.first_name || '';
+        document.getElementById('edit-middle_name').value = emp.data.middle_name || '';
+        document.getElementById('edit-last_name').value = emp.data.last_name || '';
+
+        // Basic Information
+        document.getElementById('edit-ee_id').value = emp.data.ee_id;
+        document.getElementById('edit-client').value = emp.data.client;
+        document.getElementById('edit-ssn').value = emp.data.ssn;
+        document.getElementById('edit-age').value = emp.data.age;
+        document.getElementById('edit-gender').value = emp.data.gender;
+        document.getElementById('edit-marital_status').value = emp.data.marital_status;
+        document.getElementById('edit-spouse_age').value = emp.data.spouse_age || '';
+
+        // Location & Employment
+        document.getElementById('edit_home_state').value = emp.data.home_state || '';
+        document.getElementById('edit_work_state').value = emp.data.work_state || '';
+        document.getElementById('edit-number_of_student_default_loan').value = emp.data.number_of_student_default_loan || 0;
+        document.getElementById('edit-number_of_exemptions').value = emp.data.number_of_exemptions || 0;
+        document.getElementById('edit-number_of_dependent_child').value = emp.data.number_of_dependent_child || 0;
+        document.getElementById('edit-number_of_active_garnishment').value = emp.data.number_of_active_garnishment || 0;
+        document.getElementById('edit-garnishment_fees_suspended_till').value = emp.data.garnishment_fees_suspended_till || '';
+        document.getElementById('edit-filing_status').value = emp.data.filing_status || '';
+
+        // Radio buttons
+        document.getElementById(emp.data.is_active ? 'edit-status-active' : 'edit-status-inactive').checked = true;
+        document.querySelector(`[name="garnishment_fees_status"][value="${emp.data.garnishment_fees_status}"]`).checked = true;
+        document.querySelector(`[name="support_second_family"][value="${emp.data.support_second_family}"]`).checked = true;
+        document.querySelector(`[name="is_blind"][value="${emp.data.is_blind}"]`).checked = true;
+        document.querySelector(`[name="is_spouse_blind"][value="${emp.data.is_spouse_blind}"]`).checked = true;
+
+        // Show modal
+        const editModal = new bootstrap.Modal(document.getElementById('editEmployeeModal'));
+        editModal.show();
+      })
+      .catch(err => console.error('Error fetching employee:', err));
+  });
+});
+
+// Update Employee Form
+document.getElementById('editEmployeeForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const eeId = document.getElementById('edit-ee_id').value;
+
+  const formData = {
+    ee_id: document.getElementById('edit-ee_id').value,
+    first_name: document.getElementById('edit-first_name').value,
+    middle_name: document.getElementById('edit-middle_name').value,
+    last_name: document.getElementById('edit-last_name').value,
+    client: document.getElementById('edit-client').value,
+    ssn: document.getElementById('edit-ssn').value,
+    age: document.getElementById('edit-age').value,
+    gender: document.getElementById('edit-gender').value,
+    marital_status: document.getElementById('edit-marital_status').value,
+    spouse_age: document.getElementById('edit-spouse_age').value,
+    home_state: document.getElementById('edit-home_state').value,
+    work_state: document.getElementById('edit-work_state').value,
+    number_of_student_default_loan: document.getElementById('edit-number_of_student_default_loan').value,
+    number_of_exemptions: document.getElementById('edit-number_of_exemptions').value,
+    number_of_dependent_child: document.getElementById('edit-number_of_dependent_child').value,
+    number_of_active_garnishment: document.getElementById('edit-number_of_active_garnishment').value,
+    garnishment_fees_suspended_till: document.getElementById('edit-garnishment_fees_suspended_till').value,
+    filing_status: document.getElementById('edit-filing_status').value,
+    is_active: document.getElementById('edit-status-active').checked,
+    garnishment_fees_status: document.querySelector('[name="garnishment_fees_status"]:checked').value === 'true',
+    support_second_family: document.querySelector('[name="support_second_family"]:checked').value === 'true',
+    is_blind: document.querySelector('[name="is_blind"]:checked').value === 'true',
+    is_spouse_blind: document.querySelector('[name="is_spouse_blind"]:checked').value === 'true'
+  };
+
+  fetch(`/employee/details/${eeId}/`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+    },
+    credentials: 'same-origin',
+    body: JSON.stringify(formData)
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      alert('Employee updated successfully!');
+      location.reload();
+    } else {
+      alert('Error updating employee: ' + JSON.stringify(data.message));
+    }
+  })
+  .catch(err => console.error('Error updating employee:', err));
+});
+
+// --- Modal backdrop cleanup to prevent unresponsive dark overlay ---
+const cleanupModalBackdrop = () => {
+  const backdrops = document.querySelectorAll('.modal-backdrop');
+  backdrops.forEach(b => b.remove());
+  document.body.classList.remove('modal-open');
+  document.body.style.overflow = '';
+  document.body.style.paddingRight = '';
+};
+
+const editEmployeeModalEl = document.getElementById('editEmployeeModal');
+if (editEmployeeModalEl) {
+  editEmployeeModalEl.addEventListener('hidden.bs.modal', cleanupModalBackdrop);
+  editEmployeeModalEl.addEventListener('show.bs.modal', cleanupModalBackdrop);
+}
+
+// Also ensure the Add Employee modal cleans up correctly
+const addEmployeeModalEl = document.getElementById('addEmployeeModal');
+if (addEmployeeModalEl) {
+  addEmployeeModalEl.addEventListener('hidden.bs.modal', cleanupModalBackdrop);
+  addEmployeeModalEl.addEventListener('show.bs.modal', cleanupModalBackdrop);
+}
+
+// --- Add Employee Form Submission ---
+// The add modal is included via partial and has id "add"; bind to its form
+(function attachAddEmployeeHandler() {
+  const addModal = document.getElementById('addEmployeeModal');
+  if (!addModal) return;
+  const addForm = addModal.querySelector('form');
+  if (!addForm) return;
+
+  addForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(addForm);
+    const payload = Object.fromEntries(formData.entries());
+
+    // Normalize radios to booleans
+    const booleanKeys = [
+      'is_active',
+      'garnishment_fees_status',
+      'support_second_family',
+      'is_blind',
+      'is_spouse_blind'
+    ];
+    booleanKeys.forEach(k => {
+      if (k in payload) payload[k] = String(payload[k]).toLowerCase() === 'true';
+    });
+
+    // Basic validation
+    if (!payload.ee_id || !payload.client || !payload.ssn || !payload.age || !payload.gender || !payload.marital_status || !payload.home_state || !payload.work_state || !payload.filing_status) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    fetch('/employee/details/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.success) {
+        // Close modal and refresh
+        const modalInstance = bootstrap.Modal.getInstance(addModal) || new bootstrap.Modal(addModal);
+        modalInstance.hide();
+        cleanupModalBackdrop();
+        setTimeout(() => location.reload(), 300);
+      } else {
+        alert('Error adding employee: ' + JSON.stringify((data && (data.message || data.error)) || 'Unknown error'));
+      }
+    })
+    .catch(err => {
+      console.error('Error adding employee:', err);
+      alert('Error adding employee. Please try again.');
+    });
+  });
+})();
+</script>
+
 {% include 'modules/employee/partials/add.html' %}
 {% include 'modules/employee/partials/search.html' %}
 <!-- /Page Content -->
