@@ -405,10 +405,35 @@ const payPeriodSelect = document.querySelector('[name="pay_period"]');
     return result;
   }
 
-  function toMMDDYYYY(dateStr) {
+function toMMDDYYYY(dateStr) {
   if (!dateStr) return null;
-  const [year, month, day] = dateStr.split("-");
-  return `${month}/${day}/${year}`;
+  
+  // Normalize separators
+  const parts = dateStr.split(/[-/]/).map(p => p.trim());
+
+  // Handle known formats
+  let year, month, day;
+
+  if (parts[0].length === 4) {
+    // Format: YYYY-MM-DD
+    [year, month, day] = parts;
+  } else if (parts[2].length === 4) {
+    // Format: MM/DD/YYYY or DD-MM-YYYY
+    if (Number(parts[0]) > 12) {
+      // DD-MM-YYYY → swap
+      [day, month, year] = parts;
+    } else {
+      // MM/DD/YYYY
+      [month, day, year] = parts;
+    }
+  } else if (parts[1].length === 4) {
+    // Custom format: MM/YYYY/DD
+    [month, year, day] = parts;
+  } else {
+    return null; // Unknown format
+  }
+
+  return `${month.padStart(2, '0')}/${day.padStart(2, '0')}/${year}`;
 }
 
   // Map form data to API payload 
