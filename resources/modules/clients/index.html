@@ -11,6 +11,7 @@
         border-color: #000;
     }
 </style>
+
 <div class="content">
     <div class="card mt-3">
         <div class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
@@ -20,8 +21,8 @@
                     <a href="#" style="margin-left: 10px;" data-bs-toggle="modal" data-bs-target="#search_rule"
                         class="btn btn-sm btn-secondary d-flex align-items-center"><i class="ti ti-search me-2"></i>
                         Search</a>
-                    <a href="#" id="openAddClientBtn" style="margin-left: 10px;" data-bs-toggle="modal" data-bs-target="#addClientModal"
-                        class="btn btn-sm btn-primary d-flex align-items-center"><i
+                    <a href="#" id="openAddClientBtn" style="margin-left: 10px;" data-bs-toggle="modal"
+                        data-bs-target="#addClientModal" class="btn btn-sm btn-primary d-flex align-items-center"><i
                             class="ti ti-circle-plus me-2"></i>Add New Client</a>
                 </div>
             </div>
@@ -62,27 +63,27 @@
                             <td>{{ client.tax_id }}</td>
                             <td>
                                 {% if client.is_active %}
-                                    <span class="badge bg-success">Active</span>
+                                <span class="badge bg-success">Active</span>
                                 {% else %}
-                                    <span class="badge bg-danger">Inactive</span>
+                                <span class="badge bg-danger">Inactive</span>
                                 {% endif %}
                             </td>
                             <td>{{ client.created_at|date:"Y-m-d H:i" }}</td>
                             <td>{{ client.updated_at|date:"Y-m-d H:i" }}</td>
-                    <td>
-                        <!-- Edit button -->
-                        <a href="#" class="btn btn-sm btn-primary edit-btn" data-id="{{ client.id }}">
-                            <i class="ti ti-edit"></i> Edit
-                        </a>
+                            <td>
+                                <!-- Edit button -->
+                                <a href="#" class="btn btn-sm btn-primary edit-btn" data-id="{{ client.id }}">
+                                    <i class="ti ti-edit"></i> Edit
+                                </a>
 
 
-                        <!-- Delete form -->
-                        <!-- <button type="button" class="btn btn-sm btn-danger delete-btn" 
+                                <!-- Delete form -->
+                                <!-- <button type="button" class="btn btn-sm btn-danger delete-btn" 
                                 data-id="{{ client.id }}">
                             <i class="ti ti-trash"></i> Delete
                         </button> -->
-                    </td>
-                        {% empty %}
+                            </td>
+                            {% empty %}
                         <tr>
                             <td colspan="13" class="text-center text-muted py-4">
                                 <i class="ti ti-database-off me-2"></i>No clients found.
@@ -115,27 +116,28 @@
                 {% csrf_token %}
                 <!-- hidden ID for backend -->
                 <input type="hidden" name="client_id" id="edit-client-hidden-id">
-            
+
                 <div class="modal-body pb-0">
                     <h5 class="mb-3">Basic Information</h5>
                     <div class="row g-3 mb-4">
                         <div class="col-md-4">
                             <label class="form-label">ID <span class="text-danger">*</span></label>
-                            <input type="text" name="id" id="edit-client-id" class="form-control" required pattern="[0-9]+">
+                            <input type="text" name="id" id="edit-client-id" class="form-control" required
+                                pattern="[0-9]+">
                         </div>
-                    
+
                         <div class="col-md-4">
                             <label class="form-label">Client ID <span class="text-danger">*</span></label>
                             <input type="text" name="client_id" id="edit-client-client_id" class="form-control" required
                                 pattern="[A-Za-z0-9]+" title="Only alphanumeric characters allowed">
                         </div>
-                    
+
                         <div class="col-md-4">
                             <label class="form-label">PEO ID <span class="text-danger">*</span></label>
                             <input type="text" name="peo" id="edit-client-peo" class="form-control" required
                                 pattern="[A-Za-z0-9]+" title="Only alphanumeric characters allowed">
                         </div>
-                    
+
                         <div class="col-md-4">
                             <label class="form-label">State <span class="text-danger">*</span></label>
                             <select class="form-select" name="state" id="edit-client-state" required>
@@ -192,7 +194,7 @@
                                 <option value="WY">Wyoming</option>
                             </select>
                         </div>
-                    
+
                         <div class="col-md-4">
                             <label class="form-label">Pay Period <span class="text-danger">*</span></label>
                             <select class="form-select" name="pay_period" id="edit-client-pay_period" required>
@@ -204,12 +206,13 @@
                             </select>
                         </div>
                     </div>
-                
+
                     <h5 class="mb-3">Company Information</h5>
                     <div class="row g-3 mb-4">
                         <div class="col-md-4">
                             <label class="form-label">Legal Name <span class="text-danger">*</span></label>
-                            <input type="text" name="legal_name" id="edit-client-legal_name" class="form-control" required>
+                            <input type="text" name="legal_name" id="edit-client-legal_name" class="form-control"
+                                required>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">DBA</label>
@@ -224,231 +227,233 @@
                             <input type="text" name="tax_id" id="edit-client-tax_id" class="form-control" required>
                         </div>
                     </div>
-                
+
                     <div class="mb-3">
                         <label class="form-label">Client Status</label>
                         <div class="d-flex gap-4">
                             <div class="form-check form-check-md">
-                                <input class="form-check-input" type="radio" name="is_active" id="edit-status-active" value="true">
+                                <input class="form-check-input" type="radio" name="is_active" id="edit-status-active"
+                                    value="true">
                                 <label class="form-check-label" for="edit-status-active">Active</label>
                             </div>
                             <div class="form-check form-check-md">
-                                <input class="form-check-input" type="radio" name="is_active" id="edit-status-inactive" value="false">
+                                <input class="form-check-input" type="radio" name="is_active" id="edit-status-inactive"
+                                    value="false">
                                 <label class="form-check-label" for="edit-status-inactive">Inactive</label>
                             </div>
                         </div>
                     </div>
                 </div>
-            
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
 
 <script>
 
-document.querySelectorAll('.edit-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        const clientId = this.getAttribute('data-id');
+    document.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const clientId = this.getAttribute('data-id');
 
-        fetch(`/client/details/${clientId}/`)
-            .then(response => response.json())
-            .then(client => {
-                // Fill fields
-                document.getElementById('edit-client-hidden-id').value = client.data.id;
-                document.getElementById('edit-client-id').value = client.data.id;
-                document.getElementById('edit-client-client_id').value = client.data.client_id;
-                document.getElementById('edit-client-peo').value = client.data.peo;
-                document.getElementById('edit-client-state').value = client.data.state;
-                document.getElementById('edit-client-pay_period').value = client.data.pay_period;
-                document.getElementById('edit-client-legal_name').value = client.data.legal_name;
-                document.getElementById('edit-client-dba').value = client.data.dba || '';
-                document.getElementById('edit-client-industry_type').value = client.data.industry_type || '';
-                document.getElementById('edit-client-tax_id').value = client.data.tax_id;
+            fetch(`/client/details/${clientId}/`)
+                .then(response => response.json())
+                .then(client => {
+                    // Fill fields
+                    document.getElementById('edit-client-hidden-id').value = client.data.id;
+                    document.getElementById('edit-client-id').value = client.data.id;
+                    document.getElementById('edit-client-client_id').value = client.data.client_id;
+                    document.getElementById('edit-client-peo').value = client.data.peo;
+                    document.getElementById('edit-client-state').value = client.data.state;
+                    document.getElementById('edit-client-pay_period').value = client.data.pay_period;
+                    document.getElementById('edit-client-legal_name').value = client.data.legal_name;
+                    document.getElementById('edit-client-dba').value = client.data.dba || '';
+                    document.getElementById('edit-client-industry_type').value = client.data.industry_type || '';
+                    document.getElementById('edit-client-tax_id').value = client.data.tax_id;
 
-                // Active status
-                if (client.data.is_active) {
-                    document.getElementById('edit-status-active').checked = true;
-                } else {
-                    document.getElementById('edit-status-inactive').checked = true;
-                }
+                    // Active status
+                    if (client.data.is_active) {
+                        document.getElementById('edit-status-active').checked = true;
+                    } else {
+                        document.getElementById('edit-status-inactive').checked = true;
+                    }
 
-                // Show modal
-                const editModal = new bootstrap.Modal(document.getElementById('editClientModal'));
-                editModal.show();
-            })
-            .catch(err => console.error('Error fetching client:', err));
+                    // Show modal
+                    const editModal = new bootstrap.Modal(document.getElementById('editClientModal'));
+                    editModal.show();
+                })
+                .catch(err => console.error('Error fetching client:', err));
+        });
     });
-});
 
-document.getElementById('editClientForm').addEventListener('submit', function (e) {
-    e.preventDefault();
+    document.getElementById('editClientForm').addEventListener('submit', function (e) {
+        e.preventDefault();
 
-    const clientId = document.getElementById('edit-client-hidden-id').value;
+        const clientId = document.getElementById('edit-client-hidden-id').value;
 
-    const formData = {
-        client_id: document.getElementById('edit-client-client_id').value,
-        peo: document.getElementById('edit-client-peo').value,
-        state: document.getElementById('edit-client-state').value,
-        pay_period: document.getElementById('edit-client-pay_period').value,
-        legal_name: document.getElementById('edit-client-legal_name').value,
-        dba: document.getElementById('edit-client-dba').value,
-        industry_type: document.getElementById('edit-client-industry_type').value,
-        tax_id: document.getElementById('edit-client-tax_id').value,
-        is_active: document.getElementById('edit-status-active').checked
+        const formData = {
+            client_id: document.getElementById('edit-client-client_id').value,
+            peo: document.getElementById('edit-client-peo').value,
+            state: document.getElementById('edit-client-state').value,
+            pay_period: document.getElementById('edit-client-pay_period').value,
+            legal_name: document.getElementById('edit-client-legal_name').value,
+            dba: document.getElementById('edit-client-dba').value,
+            industry_type: document.getElementById('edit-client-industry_type').value,
+            tax_id: document.getElementById('edit-client-tax_id').value,
+            is_active: document.getElementById('edit-status-active').checked
+        };
+
+        fetch(`/client/details/${clientId}/`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(formData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Client updated successfully!");
+                    location.reload();
+                } else {
+                    alert("Error updating client: " + JSON.stringify(data.message));
+                }
+            })
+            .catch(err => console.error("Error updating client:", err));
+    });
+    //
+    //document.addEventListener('DOMContentLoaded', () => {
+    //    const deleteButtons = document.querySelectorAll('.delete-btn');
+    //
+    //    // Function to get CSRF token from cookie
+    //    function getCookie(name) {
+    //        let cookieValue = null;
+    //        if (document.cookie && document.cookie !== '') {
+    //            const cookies = document.cookie.split(';');
+    //            for (let i = 0; i < cookies.length; i++) {
+    //                const cookie = cookies[i].trim();
+    //                if (cookie.startsWith(name + '=')) {
+    //                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+    //                    break;
+    //                }
+    //            }
+    //        }
+    //        return cookieValue;
+    //    }
+    //
+    //    const csrftoken = getCookie('csrftoken');
+    //
+    //    deleteButtons.forEach(button => {
+    //        button.addEventListener('click', async () => {
+    //            const clientId = button.getAttribute('data-id');
+    //
+    //            const confirmed = confirm("Are you sure you want to delete this client?");
+    //            if (!confirmed) return;
+    //
+    //            try {
+    //                const response = await fetch(`/client/details/${clientId}/`, {
+    //                    method: 'DELETE',
+    //                    headers: {
+    //                        'X-CSRFToken': csrftoken,
+    //                        'Accept': 'application/json'
+    //                    }
+    //                });
+    //
+    //                const data = await response.json();
+    //
+    //                if (response.ok) {
+    //                    // Remove the row from DOM
+    //                    const row = button.closest('tr'); 
+    //                    if (row) row.remove();
+    //
+    //                    alert('Client deleted successfully!');
+    //                } else {
+    //                    // Use the error field from ResponseHelper
+    //                    alert('Error deleting client: ' + (data.error || response.statusText));
+    //                }
+    //            } catch (error) {
+    //                console.error('Error:', error);
+    //                alert('An unexpected error occurred.');
+    //            }
+    //        });
+    //    });
+    //});
+    //
+    //
+
+    // Backdrop cleanup and wire-up add client modal submission
+    const cleanupModalBackdrop = () => {
+        const backdrops = document.querySelectorAll('.modal-backdrop');
+        backdrops.forEach(b => b.remove());
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
     };
 
-    fetch(`/client/details/${clientId}/`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-        },
-        credentials: 'same-origin',
-        body: JSON.stringify(formData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert("Client updated successfully!");
-            location.reload();
-        } else {
-            alert("Error updating client: " + JSON.stringify(data.message));
+    const addClientModalEl = document.getElementById('addClientModal');
+    if (addClientModalEl) {
+        addClientModalEl.addEventListener('hidden.bs.modal', cleanupModalBackdrop);
+        addClientModalEl.addEventListener('show.bs.modal', cleanupModalBackdrop);
+
+        const form = addClientModalEl.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const payload = {
+                    client_id: formData.get('client_id'),
+                    peo: formData.get('peo'),
+                    state: formData.get('state'),
+                    pay_period: formData.get('pay_period'),
+                    legal_name: formData.get('legal_name'),
+                    dba: formData.get('dba') || null,
+                    industry_type: formData.get('industry_type') || null,
+                    tax_id: formData.get('tax_id'),
+                    is_active: formData.get('is_active') === 'true'
+                };
+                const csrftoken = (document.querySelector('[name=csrfmiddlewaretoken]') || {}).value;
+                try {
+                    const res = await fetch('/client/details/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+                        credentials: 'same-origin',
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await res.json();
+                    if (res.ok && data && data.success) {
+                        const modal = bootstrap.Modal.getInstance(addClientModalEl) || new bootstrap.Modal(addClientModalEl);
+                        modal.hide();
+                        cleanupModalBackdrop();
+                        setTimeout(() => location.reload(), 300);
+                    } else {
+                        alert('Error adding client: ' + JSON.stringify(data && (data.message || data.error)));
+                    }
+                } catch (err) {
+                    console.error('Error adding client:', err);
+                    alert('Failed to add client.');
+                }
+            });
         }
-    })
-    .catch(err => console.error("Error updating client:", err));
-});
-//
-//document.addEventListener('DOMContentLoaded', () => {
-//    const deleteButtons = document.querySelectorAll('.delete-btn');
-//
-//    // Function to get CSRF token from cookie
-//    function getCookie(name) {
-//        let cookieValue = null;
-//        if (document.cookie && document.cookie !== '') {
-//            const cookies = document.cookie.split(';');
-//            for (let i = 0; i < cookies.length; i++) {
-//                const cookie = cookies[i].trim();
-//                if (cookie.startsWith(name + '=')) {
-//                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-//                    break;
-//                }
-//            }
-//        }
-//        return cookieValue;
-//    }
-//
-//    const csrftoken = getCookie('csrftoken');
-//
-//    deleteButtons.forEach(button => {
-//        button.addEventListener('click', async () => {
-//            const clientId = button.getAttribute('data-id');
-//
-//            const confirmed = confirm("Are you sure you want to delete this client?");
-//            if (!confirmed) return;
-//
-//            try {
-//                const response = await fetch(`/client/details/${clientId}/`, {
-//                    method: 'DELETE',
-//                    headers: {
-//                        'X-CSRFToken': csrftoken,
-//                        'Accept': 'application/json'
-//                    }
-//                });
-//
-//                const data = await response.json();
-//
-//                if (response.ok) {
-//                    // Remove the row from DOM
-//                    const row = button.closest('tr'); 
-//                    if (row) row.remove();
-//
-//                    alert('Client deleted successfully!');
-//                } else {
-//                    // Use the error field from ResponseHelper
-//                    alert('Error deleting client: ' + (data.error || response.statusText));
-//                }
-//            } catch (error) {
-//                console.error('Error:', error);
-//                alert('An unexpected error occurred.');
-//            }
-//        });
-//    });
-//});
-//
-//
-</script>
+    }
 
-<script>
-// Backdrop cleanup and wire-up add client modal submission
-const cleanupModalBackdrop = () => {
-  const backdrops = document.querySelectorAll('.modal-backdrop');
-  backdrops.forEach(b => b.remove());
-  document.body.classList.remove('modal-open');
-  document.body.style.overflow = '';
-  document.body.style.paddingRight = '';
-};
-
-const addClientModalEl = document.getElementById('addClientModal');
-if (addClientModalEl) {
-  addClientModalEl.addEventListener('hidden.bs.modal', cleanupModalBackdrop);
-  addClientModalEl.addEventListener('show.bs.modal', cleanupModalBackdrop);
-
-  const form = addClientModalEl.querySelector('form');
-  if (form) {
-    form.addEventListener('submit', async function (e) {
-      e.preventDefault();
-      const formData = new FormData(form);
-      const payload = {
-        client_id: formData.get('client_id'),
-        peo: formData.get('peo'),
-        state: formData.get('state'),
-        pay_period: formData.get('pay_period'),
-        legal_name: formData.get('legal_name'),
-        dba: formData.get('dba') || null,
-        industry_type: formData.get('industry_type') || null,
-        tax_id: formData.get('tax_id'),
-        is_active: formData.get('is_active') === 'true'
-      };
-      const csrftoken = (document.querySelector('[name=csrfmiddlewaretoken]')||{}).value;
-      try {
-        const res = await fetch('/client/details/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
-          credentials: 'same-origin',
-          body: JSON.stringify(payload)
+    // Ensure button triggers programmatic open to avoid data attribute quirks
+    const openAddClientBtn = document.getElementById('openAddClientBtn');
+    if (openAddClientBtn && addClientModalEl) {
+        openAddClientBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const modal = bootstrap.Modal.getOrCreateInstance(addClientModalEl);
+            modal.show();
         });
-        const data = await res.json();
-        if (res.ok && data && data.success) {
-          const modal = bootstrap.Modal.getInstance(addClientModalEl) || new bootstrap.Modal(addClientModalEl);
-          modal.hide();
-          cleanupModalBackdrop();
-          setTimeout(() => location.reload(), 300);
-        } else {
-          alert('Error adding client: ' + JSON.stringify(data && (data.message || data.error)));
-        }
-      } catch (err) {
-        console.error('Error adding client:', err);
-        alert('Failed to add client.');
-      }
-    });
-  }
-}
-
-// Ensure button triggers programmatic open to avoid data attribute quirks
-const openAddClientBtn = document.getElementById('openAddClientBtn');
-if (openAddClientBtn && addClientModalEl) {
-  openAddClientBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    const modal = bootstrap.Modal.getOrCreateInstance(addClientModalEl);
-    modal.show();
-  });
-}
+    }
 </script>
 
 {% include 'modules/clients/partials/add.html' %}
 {% include 'modules/clients/partials/search.html' %}
 <!-- /Page Content -->
 {% include 'inc/footer.html' %}
-

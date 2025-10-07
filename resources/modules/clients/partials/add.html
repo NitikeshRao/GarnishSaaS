@@ -10,7 +10,7 @@
                 </button>
             </div>
 
-            <form method="POST">
+            <form method="POST" action="{% url 'client-list' %}">
                 {% csrf_token %}
                 <input type="hidden" name="peo" value="PEO45678">
 
@@ -169,83 +169,3 @@
         </div>
     </div>
 </div>
-
-<script>
-// Utility to read Django CSRF cookie
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== "") {
-        const cookies = document.cookie.split(";");
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + "=")) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-const csrftoken = getCookie("csrftoken");
-
-document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector("#add form");
-
-    form.addEventListener("submit", async function (e) {
-        e.preventDefault();
-
-        const formData = new FormData(form);
-
-        // Build payload
-        const payload = {
-            client_id: formData.get("client_id"),
-            peo: formData.get("peo"),
-            state: formData.get("state"),
-            pay_period: formData.get("pay_period"),
-            legal_name: formData.get("legal_name"),
-            dba: formData.get("dba") || null,
-            industry_type: formData.get("industry_type") || null,
-            tax_id: formData.get("tax_id"),
-            is_active: formData.get("is_active") === "true"
-        };
-
-        try {
-            // Use relative URL to avoid redirect issues
-            const response = await fetch("/client/details/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": csrftoken
-                },
-                body: JSON.stringify(payload)
-            });
-
-            // Safely parse JSON only if content-type is correct
-            let data;
-            if (response.headers.get("content-type")?.includes("application/json")) {
-                data = await response.json();
-            } else {
-                const text = await response.text();
-                console.error("Expected JSON but got:", text);
-                alert("⚠️ Unexpected response from server");
-                return; // stop further execution
-            }
-
-            if (response.ok) {
-                alert("✅ Client added successfully!");
-                console.log("API response:", data);
-                form.reset();
-
-                // Close modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById("add"));
-                modal.hide();
-            } else {
-                alert("❌ Error: " + (data.message || "Something went wrong"));
-            }
-        } catch (error) {
-            console.error("Request failed:", error);
-            alert("⚠️ Failed to connect to API");
-        }
-    });
-});
-</script>

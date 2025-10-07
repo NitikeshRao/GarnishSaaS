@@ -36,27 +36,35 @@ User = get_user_model()
 # Create your views here.
 def index(request):    
     if request.user.is_authenticated:           
-        return render(request,'modules/clients/index.html')
+        return render(request,'master-app/index.html')
     else:
         return HttpResponseRedirect(reverse('secure-login'))
 
 class ManageClientView(APIView):
     renderer_classes = [JSONRenderer, TemplateHTMLRenderer]
+    template_name = 'modules/clients/index.html'  # ✅ set default template
 
     def get(self, request, *args, **kwargs):
-        clients = Client.objects.all() 
-        return render(request, 'modules/clients/index.html', {"clients": clients})
-    
+        clients = Client.objects.all()
+        return Response(
+            {"clients": clients}, 
+            template_name=self.template_name   # ✅ ensures TemplateHTMLRenderer knows what to use
+        )
+
     def post(self, request, *args, **kwargs):
+        return HttpResponse('hello i m post of client')
+
         serializer = ClientSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            # After saving, re-fetch employees
             clients = Client.objects.all()
             serializer = ClientSerializer(clients, many=True)
-            return render(request, 'modules/clients/index.html', {"clients": serializer.data})
-        return Response(serializer.errors)
-    
+            return Response(
+                {"clients": serializer.data},
+                template_name=self.template_name  # ✅ again
+            )
+        return Response(serializer.errors, status=400)
+
 class ManageEmployeeView(APIView):
     renderer_classes = [JSONRenderer, TemplateHTMLRenderer]
 
