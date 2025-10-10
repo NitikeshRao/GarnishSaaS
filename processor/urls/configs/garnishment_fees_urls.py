@@ -1,17 +1,23 @@
 # app/urls/employer_urls.py
 from django.urls import path
 from processor.views import (
-    GarnishmentFeesRules
+    GarnishmentFeesRulesAPI, GarnishmentFeesListByFilterAPI
 )
 
-app_name = 'garnishment_fees'
+app_name = 'gar_fees'
 
 urlpatterns = [
 
   #CRUD for the Garnishment fees rules
   path('rules/<str:rule>/',
-       GarnishmentFeesRules.as_view(), name='fees_rules'),
-  path('rules/', GarnishmentFeesRules.as_view(), name='fees_rules'),
+       GarnishmentFeesRulesAPI.as_view(), name='fees_rules'),
+  path('rules/', GarnishmentFeesRulesAPI.as_view(), name='fees_rules'),
+
+  path(
+        "rules/filter/<str:state>/<str:pay_period>/<str:garnishment_type/",
+        GarnishmentFeesListByFilterAPI.as_view(),
+        name="garnishment-fees-filter",
+    ),
 
 
 ]

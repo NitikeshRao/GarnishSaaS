@@ -6,8 +6,12 @@ from rest_framework.views import APIView
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
+import traceback as t
 
-class GarnishmentFeesRules(APIView):
+from processor.models import GarnishmentFees
+
+
+class GarnishmentFeesRulesAPI(APIView):
     """
     API view for CRUD operations on garnishment fees rules.
     Provides robust exception handling and clear response messages.
@@ -25,18 +29,21 @@ class GarnishmentFeesRules(APIView):
         Retrieve a specific garnishment fee rule by Rule or all rules if Rule is not provided.
         """
         try:
-            if rule:
-                rule_obj = GarnishmentFeesRules.objects.get(rule__iexact=rule)
-                serializer = GarnishmentFeesRulesSerializer(rule_obj)
-                return ResponseHelper.success_response('Rule data fetched successfully', serializer.data)
-            else:
-                rules = GarnishmentFeesRules.objects.all()
-                serializer = GarnishmentFeesRulesSerializer(
-                    rules, many=True)
-                return ResponseHelper.success_response('All rules fetched successfully', serializer.data)
-        except GarnishmentFeesRules.DoesNotExist:
-            return ResponseHelper.error_response(f'Rule "{rule}" not found', status_code=status.HTTP_404_NOT_FOUND)
+            print("rule",rule)
+            # if rule:
+            #     rule_obj = GarnishmentFeesRules.objects.get(rule__iexact=rule)
+            #     serializer = GarnishmentFeesRulesSerializer(rule_obj)
+            #     return ResponseHelper.success_response('Rule data fetched successfully', serializer.data)
+            # else:
+            rules = GarnishmentFeesRules.objects.all()
+            serializer = GarnishmentFeesRulesSerializer(
+                rules, many=True)
+            # print(serializer.data)
+            return ResponseHelper.success_response('All rules fetched successfully', serializer.data)
+        # except GarnishmentFeesRules.DoesNotExist:
+        #     return ResponseHelper.error_response(f'Rule "{rule}" not found', status_code=status.HTTP_404_NOT_FOUND)
         except Exception as e:
+            print(t.print_exc())
             return ResponseHelper.error_response('Failed to fetch data', str(e), status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @swagger_auto_schema(
@@ -113,3 +120,26 @@ class GarnishmentFeesRules(APIView):
             return ResponseHelper.error_response(f'Rule "{rule}" not found', status_code=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return ResponseHelper.error_response('Internal server error while deleting data', str(e), status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+from rest_framework import generics, status
+from rest_framework.response import Response
+class GarnishmentFeesListByFilterAPI(generics.GenericAPIView):
+    serializer_class = GarnishmentFeesRulesSerializer
+
+    def get(self, request, state, pay_period, garnishment_type_name):
+        try:
+            fees = GarnishmentFees.objects.filter(
+                state__state__iexact=state,
+                pay_period__name__iexact=pay_period,
+                garnishment_type__type__iexact=garnishment_type_name,
+            )
+            if not fees.exists():
+                return Response({"detail": "No matching record found"}, status=status.HTTP_404_NOT_FOUND)
+
+            serializer = self.get_serializer(fees, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e :
+            print(t.print_exc())
+            return e
+

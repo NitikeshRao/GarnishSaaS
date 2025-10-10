@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path, include, re_path
 from master_app import views
 from .views import ManageEmployeeView, ManageOrderView, ManageClientView, GarnishmentFeesListByFilterAPI
 
@@ -10,12 +10,17 @@ urlpatterns = [
     path('employee-list', ManageEmployeeView.as_view(), name='employee-list'),
     path('order-list', ManageOrderView.as_view(), name='order-list'),
 
-    path(
-        "rules/filter/",
-        GarnishmentFeesListByFilterAPI.as_view(),
-        name="garnishment-fees-filter",
-    ),
+    # path(
+    #     'rules/filter/<str:state>/<str:pay_period>/<str:garnishment_type>/',
+    #     GarnishmentFeesListByFilterAPI.as_view(),
+    #     name="garnishment-fees-filter"
+    # ),
 
+    re_path(
+        r'^rules/filter(?:/(?P<state>[^/]+))?(?:/(?P<pay_period>[^/]+))?(?:/(?P<garnishment_type>[^/]+))?/$',
+        GarnishmentFeesListByFilterAPI.as_view(),
+        name="garnishment-fees-filter"
+    ),
 
     #======================== Company Manager ========================
 

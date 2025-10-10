@@ -17,13 +17,11 @@ urlpatterns = [
     # Import Order using excel
     path('import/', GarnishmentOrderImportView.as_view(), name='import_orders'),
 
-
     # Insert+Update order details using excel
     path('upsert/', UpsertGarnishmentOrderView.as_view(), name='upsert_orders'),
 
     # Export garnishment order data in excel
     path('export/', ExportGarnishmentOrderDataView.as_view(),
-         name='export_orders'),
-     
+         name='export_orders'),    
 ]
 

@@ -1,6 +1,7 @@
 from django.urls import path, include
 from garnish_processing_app import views
 from garnish_processing_app.views import ConvertExcelToJsonView
+from master_app.views import GarnishmentFeesListByFilterAPI
 
 urlpatterns = [
     #======================== Garnishment Calculator Manager ========================
@@ -14,4 +15,6 @@ urlpatterns = [
     path('child-support-rules', views.childSupportRules, name='child-support-rules'),
     path('state-tax-levy-rules', views.stateTaxLevyRules, name='state-tax-levy-rules'),
     path('creditor-dept-rules', views.creditorDeptRules, name='creditor-dept-rules'),
+    path('fees-rules', views.garnishmentFeesRules, name='fees-rules'),
+
 ]

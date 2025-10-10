@@ -39,9 +39,6 @@ class GarnishmentFeesSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
-
-
-
 # ---------- Custom Field Types ----------
 
 class StateField(serializers.Field):

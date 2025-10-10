@@ -1,0 +1,292 @@
+{% include 'inc/header.html' %}
+{% load static %}
+{% include 'inc/topbar.html' %}
+{% include 'inc/sidebar.html' %}
+
+<!-- Page Content -->
+<style>
+    .form-control-sm.hover {
+        border-color: #000;
+    }
+    
+    .table-container {
+        position: relative;
+        min-height: 200px;
+    }
+    
+    .loading-spinner {
+        display: none;
+        text-align: center;
+        padding: 40px;
+    }
+    
+    .loading-spinner.show {
+        display: block;
+    }
+    
+    .spinner-border {
+        width: 3rem;
+        height: 3rem;
+    }
+    
+    .table-responsive {
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        overflow-x: hidden;
+    }
+    
+    .table {
+        margin-bottom: 0;
+        width: 100%;
+        table-layout: fixed;
+    }
+    
+    .table thead th {
+        background: #f8f9fa;
+        color: #495057;
+        border: none;
+        font-weight: 600;
+        text-transform: none;
+        font-size: 0.9rem;
+        padding: 12px 8px;
+        border-bottom: 2px solid #dee2e6;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .table tbody tr {
+        transition: all 0.2s ease;
+    }
+    
+    .table tbody tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+    
+    .table tbody tr:hover {
+        background-color: #e9ecef;
+    }
+    
+    .table tbody td {
+        padding: 12px 8px;
+        vertical-align: middle;
+        border-color: #dee2e6;
+        color: #495057;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Column widths */
+    .table th:nth-child(1), .table td:nth-child(1) { width: 5%; }  /* # */
+    .table th:nth-child(2), .table td:nth-child(2) { width: 30%; } /* Rule */
+    .table th:nth-child(3), .table td:nth-child(3) { width: 15%; } /* Max Fee Deduction */
+    .table th:nth-child(4), .table td:nth-child(4) { width: 15%; } /* Per Pay Period */
+    .table th:nth-child(5), .table td:nth-child(5) { width: 15%; } /* Per Month */
+    .table th:nth-child(6), .table td:nth-child(6) { width: 15%; } /* Per Remittance */
+    
+    .action-buttons {
+        text-align: center;
+        white-space: nowrap;
+    }
+    
+    .action-buttons a {
+        transition: all 0.2s ease;
+        display: inline-block;
+        margin: 0 2px;
+        font-size: 0.9rem;
+    }
+    
+    .action-buttons a:hover {
+        transform: scale(1.1);
+    }
+    
+    .no-data {
+        text-align: center;
+        padding: 40px;
+        color: #6c757d;
+    }
+    
+    .no-data i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        opacity: 0.5;
+    }
+    
+    .error-message {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 20px 0;
+        border: 1px solid #f5c6cb;
+    }
+</style>
+
+
+<div class="content">
+    <div class="card mt-3">
+        <!-- Card Header -->
+        <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <h5 class="mb-0">
+                <i class="ti ti-layer-plus me-2"></i> Garnishment Fees
+            </h5>
+            <div class="d-flex align-items-center flex-wrap gap-2">
+                <a href="#" data-bs-toggle="modal" data-bs-target="#search_rule"
+                   class="btn btn-sm btn-secondary d-flex align-items-center">
+                    <i class="ti ti-search me-2"></i>Search
+                </a>
+                <a href="#" onclick="showAddModal()"
+                   class="btn btn-sm btn-primary d-flex align-items-center">
+                    <i class="ti ti-circle-plus me-2"></i>Add New Rule
+                </a>
+            </div>
+        </div>
+
+        <!-- Card Body -->
+        <div class="card-body">
+            <!-- START FORM -->
+            <form method="get" action="{% url 'garnishment-fees-filter' %}">
+                <div class="row g-3">
+                    <!-- State Dropdown -->
+                    <div class="col-md-4">
+                        <label for="state" class="form-label">State</label>
+                        <select class="form-select" name="state" id="state" required>
+                            <option value="" disabled {% if not selected_state %}selected{% endif %}>Select State</option>
+                            <option value="AL" {% if selected_state == 'AL' %}selected{% endif %}>Alabama</option>
+                            <option value="AK" {% if selected_state == 'AK' %}selected{% endif %}>Alaska</option>
+                            <option value="AZ" {% if selected_state == 'AZ' %}selected{% endif %}>Arizona</option>
+                            <option value="AR" {% if selected_state == 'AR' %}selected{% endif %}>Arkansas</option>
+                            <option value="CA" {% if selected_state == 'CA' %}selected{% endif %}>California</option>
+                            <option value="CO" {% if selected_state == 'CO' %}selected{% endif %}>Colorado</option>
+                            <option value="CT" {% if selected_state == 'CT' %}selected{% endif %}>Connecticut</option>
+                            <option value="DE" {% if selected_state == 'DE' %}selected{% endif %}>Delaware</option>
+                            <option value="FL" {% if selected_state == 'FL' %}selected{% endif %}>Florida</option>
+                            <option value="GA" {% if selected_state == 'GA' %}selected{% endif %}>Georgia</option>
+                            <option value="HI" {% if selected_state == 'HI' %}selected{% endif %}>Hawaii</option>
+                            <option value="ID" {% if selected_state == 'ID' %}selected{% endif %}>Idaho</option>
+                            <option value="IL" {% if selected_state == 'IL' %}selected{% endif %}>Illinois</option>
+                            <option value="IN" {% if selected_state == 'IN' %}selected{% endif %}>Indiana</option>
+                            <option value="IA" {% if selected_state == 'IA' %}selected{% endif %}>Iowa</option>
+                            <option value="KS" {% if selected_state == 'KS' %}selected{% endif %}>Kansas</option>
+                            <option value="KY" {% if selected_state == 'KY' %}selected{% endif %}>Kentucky</option>
+                            <option value="LA" {% if selected_state == 'LA' %}selected{% endif %}>Louisiana</option>
+                            <option value="ME" {% if selected_state == 'ME' %}selected{% endif %}>Maine</option>
+                            <option value="MD" {% if selected_state == 'MD' %}selected{% endif %}>Maryland</option>
+                            <option value="MA" {% if selected_state == 'MA' %}selected{% endif %}>Massachusetts</option>
+                            <option value="MI" {% if selected_state == 'MI' %}selected{% endif %}>Michigan</option>
+                            <option value="MN" {% if selected_state == 'MN' %}selected{% endif %}>Minnesota</option>
+                            <option value="MS" {% if selected_state == 'MS' %}selected{% endif %}>Mississippi</option>
+                            <option value="MO" {% if selected_state == 'MO' %}selected{% endif %}>Missouri</option>
+                            <option value="MT" {% if selected_state == 'MT' %}selected{% endif %}>Montana</option>
+                            <option value="NE" {% if selected_state == 'NE' %}selected{% endif %}>Nebraska</option>
+                            <option value="NV" {% if selected_state == 'NV' %}selected{% endif %}>Nevada</option>
+                            <option value="NH" {% if selected_state == 'NH' %}selected{% endif %}>New Hampshire</option>
+                            <option value="NJ" {% if selected_state == 'NJ' %}selected{% endif %}>New Jersey</option>
+                            <option value="NM" {% if selected_state == 'NM' %}selected{% endif %}>New Mexico</option>
+                            <option value="NY" {% if selected_state == 'NY' %}selected{% endif %}>New York</option>
+                            <option value="NC" {% if selected_state == 'NC' %}selected{% endif %}>North Carolina</option>
+                            <option value="ND" {% if selected_state == 'ND' %}selected{% endif %}>North Dakota</option>
+                            <option value="OH" {% if selected_state == 'OH' %}selected{% endif %}>Ohio</option>
+                            <option value="OK" {% if selected_state == 'OK' %}selected{% endif %}>Oklahoma</option>
+                            <option value="OR" {% if selected_state == 'OR' %}selected{% endif %}>Oregon</option>
+                            <option value="PA" {% if selected_state == 'PA' %}selected{% endif %}>Pennsylvania</option>
+                            <option value="RI" {% if selected_state == 'RI' %}selected{% endif %}>Rhode Island</option>
+                            <option value="SC" {% if selected_state == 'SC' %}selected{% endif %}>South Carolina</option>
+                            <option value="SD" {% if selected_state == 'SD' %}selected{% endif %}>South Dakota</option>
+                            <option value="TN" {% if selected_state == 'TN' %}selected{% endif %}>Tennessee</option>
+                            <option value="TX" {% if selected_state == 'TX' %}selected{% endif %}>Texas</option>
+                            <option value="UT" {% if selected_state == 'UT' %}selected{% endif %}>Utah</option>
+                            <option value="VT" {% if selected_state == 'VT' %}selected{% endif %}>Vermont</option>
+                            <option value="VA" {% if selected_state == 'VA' %}selected{% endif %}>Virginia</option>
+                            <option value="WA" {% if selected_state == 'WA' %}selected{% endif %}>Washington</option>
+                            <option value="WV" {% if selected_state == 'WV' %}selected{% endif %}>West Virginia</option>
+                            <option value="WI" {% if selected_state == 'WI' %}selected{% endif %}>Wisconsin</option>
+                            <option value="WY" {% if selected_state == 'WY' %}selected{% endif %}>Wyoming</option>
+                        </select>
+                        </div>
+
+                        <!-- Pay Period Dropdown -->
+                    <div class="col-md-4">
+                        <label for="pay_period" class="form-label">Pay Period</label>
+                        <select class="form-select" name="pay_period" id="pay_period" required>
+                            <option value="" disabled {% if not selected_pay_period %}selected{% endif %}>Select Pay Period</option>
+                            <option value="weekly" {% if selected_pay_period == 'weekly' %}selected{% endif %}>Weekly</option>
+                            <option value="biweekly" {% if selected_pay_period == 'biweekly' %}selected{% endif %}>Bi-Weekly</option>
+                            <option value="semimonthly" {% if selected_pay_period == 'semimonthly' %}selected{% endif %}>Semi-Monthly</option>
+                            <option value="monthly" {% if selected_pay_period == 'monthly' %}selected{% endif %}>Monthly</option>
+                        </select>
+                    </div>
+
+                    <!-- Garnishment Type Dropdown -->
+                    <div class="col-md-4">
+                        <label for="garnishment_type" class="form-label">Garnishment Type</label>
+                        <select class="form-select" name="garnishment_type" id="garnishment_type" required>
+                            <option value="" disabled {% if not selected_garnishment_type %}selected{% endif %}>Select Garnishment Type</option>
+                            <option value="child_support" {% if selected_garnishment_type == 'child_support' %}selected{% endif %}>Child Support</option>
+                            <option value="student_loan" {% if selected_garnishment_type == 'student_loan' %}selected{% endif %}>Student Loan</option>
+                            <option value="tax_levy" {% if selected_garnishment_type == 'tax_levy' %}selected{% endif %}>Tax Levy</option>
+                            <option value="credit_card" {% if selected_garnishment_type == 'credit_card' %}selected{% endif %}>Credit Card</option>
+                            <option value="bank_levy" {% if selected_garnishment_type == 'bank_levy' %}selected{% endif %}>Bank Levy</option>
+                            <option value="other" {% if selected_garnishment_type == 'other' %}selected{% endif %}>Other</option>
+                        </select>       
+                    </div>
+
+                    <div class="col-md-12 text-end">
+                        <button type="submit" class="btn btn-success" id="filterSubmit">
+                            <i class="ti ti-filter me-2"></i>Submit
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <!-- END FORM -->
+
+        </div>
+    </div>
+</div>
+
+{% include 'garnish-process-app/garnish-rules/fees-rules/partials/add-rule.html' %}
+{% include 'garnish-process-app/garnish-rules/fees-rules/partials/search.html' %}
+<!-- /Page Content -->
+{% include 'inc/footer.html' %}
+
+<table class="table table-bordered mt-4">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>State</th>
+            <th>Garnishment Type</th>
+            <th>Pay Period</th>
+            <th>Rule</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Payable By</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if fees %}
+            {% for fee in fees %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ fee.state.state }}</td>
+                    <td>{{ fee.garnishment_type.type }}</td>
+                    <td>{{ fee.pay_period.name }}</td>
+                    <td>{{ fee.rule.rule }}</td>
+                    <td>{{ fee.amount }}</td>
+                    <td>{{ fee.status }}</td>
+                    <td>{{ fee.payable_by }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="8" class="text-center text-muted">
+                    {% if selected_state or selected_pay_period or selected_garnishment_type %}
+                        No records found.
+                    {% else %}
+                        Submit the form to see results.
+                    {% endif %}
+                </td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>

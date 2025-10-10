@@ -29,6 +29,8 @@ from user_app.models import EmployeeDetail, GarnishmentOrder, Client
 from user_app.serializers import EmployeeDetailSerializer, GarnishmentOrderSerializer, ClientSerializer
 from processor.models.garnishment_fees import GarnishmentFees
 from processor.serializers.garnishment_fees_serializers import GarnishmentFeesSerializer
+from rest_framework import generics, status
+from rest_framework.response import Response
 
 
 User = get_user_model()
@@ -52,8 +54,6 @@ class ManageClientView(APIView):
         )
 
     def post(self, request, *args, **kwargs):
-        return HttpResponse('hello i m post of client')
-
         serializer = ClientSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -61,7 +61,7 @@ class ManageClientView(APIView):
             serializer = ClientSerializer(clients, many=True)
             return Response(
                 {"clients": serializer.data},
-                template_name=self.template_name  # ✅ again
+                template_name=self.template_name  
             )
         return Response(serializer.errors, status=400)
 
@@ -104,7 +104,15 @@ class ManageOrderView(APIView):
         # If invalid, return errors as JSON (or you can render template with error messages)
         return Response(serializer.errors) 
     
+# -------- CREATE --------
+class GarnishmentFeesCreateAPI(generics.CreateAPIView):
+    queryset = GarnishmentFees.objects.all()
+    serializer_class = GarnishmentFeesSerializer
 
+# -------- RETRIEVE / UPDATE / DELETE (by id) --------
+class GarnishmentFeesDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = GarnishmentFees.objects.all()
+    serializer_class = GarnishmentFeesSerializer
 
 # ADDONS MANAGER
 
@@ -134,24 +142,34 @@ class GarnishmentFeesCreateAPI(generics.CreateAPIView):
 
 
 # -------- READ (by filters) --------
-class GarnishmentFeesListByFilterAPI(generics.GenericAPIView):
+class GarnishmentFeesListByFilterAPI(generics.GenericAPIView) :
     serializer_class = GarnishmentFeesSerializer
+    
+    def fees_rules_view(self, request, state=None, pay_period=None, garnishment_type=None):
+        fees = None
+        if state and pay_period and garnishment_type:
+            fees = GarnishmentFees.objects.filter(
+                state__state__iexact=state,
+                pay_period__name__iexact=pay_period,
+                garnishment_type__type__iexact=garnishment_type,
+            ).values()
 
-    def get(self, request):
-        state = request.GET.get('state')
-        pay_period = request.GET.get('pay_period')
-        garnishment_type_name = request.GET.get('garnishment_type')
+            return HttpResponse(fees)
+            if not fees.exists():
+                return Response({"detail": "No matching record found"}, status=status.HTTP_404_NOT_FOUND)
 
-        fees = GarnishmentFees.objects.filter(
-            state__state__iexact=state,
-            pay_period__name__iexact=pay_period,
-            garnishment_type__type__iexact=garnishment_type_name,
-        )
-        if not fees.exists():
-            return Response({"detail": "No matching record found"}, status=status.HTTP_404_NOT_FOUND)
+            serializer = self.get_serializer(fees, many=True)
+            print("serilizer_data",serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
-        serializer = self.get_serializer(fees, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        context = {
+            "fees": fees,
+            "selected_state": state,
+            "selected_pay_period": pay_period,
+            "selected_garnishment_type": garnishment_type,
+        }
+
+        return render(request, "garnish-process-app/garnish-rules/fees-rules/index.html", context)
 
 
 

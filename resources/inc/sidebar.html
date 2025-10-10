@@ -97,7 +97,7 @@
                                         <li><a href="{% url 'child-support-rules' %}" class="{% if request.resolver_match.url_name == 'child-support-rules' %} active {% endif %}">Child Support Rules</a></li>
                                         <li><a href="{% url 'state-tax-levy-rules' %}" class="{% if request.resolver_match.url_name == 'state-tax-levy-rules' %} active {% endif %}">State Tax Levy Rules</a></li>
                                         <li><a href="{% url 'creditor-dept-rules' %}" class="{% if request.resolver_match.url_name == 'creditor-dept-rules' %} active {% endif %}">Creditor Debt Rules</a></li>
-                                        <li><a href="javascript:void(0);">Fees Rules</a></li>
+                                        <li><a href="{% url 'fees-rules' %}" class="{% if request.resolver_match.url_name == 'fees-rules' %} active {% endif %}">Fees Rules</a></li>
                                     </ul>
                                 </li>
 
